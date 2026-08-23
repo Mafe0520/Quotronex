@@ -25,7 +25,8 @@ export async function requireAdmin(): Promise<AdminUser> {
   if (!user) notFound()
 
   // Capa 2 — verificación en admin_users vía service role
-  const service = await createServiceClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const service = await createServiceClient() as any
   const { data: admin, error } = await service
     .from('admin_users')
     .select('id, user_id, email, role')
@@ -56,7 +57,8 @@ export async function logAdminAction({
   before?: object
   after?: object
 }) {
-  const service = await createServiceClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const service = await createServiceClient() as any
   await service.from('admin_audit_log').insert({
     admin_user_id: adminUserId,
     action,

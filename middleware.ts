@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
 
   // Protect /admin/* — session check only (page-level requireAdmin() does the full check)
   if (pathname.startsWith('/admin') && !user) {
-    return NextResponse.notFound()
+    return new NextResponse(null, { status: 404 })
   }
 
   // Redirect authenticated users away from /login
