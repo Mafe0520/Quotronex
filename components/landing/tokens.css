@@ -1,0 +1,76 @@
+/* ============================================================================
+   QUOTLY — tokens.css  |  FICHA-ARTE actualizada 2026-08-22
+   Dirección: Dark Mode SaaS con acento Esmeralda
+   70% SaaS limpio oscuro, 30% Soft Brutalist (emerald glow en CTAs).
+   ============================================================================ */
+
+:root {
+  /* ── SUPERFICIES (dark-first) ── */
+  --bg:        #090D16;
+  --surface:   #0F172A;
+  --surface-2: #1E293B;
+  --border-subtle: #334155;
+
+  /* ── TEXTO ── */
+  --text-primary:   #FFFFFF;
+  --text-secondary: #CBD5E1;
+  --text-tertiary:  #94A3B8;
+
+  /* ── MARCA ── */
+  --accent:   #10B981;   /* Esmeralda — CTAs, estados activos, datos héroe */
+  --accent-hover: #34D399;
+  --accent-2: #06B6D4;   /* Cyan / Teal — badges, detalles interactivos */
+
+  /* ── FORMA ── */
+  --radius-card:   16px;
+  --radius-button: 100px;
+
+  /* ── TIPOGRAFÍA ── */
+  --font-display: 'Archivo Black', 'Helvetica Neue', sans-serif;
+  --font-body:    'Work Sans', 'Segoe UI', sans-serif;
+
+  /* ── SOMBRAS ── */
+  --shadow-1: 0 1px 3px rgb(0 0 0 / 0.35), 0 1px 2px -1px rgb(0 0 0 / 0.25);
+  --shadow-2: 0 8px 24px -8px rgb(0 0 0 / 0.55);
+
+  /* ── CTA: glow esmeralda (Soft Brutalist en modo oscuro) ── */
+  --shadow-cta:       0 0 24px color-mix(in oklab, #10B981 45%, transparent), 0 4px 16px color-mix(in oklab, #10B981 25%, transparent);
+  --shadow-cta-press: 0 0 8px  color-mix(in oklab, #10B981 25%, transparent);
+
+  /* ── DERIVADOS ── */
+  --chip-bg: color-mix(in oklab, var(--accent) 12%, transparent);
+
+  /* ── SEMÁNTICOS ── */
+  --error:  #EF4444;   /* Rojo — sección "Método Antiguo" en comparación */
+
+  /* ── INK ── */
+  --ink: #CBD5E1;
+}
+
+/* ── Light mode override (si el usuario fuerza claro) ──────────── */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg:        #090D16;
+    --surface:   #0F172A;
+    --surface-2: #1E293B;
+    --border-subtle: #334155;
+    --text-primary:   #FFFFFF;
+    --text-secondary: #CBD5E1;
+    --text-tertiary:  #94A3B8;
+    --shadow-1: 0 1px 3px rgb(0 0 0 / 0.35);
+    --shadow-2: 0 8px 24px -8px rgb(0 0 0 / 0.55);
+  }
+}
+:root[data-theme="light"] {
+  --bg:        #090D16;
+  --surface:   #0F172A;
+  --surface-2: #1E293B;
+  --border-subtle: #334155;
+  --text-primary:   #FFFFFF;
+  --text-secondary: #CBD5E1;
+  --text-tertiary:  #94A3B8;
+}
+
+html  { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body  { background: var(--bg); color: var(--text-primary); font-family: var(--font-body); }

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quotly — Direcciones A/B/C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=DM+Serif+Display&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #18181B;
+    color: #fff;
+    font-family: 'Work Sans', sans-serif;
+    padding: 48px 32px;
+  }
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .page-header h1 {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #71717A;
+    margin-bottom: 8px;
+  }
+  .page-header p {
+    font-size: 13px;
+    color: #52525B;
+  }
+  .badge-winner {
+    display: inline-block;
+    margin-left: 8px;
+    background: #16A34A;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 999px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 375px);
+    gap: 40px;
+    justify-content: center;
+    align-items: start;
+  }
+
+  .col-label {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #71717A;
+    margin-bottom: 12px;
+  }
+
+  /* ══ DIRECCIÓN A — Dark Bold / Brutal puro ══════════════════════════════ */
+  .card-a {
+    background: #0F0E0D;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #2A2825;
+  }
+  .card-a .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #2A2825;
+  }
+  .card-a .nav .logo {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 16px;
+    color: #F5F3EF;
+    letter-spacing: -0.02em;
+  }
+  .card-a .nav .sign-in {
+    font-size: 13px;
+    color: #6B6966;
+    font-weight: 500;
+  }
+  .card-a .hero {
+    padding: 40px 20px 32px;
+  }
+  .card-a .kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #E03A2F;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-a .kicker::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: #E03A2F;
+  }
+  .card-a h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 38px;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: #F5F3EF;
+    margin-bottom: 16px;
+  }
+  .card-a h1 span { color: #E03A2F; }
+  .card-a .sub {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #8A8784;
+    margin-bottom: 32px;
+  }
+  .card-a .sub strong { color: #F5F3EF; font-weight: 600; }
+  .card-a .cta {
+    display: block;
+    width: 100%;
+    height: 52px;
+    background: #E03A2F;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 14px;
+    color: #fff;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 0 #8B1B15;
+    text-align: center;
+    line-height: 52px;
+    margin-bottom: 12px;
+  }
+  .card-a .micro {
+    font-size: 12px;
+    color: #4A4846;
+    text-align: center;
+  }
+  .card-a .mockup {
+    margin: 0 20px 24px;
+    background: #1A1816;
+    border: 1px solid #2A2825;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .card-a .mockup-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #222;
+    font-size: 13px;
+    color: #8A8784;
+  }
+  .card-a .mockup-row:last-child { border-bottom: none; }
+  .card-a .mockup-row .amt { color: #F5F3EF; font-weight: 600; font-family: 'Archivo Black', sans-serif; font-size: 14px; }
+  .card-a .mockup-total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #E03A2F;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #F5F3EF;
+    font-weight: 700;
+  }
+  .tag-a {
+    text-align: center;
+    padding: 8px;
+    background: #1A1816;
+    font-size: 11px;
+    color: #4A4846;
+  }
+
+  /* ══ DIRECCIÓN B — 70% Clean SaaS + 30% Soft Brutalist (ELEGIDA) ════════ */
+  .card-b {
+    background: #F2F0EB;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 0 3px #2743D6, 8px 8px 0 3px #2743D6;
+  }
+  .card-b .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: #FBFAF7;
+    border-bottom: 1px solid #E0DED8;
+  }
+  .card-b .nav .logo {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 16px;
+    color: #1C1B18;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-b .nav .logo-dot {
+    width: 22px; height: 22px;
+    background: #2743D6;
+    border-radius: 6px;
+  }
+  .card-b .nav .sign-in {
+    font-size: 13px;
+    color: #7A7874;
+    font-weight: 500;
+  }
+  .card-b .hero {
+    padding: 40px 20px 28px;
+  }
+  .card-b h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 38px;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: #1C1B18;
+    margin-bottom: 14px;
+    text-wrap: balance;
+  }
+  .card-b h1 .accent { color: #2743D6; }
+  .card-b .sub {
+    font-size: 15px;
+    line-height: 1.55;
+    color: #7A7874;
+    margin-bottom: 28px;
+  }
+  .card-b .sub strong { color: #1C1B18; font-weight: 600; }
+  .card-b .cta {
+    display: block;
+    width: 100%;
+    height: 52px;
+    background: #2743D6;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #F2F0EB;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 0 #1C1B18;
+    text-align: center;
+    line-height: 52px;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .card-b .micro {
+    font-size: 12px;
+    color: #AEACA7;
+    text-align: center;
+  }
+  .card-b .mockup {
+    margin: 4px 20px 24px;
+    background: #FBFAF7;
+    border: 1px solid #E0DED8;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgb(28 27 24 / .06);
+  }
+  .card-b .mockup-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #AEACA7;
+    margin-bottom: 10px;
+  }
+  .card-b .mockup-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid #ECEAE4;
+    font-size: 13px;
+    color: #7A7874;
+  }
+  .card-b .mockup-row:last-child { border-bottom: none; }
+  .card-b .mockup-row .amt { color: #1C1B18; font-weight: 600; }
+  .card-b .mockup-total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #2743D6;
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    color: #1C1B18;
+    font-weight: 700;
+    font-family: 'Archivo Black', sans-serif;
+  }
+  .tag-b {
+    text-align: center;
+    padding: 8px;
+    background: #ECEAE4;
+    font-size: 11px;
+    color: #AEACA7;
+  }
+
+  /* ══ DIRECCIÓN C — Minimal Clean SaaS (fría/corporativa) ═══════════════ */
+  .card-c {
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 4px 24px rgb(0 0 0 / .08);
+  }
+  .card-c .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #F3F4F6;
+  }
+  .card-c .nav .logo {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-c .nav .logo-dot {
+    width: 22px; height: 22px;
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    border-radius: 6px;
+  }
+  .card-c .nav .sign-in {
+    font-size: 13px;
+    color: #6B7280;
+    font-weight: 500;
+  }
+  .card-c .hero {
+    padding: 40px 20px 28px;
+  }
+  .card-c .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1D4ED8;
+    margin-bottom: 16px;
+  }
+  .card-c h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 32px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #111827;
+    margin-bottom: 14px;
+  }
+  .card-c h1 span { color: #1D4ED8; }
+  .card-c .sub {
+    font-size: 15px;
+    line-height: 1.55;
+    color: #6B7280;
+    margin-bottom: 28px;
+  }
+  .card-c .sub strong { color: #111827; font-weight: 600; }
+  .card-c .cta {
+    display: block;
+    width: 100%;
+    height: 48px;
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    border: none;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    text-align: center;
+    line-height: 48px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 14px rgb(29 78 216 / .35);
+  }
+  .card-c .micro {
+    font-size: 12px;
+    color: #9CA3AF;
+    text-align: center;
+  }
+  .card-c .mockup {
+    margin: 8px 20px 24px;
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .card-c .mockup-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9CA3AF;
+    margin-bottom: 10px;
+  }
+  .card-c .mockup-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid #F3F4F6;
+    font-size: 13px;
+    color: #6B7280;
+    font-family: 'Inter', sans-serif;
+  }
+  .card-c .mockup-row:last-child { border-bottom: none; }
+  .card-c .mockup-row .amt { color: #111827; font-weight: 600; }
+  .card-c .mockup-total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #1D4ED8;
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    color: #111827;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+  }
+  .tag-c {
+    text-align: center;
+    padding: 8px;
+    background: #F9FAFB;
+    font-size: 11px;
+    color: #9CA3AF;
+  }
+
+  .decision-note {
+    margin-top: 48px;
+    text-align: center;
+    font-size: 13px;
+    color: #52525B;
+    border-top: 1px solid #27272A;
+    padding-top: 32px;
+  }
+  .decision-note strong { color: #A1A1AA; }
+
+  @media (max-width: 1280px) {
+    .grid {
+      grid-template-columns: 375px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Quotly — Comparativa de dirección de arte A/B/C <span class="badge-winner">B elegida</span></h1>
+  <p>Protocolo 54-BANCO-DE-DIRECCIONES.md · Sesión 1 · 2026-08-21</p>
+</div>
+
+<div class="grid">
+
+  <!-- ── DIRECCIÓN A ─────────────────────────────────────────── -->
+  <div>
+    <p class="col-label">A — Dark Bold / Brutal puro</p>
+    <div class="card-a">
+      <div class="nav">
+        <span class="logo">Quotly</span>
+        <span class="sign-in">Sign in</span>
+      </div>
+      <div class="hero">
+        <div class="kicker">The mechanism</div>
+        <h1>Quote in <span>30 sec.</span><br>Land the job.</h1>
+        <p class="sub">The Voice Price Book builds a pro estimate <strong>using your rates</strong> — instantly.</p>
+        <div class="cta">Start free 14-day trial</div>
+        <p class="micro">No credit card · Cancel anytime</p>
+      </div>
+      <div class="mockup">
+        <div class="mockup-row"><span>Labor — paint 2 rooms</span><span class="amt">$420</span></div>
+        <div class="mockup-row"><span>Materials &amp; primer</span><span class="amt">$185</span></div>
+        <div class="mockup-row"><span>Travel &amp; setup</span><span class="amt">$60</span></div>
+        <div class="mockup-total"><span>Total</span><span>$665</span></div>
+      </div>
+      <div class="tag-a">Archivo Black · Red #E03A2F · Dark #0F0E0D · Brutal radius 4px</div>
+    </div>
+  </div>
+
+  <!-- ── DIRECCIÓN B — ELEGIDA ──────────────────────────────── -->
+  <div>
+    <p class="col-label">B — 70% Clean SaaS + 30% Soft Brutalist <span class="badge-winner">✓ Elegida</span></p>
+    <div class="card-b">
+      <div class="nav">
+        <span class="logo"><span class="logo-dot"></span>Quotly</span>
+        <span class="sign-in">Sign in</span>
+      </div>
+      <div class="hero">
+        <h1><span class="accent">Quote in 30 seconds.</span><br>Land the job.</h1>
+        <p class="sub">The Voice Price Book builds a pro estimate <strong>using your rates</strong> — instantly.</p>
+        <div class="cta">Start my free 14-day trial</div>
+        <p class="micro">No credit card needed · Cancel anytime</p>
+      </div>
+      <div class="mockup">
+        <div class="mockup-label">Quote generated · 28 seconds</div>
+        <div class="mockup-row"><span>Labor — paint 2 rooms</span><span class="amt">$420</span></div>
+        <div class="mockup-row"><span>Materials &amp; primer</span><span class="amt">$185</span></div>
+        <div class="mockup-row"><span>Travel &amp; setup</span><span class="amt">$60</span></div>
+        <div class="mockup-total"><span>Total</span><span>$665</span></div>
+      </div>
+      <div class="tag-b">Archivo Black · Blue #2743D6 · Warm #F2F0EB · Hard shadow CTA only</div>
+    </div>
+  </div>
+
+  <!-- ── DIRECCIÓN C ─────────────────────────────────────────── -->
+  <div>
+    <p class="col-label">C — Minimal Clean SaaS (corporativo frío)</p>
+    <div class="card-c">
+      <div class="nav">
+        <span class="logo"><span class="logo-dot"></span>Quotly</span>
+        <span class="sign-in">Sign in</span>
+      </div>
+      <div class="hero">
+        <span class="badge">✦ AI-powered quoting</span>
+        <h1>Quote in <span>30 seconds.</span><br>Land the job.</h1>
+        <p class="sub">The Voice Price Book builds a pro estimate <strong>using your rates</strong> — instantly.</p>
+        <div class="cta">Start my free 14-day trial</div>
+        <p class="micro">No credit card needed · Cancel anytime</p>
+      </div>
+      <div class="mockup">
+        <div class="mockup-label">Quote generated · 28 seconds</div>
+        <div class="mockup-row"><span>Labor — paint 2 rooms</span><span class="amt">$420</span></div>
+        <div class="mockup-row"><span>Materials &amp; primer</span><span class="amt">$185</span></div>
+        <div class="mockup-row"><span>Travel &amp; setup</span><span class="amt">$60</span></div>
+        <div class="mockup-total"><span>Total</span><span>$665</span></div>
+      </div>
+      <div class="tag-c">Inter · Blue gradient · White #FFFFFF · Soft shadow radius 10px</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="decision-note">
+  <strong>Decisión documentada:</strong> Dirección B aprobada por la usuaria el 2026-08-21.<br>
+  v2 ajustada: 70% clean SaaS + 30% soft brutalist — hard shadow reservado solo al CTA primario.<br>
+  Tokens vigentes en <code>FICHA-ARTE.md</code> · Registro anti-repetición activo para el próximo proyecto del SO.
+</div>
+
+</body>
+</html>
