@@ -48,7 +48,7 @@ const COPY = {
       h1:          '[acento]Quote in 30 seconds.[/acento] Land the job.',
       subtitle:    "Describe the job. Quotronex builds the quote using your own prices — ready to send.",
       secondary:   'See how it works',
-      socialProof: 'No credit card · 14-day free trial · Cancel anytime',
+      socialProof: '14-day free trial · No charge until day 15 · Cancel anytime',
     },
     problema: {
       titulo: 'Does this sound familiar?',
@@ -228,7 +228,7 @@ const COPY = {
     ctaFinal: {
       h2:            'Stop losing jobs to [acento]faster quotes[/acento]',
       futurePacing:  "In two weeks, every client gets a professional quote in 30 seconds. In a month, you've won jobs you used to lose.",
-      recap:         '14-day free trial · 30-day money-back guarantee · No credit card required',
+      recap:         '14-day free trial · No charge until day 15 · Cancel anytime',
       ps:            'P.S. — [b]The Voice Price Book uses your real rates, not generic estimates.[/b] Set it up once. Quote faster than anyone else — every time.',
     },
     footer: {
@@ -255,7 +255,7 @@ const COPY = {
       h1:          '[acento]Cotiza en 30 segundos.[/acento] Gana el trabajo.',
       subtitle:    'Describe el trabajo. Quotronex genera la cotización con tus precios — lista para enviar.',
       secondary:   'Ver cómo funciona',
-      socialProof: 'Sin tarjeta de crédito · Prueba gratis 14 días · Cancela cuando quieras',
+      socialProof: 'Prueba gratis 14 días · No se cobra hasta el día 15 · Cancela cuando quieras',
     },
     problema: {
       titulo: '¿Te suena familiar?',
@@ -435,7 +435,7 @@ const COPY = {
     ctaFinal: {
       h2:           'Deja de perder trabajos por [acento]cotizaciones lentas[/acento]',
       futurePacing: 'En dos semanas, cada cliente recibe una cotización profesional en 30 segundos. En un mes, ya ganaste trabajos que antes perdías.',
-      recap:        'Prueba gratis 14 días · Garantía 7 días · Sin tarjeta de crédito',
+      recap:        'Prueba gratis 14 días · No se cobra hasta el día 15 · Cancela cuando quieras',
       ps:           'P.D. — [b]El Voice Price Book usa tus tarifas reales, no estimados genéricos.[/b] Configúralo una vez. Cotiza más rápido que cualquiera — siempre.',
     },
     footer: {

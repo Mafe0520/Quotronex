@@ -287,7 +287,7 @@ function StepDescribe({
         onChange={e => setDesc(e.target.value)}
         rows={5}
         placeholder={`Ej. Pintar sala y comedor, paredes solamente, aprox. 400 sq ft. Color blanco, 2 manos.`}
-        className="w-full rounded-[var(--radius-button)] border border-[var(--border-subtle)] bg-[var(--surface)] px-4 py-3 text-base text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_20%,transparent)] resize-none"
+        className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface)] px-4 py-3 text-base text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_20%,transparent)] resize-none"
       />
 
       <div className="mt-3 flex items-center gap-3 rounded-xl bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] border border-[color-mix(in_oklab,var(--accent)_12%,transparent)] px-4 py-3">
@@ -339,7 +339,7 @@ function StepLoading({ onDone }: { onDone: () => void }) {
 
   return (
     <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={T}
-      className="flex flex-col items-center gap-8 py-16 text-center"
+      className="flex flex-1 flex-col items-center justify-center gap-8 py-16 text-center"
     >
       <div className="relative flex size-24 items-center justify-center">
         <svg viewBox="0 0 96 96" className="absolute inset-0" width="96" height="96">
@@ -388,19 +388,20 @@ function StepPreview({
   const misc      = total - labor - materials;
 
   return (
-    <motion.div key="preview" initial={{ opacity: 0, x: 32 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={T}>
-      <motion.div
-        className="mb-4 flex items-center gap-2"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 18, delay: 0.05 }}
-      >
-        <CheckCircle2 size={20} color="var(--accent-2)" />
-        <span className="text-sm font-semibold text-[var(--accent-2)]">¡Tu cotización está lista!</span>
-      </motion.div>
+    <motion.div key="preview" initial={{ opacity: 0, x: 32 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={T} className="flex flex-1 flex-col justify-between gap-6">
+      <div className="flex flex-col gap-4">
+        <motion.div
+          className="flex items-center gap-2"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 18, delay: 0.05 }}
+        >
+          <CheckCircle2 size={20} color="var(--accent-2)" />
+          <span className="text-sm font-semibold text-[var(--accent-2)]">¡Tu cotización está lista!</span>
+        </motion.div>
 
-      {/* Quote card */}
-      <div className="overflow-hidden rounded-[var(--radius-card)] border border-[var(--border-subtle)] bg-[var(--surface)] shadow-[var(--shadow-2)]">
+        {/* Quote card */}
+        <div className="overflow-hidden rounded-[var(--radius-card)] border border-[var(--border-subtle)] bg-[var(--surface)] shadow-[var(--shadow-2)]">
         <div className="border-b border-[var(--border-subtle)] px-5 py-4">
           <div className="flex items-center justify-between">
             <div>
@@ -417,7 +418,7 @@ function StepPreview({
           <p className="mt-1 text-xs text-[var(--text-secondary)] line-clamp-2">{desc}</p>
         </div>
 
-        <div className="px-5 py-4 flex flex-col gap-2">
+        <div className="flex flex-col gap-2 px-5 py-4">
           {[
             { label: 'Mano de obra', amt: labor     },
             { label: 'Materiales',   amt: materials  },
@@ -448,12 +449,14 @@ function StepPreview({
           </div>
         </div>
       </div>
+      </div>
 
+      <div className="flex flex-col gap-3">
       <motion.button
         whileTap={{ scale: 0.97 }}
         disabled={saving}
         onClick={async () => { setSaving(true); await onSave(); }}
-        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-base font-bold text-[var(--bg)] [box-shadow:var(--shadow-cta)] disabled:opacity-60 [touch-action:manipulation]"
+        className="flex h-14 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-base font-bold text-[var(--bg)] [box-shadow:var(--shadow-cta)] disabled:opacity-60 [touch-action:manipulation]"
       >
         {saving ? (
           <svg className="size-5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -462,14 +465,15 @@ function StepPreview({
           </svg>
         ) : 'Activar y enviar →'}
       </motion.button>
-      <p className="mt-3 text-center text-xs text-[var(--text-tertiary)]">Prueba gratis 14 días · Sin tarjeta de crédito</p>
+      <p className="text-center text-xs text-[var(--text-tertiary)]">Prueba gratis 14 días · No se cobra hasta el día 15 · Cancela cuando quieras</p>
       <button
         onClick={onBack}
-        className="mt-3 flex w-full items-center justify-center gap-1 text-xs text-[var(--text-tertiary)] [touch-action:manipulation]"
+        className="flex w-full items-center justify-center gap-1 text-xs text-[var(--text-tertiary)] [touch-action:manipulation]"
       >
         <ChevronLeft size={12} />
         Volver y editar
       </button>
+      </div>
     </motion.div>
   );
 }
@@ -524,8 +528,8 @@ export function OnboardingFlow() {
       )}
 
       {/* Contenido scrollable */}
-      <main className="flex-1 overflow-y-auto px-6 pt-2 pb-12">
-        <div className="mx-auto max-w-md">
+      <main className="flex flex-1 flex-col overflow-y-auto px-6 pt-2 pb-12">
+        <div className="mx-auto flex w-full max-w-md flex-1 flex-col">
           <AnimatePresence mode="wait">
             {step === 'trade' && (
               <StepTrade onNext={t => { setTrade(t); setStep('pricebook'); }} />

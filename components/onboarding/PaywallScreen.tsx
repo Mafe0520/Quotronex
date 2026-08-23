@@ -181,7 +181,7 @@ export function PaywallScreen() {
               Garantía total de devolución de 7 días
             </p>
             <p className="text-xs text-[var(--text-tertiary)]">
-              Sin tarjeta de crédito obligatoria hoy · Cancela cuando quieras
+              Prueba 14 días gratis · No se cobra hasta el día 15 · Cancela cuando quieras
             </p>
             <p className="text-xs text-[var(--text-tertiary)] mt-1">
               $0 cobrados hoy · Cargo después del {trialEnd}

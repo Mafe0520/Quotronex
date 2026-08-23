@@ -96,29 +96,22 @@ export function Oferta({
           </h2>
         </motion.div>
 
-        {/* Ancla emocional — conecta precio con el dolor */}
-        <motion.div
-          variants={item}
-          className="mx-auto max-w-xl mb-8"
-        >
-          <div className="rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--accent)_20%,transparent)] bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] px-6 py-5">
-            <div className="grid grid-cols-2 gap-4 text-center">
-              <div className="flex flex-col gap-1">
-                <span className="text-2xl font-black text-[var(--error)] [font-family:var(--font-display)] tabular-nums">
-                  {es ? '$6K–$36K' : '$6K–$36K'}
-                </span>
-                <span className="text-xs text-[var(--text-tertiary)] leading-snug">
-                  {es ? 'que pierdes al año cotizando tarde' : 'lost per year from slow quotes'}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1 border-l border-[var(--border-subtle)] pl-4">
-                <span className="text-2xl font-black text-[var(--accent)] [font-family:var(--font-display)] tabular-nums">
-                  $1.07
-                </span>
-                <span className="text-xs text-[var(--text-tertiary)] leading-snug">
-                  {es ? 'al día con Quotronex' : 'per day with Quotronex'}
-                </span>
-              </div>
+        {/* Ancla emocional — comparación genérica vs campo */}
+        <motion.div variants={item} className="mx-auto max-w-xl mb-8">
+          <div className="rounded-[var(--radius-card)] border border-[var(--border-subtle)] bg-[var(--surface)] divide-y divide-[var(--border-subtle)] overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3.5">
+              <span className="text-sm text-[var(--text-tertiary)]">
+                {es ? 'Otras apps de servicio de campo' : 'Other field service apps'}
+              </span>
+              <span className="text-sm font-semibold text-[var(--text-secondary)] tabular-nums">
+                {es ? '$69–$149/mes · cobran por función' : '$69–$149/mo · charge per feature'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between px-5 py-3.5 bg-[color-mix(in_oklab,var(--accent)_5%,transparent)]">
+              <span className="text-sm font-bold text-[var(--text-primary)]">Quotronex</span>
+              <span className="text-sm font-bold text-[var(--accent)] tabular-nums">
+                {es ? '$32/mes · todo incluido' : '$32/mo · everything included'}
+              </span>
             </div>
           </div>
         </motion.div>
@@ -200,8 +193,8 @@ export function Oferta({
                   <ShieldCheck className="size-4 text-[var(--accent)]" strokeWidth={2} />
                   <span>
                     {es
-                      ? 'Prueba 14 días gratis · Garantía 30 días · Sin tarjeta'
-                      : '14-day free trial · 30-day guarantee · No card'}
+                      ? 'Prueba 14 días gratis · No se cobra hasta el día 15 · Cancela cuando quieras'
+                      : '14-day free trial · No charge until day 15 · Cancel anytime'}
                   </span>
                 </div>
               </div>
