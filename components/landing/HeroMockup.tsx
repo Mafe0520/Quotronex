@@ -262,7 +262,7 @@ export function HeroMockup() {
                       className="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] py-2.5 text-sm font-bold text-[var(--bg)] [box-shadow:var(--shadow-cta)] [touch-action:manipulation]"
                     >
                       <Send className="size-4" strokeWidth={2.5} />
-                      Enviar por WhatsApp
+                      Enviar por email
                     </motion.button>
                     <motion.button
                       whileTap={{ scale: 0.97 }}

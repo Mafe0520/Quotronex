@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 const FEATURES = [
   'Cotiza con voz en menos de 1 minuto — ilimitado',
   'Español e inglés incluidos para oficina y campo',
-  'Envía por WhatsApp/SMS, firma digital y cobra',
+  'Envía por email o SMS, firma digital y cobra',
   'Asigna trabajos a cuadrillas de hasta 15 trabajadores',
   'Precio fijo y predecible. Sin add-ons ocultos',
 ];

@@ -172,7 +172,7 @@ const COPY = {
         },
         {
           id: 'sent', label: 'Sent', badge: 'Delivered',
-          card: { titulo: 'Client gets it instantly', detalle: 'One tap sends the quote by WhatsApp, email, or link. The client sees it before you start the drive home.', meta: '✓ Read receipts built in', },
+          card: { titulo: 'Client gets it instantly', detalle: 'One tap sends the quote by email, SMS, or link. The client sees it before you start the drive home.', meta: '✓ Read receipts built in', },
         },
         {
           id: 'signed', label: 'Signed', badge: 'Approved',
@@ -379,7 +379,7 @@ const COPY = {
         },
         {
           id: 'enviado', label: 'Enviado', badge: 'Entregado',
-          card: { titulo: 'El cliente lo recibe al instante', detalle: 'Un toque envía la cotización por WhatsApp, correo o enlace. El cliente la ve antes de que salgas.', meta: '✓ Confirmación de lectura incluida', },
+          card: { titulo: 'El cliente lo recibe al instante', detalle: 'Un toque envía la cotización por correo, SMS o enlace. El cliente la ve antes de que salgas.', meta: '✓ Confirmación de lectura incluida', },
         },
         {
           id: 'firmado', label: 'Firmado', badge: 'Aprobado',
