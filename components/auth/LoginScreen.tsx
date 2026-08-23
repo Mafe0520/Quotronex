@@ -131,49 +131,52 @@ function LoginForm() {
           <h1 className="text-2xl font-bold leading-tight [font-family:var(--font-display)] text-[var(--text-primary)]">
             {mode === 'signup' ? tr.auth.signupTitle : tr.auth.loginTitle}
           </h1>
-          <p className="mt-1 text-sm text-[var(--text-secondary)]">
-            {mode === 'signup' ? tr.auth.signupSub : tr.auth.loginSub}
-          </p>
+          {mode === 'login' && (
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">{tr.auth.loginSub}</p>
+          )}
         </motion.div>
 
-        {/* Toggle signup / login */}
-        <div className="mt-6 flex rounded-xl bg-[var(--surface)] p-1">
-          {(['signup', 'login'] as const).map(m => (
-            <button
-              key={m}
+        {/* Toggle — solo visible en login */}
+        {mode === 'login' && (
+          <div className="mt-6 flex rounded-xl bg-[var(--surface)] p-1">
+            {(['signup', 'login'] as const).map(m => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => { setMode(m); setError(''); }}
+                className={[
+                  'flex-1 rounded-lg py-2 text-sm font-semibold transition-[color,background-color,box-shadow]',
+                  mode === m
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-[var(--text-tertiary)]',
+                ].join(' ')}
+              >
+                {m === 'signup' ? tr.auth.toggleSignup : tr.auth.toggleLogin}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Google OAuth + divider — solo en login */}
+        {mode === 'login' && (
+          <>
+            <motion.button
               type="button"
-              onClick={() => { setMode(m); setError(''); }}
-              className={[
-                'flex-1 rounded-lg py-2 text-sm font-semibold transition-[color,background-color,box-shadow]',
-                mode === m
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-[var(--text-tertiary)]',
-              ].join(' ')}
+              whileTap={{ scale: 0.97 }}
+              className="mt-5 flex h-13 w-full items-center justify-center gap-3 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white text-sm font-semibold text-gray-900 shadow-sm [touch-action:manipulation]"
             >
-              {m === 'signup' ? tr.auth.toggleSignup : tr.auth.toggleLogin}
-            </button>
-          ))}
-        </div>
-
-        {/* Google OAuth */}
-        <motion.button
-          type="button"
-          whileTap={{ scale: 0.97 }}
-          className="mt-5 flex h-13 w-full items-center justify-center gap-3 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white text-sm font-semibold text-gray-900 shadow-sm [touch-action:manipulation]"
-        >
-          {/* Google mark — monochrome para cumplir tokens del SO */}
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path fillRule="evenodd" clipRule="evenodd" d="M23.04 12.26c0-.85-.08-1.67-.22-2.46H12v4.65h6.19a5.29 5.29 0 0 1-2.3 3.47v2.88h3.72c2.18-2 3.43-4.96 3.43-8.54ZM12 24c3.11 0 5.72-1.03 7.62-2.79l-3.72-2.89c-1.03.69-2.35 1.1-3.9 1.1-3 0-5.54-2.02-6.45-4.74H1.72v2.98A11.5 11.5 0 0 0 12 24ZM5.55 14.68A6.9 6.9 0 0 1 5.19 12c0-.93.16-1.83.36-2.68V6.34H1.72A11.5 11.5 0 0 0 .5 12c0 1.86.44 3.61 1.22 5.16l3.83-2.48ZM12 4.58c1.69 0 3.2.58 4.4 1.72l3.3-3.3C17.71 1.08 15.1 0 12 0A11.5 11.5 0 0 0 1.72 6.34l3.83 2.98C6.46 6.6 9 4.58 12 4.58Z" fill="currentColor" opacity=".7"/>
-          </svg>
-          {tr.auth.google}
-        </motion.button>
-
-        {/* Divider */}
-        <div className="mt-5 flex items-center gap-3">
-          <div className="h-px flex-1 bg-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)]" />
-          <span className="text-xs text-[var(--text-tertiary)]">{tr.auth.orWith}</span>
-          <div className="h-px flex-1 bg-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)]" />
-        </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path fillRule="evenodd" clipRule="evenodd" d="M23.04 12.26c0-.85-.08-1.67-.22-2.46H12v4.65h6.19a5.29 5.29 0 0 1-2.3 3.47v2.88h3.72c2.18-2 3.43-4.96 3.43-8.54ZM12 24c3.11 0 5.72-1.03 7.62-2.79l-3.72-2.89c-1.03.69-2.35 1.1-3.9 1.1-3 0-5.54-2.02-6.45-4.74H1.72v2.98A11.5 11.5 0 0 0 12 24ZM5.55 14.68A6.9 6.9 0 0 1 5.19 12c0-.93.16-1.83.36-2.68V6.34H1.72A11.5 11.5 0 0 0 .5 12c0 1.86.44 3.61 1.22 5.16l3.83-2.48ZM12 4.58c1.69 0 3.2.58 4.4 1.72l3.3-3.3C17.71 1.08 15.1 0 12 0A11.5 11.5 0 0 0 1.72 6.34l3.83 2.98C6.46 6.6 9 4.58 12 4.58Z" fill="currentColor" opacity=".7"/>
+              </svg>
+              {tr.auth.google}
+            </motion.button>
+            <div className="mt-5 flex items-center gap-3">
+              <div className="h-px flex-1 bg-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)]" />
+              <span className="text-xs text-[var(--text-tertiary)]">{tr.auth.orWith}</span>
+              <div className="h-px flex-1 bg-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)]" />
+            </div>
+          </>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} noValidate className="mt-5 flex flex-col gap-3">
