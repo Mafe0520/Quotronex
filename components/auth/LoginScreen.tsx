@@ -3,7 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, MailCheck } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, MailCheck, User } from 'lucide-react';
 import { signUp, signIn, resendConfirmation } from '@/app/actions/auth';
 import { useT } from '@/lib/i18n';
 
@@ -17,6 +17,7 @@ function LoginForm() {
   const tr = useT();
   const urlError = searchParams.get('error');
   const [mode, setMode] = useState<'signup' | 'login'>('signup');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
@@ -31,23 +32,24 @@ function LoginForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
-    if (!email.trim()) { setError(tr.auth.nameRequired); return; }
+
+    if (mode === 'signup') {
+      if (!name.trim()) { setError('Ingresa tu nombre.'); return; }
+      if (!email.trim()) { setError(tr.auth.nameRequired); return; }
+      // Stripe checkout — pendiente de implementar
+      setLoading(true);
+      router.push(`/checkout?plan=${plan ?? 'annual'}&email=${encodeURIComponent(email.trim())}&name=${encodeURIComponent(name.trim())}`);
+      return;
+    }
+
     if (password.length < 8) { setError(tr.auth.passwordShort); return; }
     setLoading(true);
 
-    const result = mode === 'signup'
-      ? await signUp(email.trim(), password)
-      : await signIn(email.trim(), password);
+    const result = await signIn(email.trim(), password);
 
     if (result.error) {
       setError(result.error);
       setLoading(false);
-      return;
-    }
-
-    if ('confirmationRequired' in result && result.confirmationRequired) {
-      setLoading(false);
-      setPendingConfirmation(true);
       return;
     }
 
@@ -175,6 +177,21 @@ function LoginForm() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} noValidate className="mt-5 flex flex-col gap-3">
+          {/* Nombre — solo en signup */}
+          {mode === 'signup' && (
+            <div className="relative">
+              <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+              <input
+                type="text"
+                autoComplete="name"
+                placeholder={tr.auth.namePh}
+                value={name}
+                onChange={e => setName(e.target.value)}
+                className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white pl-10 pr-4 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
+              />
+            </div>
+          )}
+
           {/* Email */}
           <div className="relative">
             <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
@@ -188,26 +205,28 @@ function LoginForm() {
             />
           </div>
 
-          {/* Password */}
-          <div className="relative">
-            <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
-            <input
-              type={showPw ? 'text' : 'password'}
-              autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
-              placeholder={mode === 'signup' ? tr.auth.passwordNew : tr.auth.passwordCurrent}
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white pl-10 pr-11 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPw(v => !v)}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]"
-              aria-label={showPw ? tr.auth.hidePw : tr.auth.showPw}
-            >
-              {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          </div>
+          {/* Password — solo en login */}
+          {mode === 'login' && (
+            <div className="relative">
+              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+              <input
+                type={showPw ? 'text' : 'password'}
+                autoComplete="current-password"
+                placeholder={tr.auth.passwordCurrent}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white pl-10 pr-11 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPw(v => !v)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]"
+                aria-label={showPw ? tr.auth.hidePw : tr.auth.showPw}
+              >
+                {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          )}
 
           {/* Forgot password — solo en login */}
           {mode === 'login' && (
