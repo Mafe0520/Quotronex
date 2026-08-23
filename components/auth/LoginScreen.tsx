@@ -144,7 +144,7 @@ function LoginForm() {
               className={[
                 'flex-1 rounded-lg py-2 text-sm font-semibold transition-[color,background-color,box-shadow]',
                 mode === m
-                  ? 'bg-white text-[var(--text-primary)] shadow-sm'
+                  ? 'bg-white text-gray-900 shadow-sm'
                   : 'text-[var(--text-tertiary)]',
               ].join(' ')}
             >
@@ -157,7 +157,7 @@ function LoginForm() {
         <motion.button
           type="button"
           whileTap={{ scale: 0.97 }}
-          className="mt-5 flex h-13 w-full items-center justify-center gap-3 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white text-sm font-semibold text-[var(--text-primary)] shadow-sm [touch-action:manipulation]"
+          className="mt-5 flex h-13 w-full items-center justify-center gap-3 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white text-sm font-semibold text-gray-900 shadow-sm [touch-action:manipulation]"
         >
           {/* Google mark — monochrome para cumplir tokens del SO */}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -184,7 +184,7 @@ function LoginForm() {
               placeholder={tr.auth.emailPh}
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white pl-10 pr-4 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
+              className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white pl-10 pr-4 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
             />
           </div>
 
@@ -197,7 +197,7 @@ function LoginForm() {
               placeholder={mode === 'signup' ? tr.auth.passwordNew : tr.auth.passwordCurrent}
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white pl-10 pr-11 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
+              className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white pl-10 pr-11 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
             />
             <button
               type="button"
