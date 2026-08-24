@@ -5,14 +5,24 @@ import { useState, useMemo } from 'react';
 import { Check, ShieldCheck, Sparkles, ChevronLeft, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { PLAN_LIST, type PlanId } from '@/lib/plans';
+import { useT } from '@/lib/i18n';
+import { useLang } from '@/app/lang-context';
 
 const T = { duration: 0.22, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] };
 
-const PLAN_FEATURES: Record<PlanId, string[]> = {
-  solo:     ['1 usuario', 'Cotizaciones y facturas ilimitadas', 'Catálogo de precios', 'Vista pública para clientes', 'Email desde tu cuenta'],
-  crew:     ['Hasta 3 usuarios', 'Todo lo del plan Solo', 'Gestión de trabajos y cuadrilla', 'Registro de horas', 'Gastos y recibos con IA'],
-  business: ['Hasta 7 usuarios', 'Todo lo del plan Crew', 'Órdenes de cambio', 'Fotos antes/durante/después', 'Soporte prioritario'],
-  pro_team: ['Hasta 15 usuarios', 'Todo lo del plan Business', 'Acceso anticipado a nuevas funciones', 'Onboarding personalizado', 'Soporte dedicado'],
+const PLAN_FEATURES: Record<'en' | 'es', Record<PlanId, string[]>> = {
+  en: {
+    solo:     ['1 user', 'Unlimited quotes & invoices', 'Price book', 'Public view for clients', 'Email from your account'],
+    crew:     ['Up to 3 users', 'Everything in Solo', 'Job & crew management', 'Time tracking', 'AI-powered expenses & receipts'],
+    business: ['Up to 7 users', 'Everything in Crew', 'Change orders', 'Before/during/after photos', 'Priority support'],
+    pro_team: ['Up to 15 users', 'Everything in Business', 'Early access to new features', 'Personalized onboarding', 'Dedicated support'],
+  },
+  es: {
+    solo:     ['1 usuario', 'Cotizaciones y facturas ilimitadas', 'Catálogo de precios', 'Vista pública para clientes', 'Email desde tu cuenta'],
+    crew:     ['Hasta 3 usuarios', 'Todo lo del plan Solo', 'Gestión de trabajos y cuadrilla', 'Registro de horas', 'Gastos y recibos con IA'],
+    business: ['Hasta 7 usuarios', 'Todo lo del plan Crew', 'Órdenes de cambio', 'Fotos antes/durante/después', 'Soporte prioritario'],
+    pro_team: ['Hasta 15 usuarios', 'Todo lo del plan Business', 'Acceso anticipado a nuevas funciones', 'Onboarding personalizado', 'Soporte dedicado'],
+  },
 };
 
 function fmt(cents: number) {
@@ -21,14 +31,17 @@ function fmt(cents: number) {
 
 export function PaywallScreen() {
   const router = useRouter();
+  const t = useT();
+  const pw = t.paywall;
+  const { lang } = useLang();
   const [billing, setBilling] = useState<'annual' | 'monthly'>('annual');
-  const [selectedPlan, setSelectedPlan] = useState<PlanId>('crew');
+  const [selectedPlan, setSelectedPlan] = useState<PlanId>('solo');
   const [navigating, setNavigating] = useState(false);
 
   const trialEnd = useMemo(() => {
     const d = new Date(); d.setDate(d.getDate() + 14);
-    return d.toLocaleDateString('es-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  }, []);
+    return d.toLocaleDateString(lang === 'en' ? 'en-US' : 'es-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }, [lang]);
 
   const plan = PLAN_LIST.find(p => p.id === selectedPlan)!;
   const monthlyEquiv = billing === 'annual'
@@ -62,15 +75,15 @@ export function PaywallScreen() {
         {/* Hero */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={T} className="mb-5">
           <h1 className="text-3xl font-black tracking-tight text-[var(--text-primary)] leading-[1.08] mb-2">
-            Elige tu plan.<br />
-            <span className="text-[var(--accent)]">14 días gratis.</span>
+            {pw.title}<br />
+            <span className="text-[var(--accent)]">{pw.titleAccent}</span>
           </h1>
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">
-            $0 cobrados hoy. Cancela antes del día 15 y no se te cobra nada.
+            {pw.subtitle}
           </p>
           <div className="inline-flex items-center gap-1.5 bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] border border-[color-mix(in_oklab,var(--accent)_25%,transparent)] px-3 py-1 rounded-full text-xs font-bold text-[var(--accent)]">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>+400 contratistas en EE. UU.</span>
+            <span>{pw.badge}</span>
           </div>
         </motion.div>
 
@@ -82,9 +95,9 @@ export function PaywallScreen() {
               className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${billing === b ? 'bg-[var(--accent)] text-white shadow-sm' : 'text-[var(--text-secondary)]'}`}>
               {b === 'annual' ? (
                 <span className="flex items-center justify-center gap-1.5">
-                  Anual <span className="text-[10px] font-black bg-white/20 px-1.5 py-0.5 rounded-full">2 meses gratis</span>
+                  {pw.annual} <span className="text-[10px] font-black bg-white/20 px-1.5 py-0.5 rounded-full">{pw.twoMonthsFree}</span>
                 </span>
-              ) : 'Mensual'}
+              ) : pw.monthly}
             </button>
           ))}
         </motion.div>
@@ -116,14 +129,14 @@ export function PaywallScreen() {
                   </div>
                   <div className="flex items-center gap-1 text-xs text-[var(--text-tertiary)]">
                     <Users size={11} />
-                    <span>{p.includedSeats === 1 ? '1 usuario' : `hasta ${p.includedSeats}`}</span>
+                    <span>{p.includedSeats === 1 ? pw.user : `${pw.upTo} ${p.includedSeats}`}</span>
                   </div>
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className={`text-2xl font-black [font-family:var(--font-display)] ${isSelected ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
                     ${mEquiv}
                   </span>
-                  <span className="text-xs text-[var(--text-tertiary)]">/mes</span>
+                  <span className="text-xs text-[var(--text-tertiary)]">{pw.perMonth}</span>
                   {billing === 'annual' && (
                     <span className="text-xs text-[var(--accent-2)] font-bold ml-1">
                       · ${p.annualPriceCents / 100}/año
@@ -141,7 +154,7 @@ export function PaywallScreen() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden">
                       <div className="mt-3 flex flex-col gap-1.5 border-t border-[color-mix(in_oklab,var(--text-tertiary)_12%,transparent)] pt-3">
-                        {PLAN_FEATURES[p.id].map((f, i) => (
+                        {PLAN_FEATURES[lang][p.id].map((f, i) => (
                           <div key={i} className="flex items-center gap-2 text-xs text-[var(--text-primary)]">
                             <Check size={12} className="text-[var(--accent)] shrink-0" strokeWidth={3} />
                             {f}
@@ -162,8 +175,8 @@ export function PaywallScreen() {
           <div className="mb-3 text-center">
             <p className="text-xs text-[var(--text-tertiary)]">
               {billing === 'annual'
-                ? `${plan.name} · $${monthlyEquiv}/mes · $${annualTotal}/año · ahorras $${savings}`
-                : `${plan.name} · $${monthlyEquiv}/mes · cancela cuando quieras`}
+                ? pw.annualSummary(plan.name, monthlyEquiv, annualTotal, savings)
+                : pw.monthlySummary(plan.name, monthlyEquiv)}
             </p>
           </div>
 
@@ -178,22 +191,22 @@ export function PaywallScreen() {
                 <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity=".3" />
                 <path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
               </svg>
-            ) : <>Empezar gratis 14 días →</>}
+            ) : <>{pw.cta}</>}
           </motion.button>
 
           <div className="text-center mt-3 flex flex-col gap-1">
             <p className="text-xs text-[var(--text-secondary)] flex items-center justify-center gap-1 font-medium">
               <ShieldCheck className="w-3.5 h-3.5 text-[var(--accent-2)]" />
-              14 días gratis · $0 hoy · Cancela antes del {trialEnd}
+              {pw.shield} {trialEnd}
             </p>
             <p className="text-xs text-[var(--text-tertiary)]">
-              Después de tu prueba, tu plan comienza automáticamente.
+              {pw.afterTrial}
             </p>
           </div>
 
           <div className="mt-6 flex justify-center">
             <a href="/app" className="text-xs text-[var(--text-tertiary)] underline underline-offset-2">
-              Ahora no, continuar sin plan
+              {pw.skipLink}
             </a>
           </div>
         </motion.div>
