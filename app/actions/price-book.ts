@@ -19,14 +19,17 @@ function parseItem(formData: FormData) {
   const trade = (formData.get('trade') as string ?? '').trim() || null;
   const description = (formData.get('description') as string ?? '').trim() || null;
   const is_optional = formData.get('is_optional') === 'on';
+  const item_type = (formData.get('item_type') as string) || 'service';
+  const taxStr = (formData.get('tax_rate_pct') as string ?? '').trim();
+  const tax_rate_pct = taxStr ? parseFloat(taxStr) : null;
   const price = parseFloat(priceStr);
-  return { name, price, unit, trade, description, is_optional };
+  return { name, price, unit, trade, description, is_optional, item_type, tax_rate_pct };
 }
 
 export async function addPriceBookItem(formData: FormData): Promise<{ error?: string }> {
   const supabase = await createClient();
   const businessId = await getBusinessId();
-  const { name, price, unit, trade, description, is_optional } = parseItem(formData);
+  const { name, price, unit, trade, description, is_optional, item_type, tax_rate_pct } = parseItem(formData);
 
   if (!name) return { error: 'El nombre es requerido' };
   if (isNaN(price) || price < 0) return { error: 'Precio inválido' };
@@ -39,6 +42,8 @@ export async function addPriceBookItem(formData: FormData): Promise<{ error?: st
     trade,
     description,
     is_optional,
+    item_type,
+    tax_rate_pct,
     active: true,
     favorite: false,
   });
@@ -51,7 +56,7 @@ export async function addPriceBookItem(formData: FormData): Promise<{ error?: st
 
 export async function updatePriceBookItem(id: string, prevState: string | null, formData: FormData): Promise<string | null> {
   const supabase = await createClient();
-  const { name, price, unit, trade, description, is_optional } = parseItem(formData);
+  const { name, price, unit, trade, description, is_optional, item_type, tax_rate_pct } = parseItem(formData);
 
   if (!name) return 'El nombre es requerido';
   if (isNaN(price) || price < 0) return 'Precio inválido';
@@ -63,6 +68,8 @@ export async function updatePriceBookItem(id: string, prevState: string | null, 
     trade,
     description,
     is_optional,
+    item_type,
+    tax_rate_pct,
   }).eq('id', id);
 
   if (error) return error.message;

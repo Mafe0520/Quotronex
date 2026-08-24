@@ -770,6 +770,8 @@ export type Database = {
           favorite: boolean
           id: string
           is_optional: boolean
+          item_type: string
+          tax_rate_pct: number | null
           last_used_at: string | null
           name: string
           price_cents: number
@@ -786,6 +788,8 @@ export type Database = {
           favorite?: boolean
           id?: string
           is_optional?: boolean
+          item_type?: string
+          tax_rate_pct?: number | null
           last_used_at?: string | null
           name: string
           price_cents: number
@@ -802,6 +806,8 @@ export type Database = {
           favorite?: boolean
           id?: string
           is_optional?: boolean
+          item_type?: string
+          tax_rate_pct?: number | null
           last_used_at?: string | null
           name?: string
           price_cents?: number

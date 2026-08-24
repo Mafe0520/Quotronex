@@ -12,7 +12,7 @@ export default async function EditPriceBookItemPage({ params }: { params: Promis
 
   const { data } = await supabase
     .from('price_book_items')
-    .select('id, name, price_cents, unit, trade, description, favorite, is_optional, active, archived_at')
+    .select('id, name, price_cents, unit, trade, description, favorite, is_optional, item_type, tax_rate_pct, active, archived_at')
     .eq('id', id)
     .single();
 

@@ -18,6 +18,8 @@ type Item = {
   active: boolean;
   archived_at: string | null;
   is_optional: boolean;
+  item_type: string;
+  tax_rate_pct: number | null;
 };
 
 interface Props {
@@ -163,6 +165,26 @@ export function PriceBookItemForm(props: Props | EditProps) {
                 placeholder="Detalles del servicio, materiales incluidos..."
                 className="w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] pl-10 pr-4 pt-3 pb-3 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] resize-none" />
             </div>
+          </div>
+
+          {/* Item type */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">Tipo de ítem</label>
+            <select name="item_type" defaultValue={item?.item_type ?? 'service'}
+              className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]">
+              <option value="service">Servicio</option>
+              <option value="labor">Mano de obra</option>
+              <option value="material">Material</option>
+            </select>
+          </div>
+
+          {/* Tax rate */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">Impuesto (%)</label>
+            <input name="tax_rate_pct" type="number" step="0.01" min="0" max="100"
+              defaultValue={item?.tax_rate_pct ?? ''}
+              placeholder="Ej. 8.25 — vacío = sin impuesto"
+              className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]" />
           </div>
 
           {/* Optional item toggle */}

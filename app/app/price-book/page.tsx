@@ -16,7 +16,7 @@ export default async function PriceBookPage() {
   const items = businessId
     ? (await supabase
         .from('price_book_items')
-        .select('id, name, price_cents, unit, trade, description, active, favorite, is_optional, archived_at, last_used_at')
+        .select('id, name, price_cents, unit, trade, description, active, favorite, is_optional, item_type, tax_rate_pct, archived_at, last_used_at')
         .eq('business_id', businessId)
         .order('favorite', { ascending: false })
         .order('name')

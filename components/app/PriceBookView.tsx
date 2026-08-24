@@ -18,6 +18,8 @@ type Item = {
   active: boolean;
   favorite: boolean;
   is_optional: boolean;
+  item_type: string;
+  tax_rate_pct: number | null;
   archived_at: string | null;
   last_used_at: string | null;
 };
@@ -51,7 +53,13 @@ function ItemRow({ item }: { item: Item }) {
         <div className="flex items-center gap-2">
           {item.trade && <span className="text-[10px] font-semibold text-[var(--text-tertiary)]">{item.trade}</span>}
           {item.unit && <span className="text-[10px] text-[var(--text-tertiary)]">· por {item.unit}</span>}
+          {item.item_type !== 'service' && (
+            <span className={`text-[10px] font-semibold ${item.item_type === 'labor' ? 'text-blue-500' : 'text-green-600'}`}>
+              {item.item_type === 'labor' ? 'Labor' : 'Material'}
+            </span>
+          )}
           {item.is_optional && <span className="text-[10px] font-semibold text-amber-500">Opcional</span>}
+          {item.tax_rate_pct != null && <span className="text-[10px] text-[var(--text-tertiary)]">+{item.tax_rate_pct}% imp.</span>}
         </div>
         {item.description && (
           <p className="mt-0.5 truncate text-[10px] text-[var(--text-tertiary)]">{item.description}</p>
