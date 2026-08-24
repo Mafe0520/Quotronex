@@ -17,6 +17,7 @@ type Item = {
   favorite: boolean;
   active: boolean;
   archived_at: string | null;
+  is_optional: boolean;
 };
 
 interface Props {
@@ -163,6 +164,20 @@ export function PriceBookItemForm(props: Props | EditProps) {
                 className="w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] pl-10 pr-4 pt-3 pb-3 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] resize-none" />
             </div>
           </div>
+
+          {/* Optional item toggle */}
+          <label className="flex items-center justify-between rounded-2xl bg-[var(--surface)] px-4 py-3 cursor-pointer">
+            <div>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">Ítem opcional</p>
+              <p className="text-xs text-[var(--text-tertiary)]">El cliente puede aceptar sin este ítem</p>
+            </div>
+            <input
+              type="checkbox"
+              name="is_optional"
+              defaultChecked={item?.is_optional ?? false}
+              className="h-5 w-5 rounded accent-[var(--accent)]"
+            />
+          </label>
 
           {error && (
             <p className="rounded-[var(--radius-button)] bg-red-50 px-3 py-2 text-xs text-red-600">{error}</p>

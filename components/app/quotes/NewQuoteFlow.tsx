@@ -13,7 +13,7 @@ import { generateEstimate, type SuggestedItem } from '@/app/actions/ai'
 const T = { duration: 0.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }
 
 type Client = { id: string; name: string; email: string | null; phone: string | null }
-type PriceBookItem = { id: string; name: string; price_cents: number; unit: string | null; trade: string | null; favorite: boolean }
+type PriceBookItem = { id: string; name: string; price_cents: number; unit: string | null; trade: string | null; favorite: boolean; is_optional?: boolean }
 
 function fmt(cents: number) {
   return `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -394,7 +394,7 @@ function StepItems({
   const total = items.reduce((s, i) => s + i.qty * i.unit_price_cents, 0)
 
   function addFromBook(p: PriceBookItem) {
-    onAdd({ name: p.name, qty: 1, unit_price_cents: p.price_cents, unit: p.unit ?? undefined, price_book_item_id: p.id })
+    onAdd({ name: p.name, qty: 1, unit_price_cents: p.price_cents, unit: p.unit ?? undefined, price_book_item_id: p.id, optional: p.is_optional ?? false })
   }
 
   function addManual() {

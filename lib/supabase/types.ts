@@ -757,6 +757,7 @@ export type Database = {
           description: string | null
           favorite: boolean
           id: string
+          is_optional: boolean
           last_used_at: string | null
           name: string
           price_cents: number
@@ -772,6 +773,7 @@ export type Database = {
           description?: string | null
           favorite?: boolean
           id?: string
+          is_optional?: boolean
           last_used_at?: string | null
           name: string
           price_cents: number
@@ -787,6 +789,7 @@ export type Database = {
           description?: string | null
           favorite?: boolean
           id?: string
+          is_optional?: boolean
           last_used_at?: string | null
           name?: string
           price_cents?: number

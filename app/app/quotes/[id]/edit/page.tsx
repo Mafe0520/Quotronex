@@ -13,7 +13,7 @@ export default async function EditQuotePage({ params }: { params: Promise<{ id: 
   const [{ data: quote }, { data: items }, { data: priceBook }] = await Promise.all([
     supabase.from('quotes').select('id, status, notes, expires_at, clients(id, name)').eq('id', id).single(),
     supabase.from('quote_items').select('id, name, description, qty, unit_price_cents, unit, price_book_item_id').eq('quote_id', id).order('sort_order'),
-    supabase.from('price_book_items').select('id, name, price_cents, unit, trade').is('archived_at', null).eq('active', true).order('name'),
+    supabase.from('price_book_items').select('id, name, price_cents, unit, trade, is_optional').is('archived_at', null).eq('active', true).order('name'),
   ]);
 
   if (!quote) notFound();

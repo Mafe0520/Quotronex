@@ -18,14 +18,15 @@ function parseItem(formData: FormData) {
   const unit = (formData.get('unit') as string ?? '').trim() || null;
   const trade = (formData.get('trade') as string ?? '').trim() || null;
   const description = (formData.get('description') as string ?? '').trim() || null;
+  const is_optional = formData.get('is_optional') === 'on';
   const price = parseFloat(priceStr);
-  return { name, price, unit, trade, description };
+  return { name, price, unit, trade, description, is_optional };
 }
 
 export async function addPriceBookItem(formData: FormData): Promise<{ error?: string }> {
   const supabase = await createClient();
   const businessId = await getBusinessId();
-  const { name, price, unit, trade, description } = parseItem(formData);
+  const { name, price, unit, trade, description, is_optional } = parseItem(formData);
 
   if (!name) return { error: 'El nombre es requerido' };
   if (isNaN(price) || price < 0) return { error: 'Precio inválido' };
@@ -37,6 +38,7 @@ export async function addPriceBookItem(formData: FormData): Promise<{ error?: st
     unit,
     trade,
     description,
+    is_optional,
     active: true,
     favorite: false,
   });
@@ -49,7 +51,7 @@ export async function addPriceBookItem(formData: FormData): Promise<{ error?: st
 
 export async function updatePriceBookItem(id: string, prevState: string | null, formData: FormData): Promise<string | null> {
   const supabase = await createClient();
-  const { name, price, unit, trade, description } = parseItem(formData);
+  const { name, price, unit, trade, description, is_optional } = parseItem(formData);
 
   if (!name) return 'El nombre es requerido';
   if (isNaN(price) || price < 0) return 'Precio inválido';
@@ -60,6 +62,7 @@ export async function updatePriceBookItem(id: string, prevState: string | null, 
     unit,
     trade,
     description,
+    is_optional,
   }).eq('id', id);
 
   if (error) return error.message;

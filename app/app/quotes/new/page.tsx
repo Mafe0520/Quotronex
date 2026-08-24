@@ -17,7 +17,7 @@ export default async function NewQuotePage({ searchParams }: { searchParams: Pro
   const [{ data: clients }, { data: priceBook }] = await Promise.all([
     supabase.from('clients').select('id, name, email, phone').eq('business_id', businessId).is('archived_at', null).order('name'),
     supabase.from('price_book_items')
-      .select('id, name, price_cents, unit, trade, favorite')
+      .select('id, name, price_cents, unit, trade, favorite, is_optional')
       .eq('business_id', businessId)
       .is('archived_at', null)
       .eq('active', true)

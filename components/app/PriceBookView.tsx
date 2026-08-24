@@ -17,6 +17,7 @@ type Item = {
   description: string | null;
   active: boolean;
   favorite: boolean;
+  is_optional: boolean;
   archived_at: string | null;
   last_used_at: string | null;
 };
@@ -50,6 +51,7 @@ function ItemRow({ item }: { item: Item }) {
         <div className="flex items-center gap-2">
           {item.trade && <span className="text-[10px] font-semibold text-[var(--text-tertiary)]">{item.trade}</span>}
           {item.unit && <span className="text-[10px] text-[var(--text-tertiary)]">· por {item.unit}</span>}
+          {item.is_optional && <span className="text-[10px] font-semibold text-amber-500">Opcional</span>}
         </div>
         {item.description && (
           <p className="mt-0.5 truncate text-[10px] text-[var(--text-tertiary)]">{item.description}</p>
