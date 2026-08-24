@@ -41,7 +41,7 @@ type Quote = {
   businesses: { name: string } | null
 }
 
-export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId }: { quote: Quote; items: QuoteItem[]; autoSend?: boolean; linkedInvoiceId?: string | null }) {
+export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeRequest }: { quote: Quote; items: QuoteItem[]; autoSend?: boolean; linkedInvoiceId?: string | null; changeRequest?: { message: string; created_at: string } | null }) {
   const router = useRouter()
   const [updating, startUpdate] = useTransition()
   const [converting, startConvert] = useTransition()
@@ -233,6 +233,20 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId }: { quote
             </button>
           </div>
         </div>
+
+        {/* Change request banner */}
+        {changeRequest && (
+          <div className="mt-4 rounded-2xl bg-blue-50 border border-blue-200 p-4">
+            <div className="flex items-start gap-2">
+              <MessageSquare size={16} className="text-blue-600 mt-0.5 shrink-0" />
+              <div>
+                <p className="text-sm font-bold text-blue-700">El cliente solicitó cambios</p>
+                <p className="mt-1 text-sm text-blue-800">"{changeRequest.message}"</p>
+                <p className="mt-1 text-xs text-blue-500">{fmtDate(changeRequest.created_at)}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Accepted info + convert actions */}
         {quote.status === 'accepted' && (

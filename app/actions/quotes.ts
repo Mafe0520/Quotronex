@@ -275,3 +275,22 @@ export async function createClient_(name: string, email?: string, phone?: string
   if (error) return { error: error.message }
   return { client: data }
 }
+
+// Public action — no auth required; uses service role via anon key policy
+export async function requestQuoteChanges(quoteId: string, message: string): Promise<{ error?: string }> {
+  const { createClient: createSupabase } = await import('@supabase/supabase-js')
+  const db = createSupabase<import('@/lib/supabase/types').Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
+  const { data: quote } = await db.from('quotes').select('business_id').eq('id', quoteId).single()
+  if (!quote) return { error: 'Cotización no encontrada' }
+  const { error } = await db.from('estimate_events').insert({
+    quote_id: quoteId,
+    business_id: quote.business_id,
+    event_type: 'change_requested',
+    meta: { message },
+  })
+  if (error) return { error: error.message }
+  return {}
+}

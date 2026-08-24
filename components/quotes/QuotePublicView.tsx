@@ -49,6 +49,11 @@ export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteIt
   const [showDecline, setShowDecline] = useState(false)
   const [declineReason, setDeclineReason] = useState('')
   const [declining, setDeclining] = useState(false)
+  // Change request flow
+  const [showChangeRequest, setShowChangeRequest] = useState(false)
+  const [changeMessage, setChangeMessage] = useState('')
+  const [requestingChange, setRequestingChange] = useState(false)
+  const [changeRequestSent, setChangeRequestSent] = useState(false)
 
   async function handleAccept(e: React.FormEvent) {
     e.preventDefault()
@@ -75,6 +80,17 @@ export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteIt
     setLocalStatus('declined')
     setDeclining(false)
     setShowDecline(false)
+  }
+
+  async function handleChangeRequest(e: React.FormEvent) {
+    e.preventDefault()
+    if (!changeMessage.trim()) return
+    setRequestingChange(true)
+    const { requestQuoteChanges } = await import('@/app/actions/quotes')
+    await requestQuoteChanges(quote.id, changeMessage.trim())
+    setChangeRequestSent(true)
+    setRequestingChange(false)
+    setShowChangeRequest(false)
   }
 
   // Mark as viewed on mount
@@ -550,8 +566,15 @@ export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteIt
               animate={{ opacity: 1, y: 0 }}
               className="no-print mx-auto mt-6 max-w-2xl">
 
+              {/* Change request sent confirmation */}
+              {changeRequestSent && (
+                <div className="rounded-2xl border-2 border-blue-200 bg-blue-50 p-4 text-center">
+                  <p className="text-sm font-semibold text-blue-700">✓ Tu solicitud de cambios fue enviada. El contratista se pondrá en contacto contigo.</p>
+                </div>
+              )}
+
               {/* Accept form */}
-              {!showDecline && (
+              {!showDecline && !showChangeRequest && (
                 <div className="rounded-2xl border-2 border-emerald-500 bg-white p-6 shadow-lg">
                   <h2 className="text-base font-bold text-gray-900 mb-1">¿Listo para aprobar esta cotización?</h2>
                   <p className="text-sm text-gray-500 mb-4">Escribe tu nombre para confirmar la aprobación. Tu nombre funciona como firma digital.</p>
@@ -571,13 +594,48 @@ export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteIt
                           ? <svg className="size-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity=".25"/><path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>
                           : <><ThumbsUp size={15} /> Aprobar cotización</>}
                       </button>
+                      <button type="button" onClick={() => setShowChangeRequest(true)}
+                        className="flex h-12 items-center justify-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3 text-sm font-medium text-blue-600 hover:bg-blue-100">
+                        Cambios
+                      </button>
                       <button type="button" onClick={() => setShowDecline(true)}
-                        className="flex h-12 items-center justify-center gap-1.5 rounded-xl border border-gray-200 px-4 text-sm font-medium text-gray-500 hover:bg-gray-50">
-                        <ThumbsDown size={14} /> Rechazar
+                        className="flex h-12 items-center justify-center gap-1.5 rounded-xl border border-gray-200 px-3 text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <ThumbsDown size={14} />
                       </button>
                     </div>
                   </form>
                 </div>
+              )}
+
+              {/* Change request form */}
+              {showChangeRequest && !changeRequestSent && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="rounded-2xl border-2 border-blue-200 bg-white p-6 shadow-lg">
+                  <h2 className="text-base font-bold text-gray-900 mb-1">Solicitar cambios</h2>
+                  <p className="text-sm text-gray-500 mb-4">Describe los cambios que necesitas y el contratista te contactará.</p>
+                  <form onSubmit={handleChangeRequest} className="flex flex-col gap-3">
+                    <textarea
+                      placeholder="Ej. Me gustaría agregar una habitación más al alcance del proyecto"
+                      value={changeMessage}
+                      onChange={e => setChangeMessage(e.target.value)}
+                      rows={3}
+                      required
+                      className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-blue-400 resize-none"
+                    />
+                    <div className="flex gap-2">
+                      <button type="submit" disabled={requestingChange || !changeMessage.trim()}
+                        className="flex flex-1 h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 text-sm font-bold text-white disabled:opacity-60">
+                        {requestingChange
+                          ? <svg className="size-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity=".25"/><path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>
+                          : 'Enviar solicitud'}
+                      </button>
+                      <button type="button" onClick={() => setShowChangeRequest(false)}
+                        className="flex h-12 items-center justify-center rounded-xl border border-gray-200 px-4 text-sm text-gray-500 hover:bg-gray-50">
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
               )}
 
               {/* Decline form */}
