@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 import { ChevronLeft, Plus, Trash2, Package, Search, FileText, Calendar } from 'lucide-react';
 import { updateQuoteItems, updateQuoteMeta } from '@/app/actions/quotes';
 
-type Item = { id?: string; name: string; description: string | null; qty: number; unit_price_cents: number; unit: string | null; price_book_item_id?: string | null };
+type Item = { id?: string; name: string; description: string | null; qty: number; unit_price_cents: number; unit: string | null; price_book_item_id?: string | null; markup_pct?: number | null; item_type?: string | null };
 type PBItem = { id: string; name: string; price_cents: number; unit: string | null; trade: string | null };
 
 const fmt = (c: number) => `$${(c / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
@@ -29,7 +29,8 @@ export function QuoteEditForm({ quoteId, initial, items: initItems, priceBook }:
   const [saving, startSave] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  const total = items.reduce((s, i) => s + i.qty * i.unit_price_cents, 0);
+  const effectivePrice = (item: Item) => Math.round(item.unit_price_cents * (1 + (item.markup_pct ?? 0) / 100));
+  const total = items.reduce((s, i) => s + i.qty * effectivePrice(i), 0);
 
   function addItem() {
     setItems(v => [...v, { name: '', description: null, qty: 1, unit_price_cents: 0, unit: null }]);
@@ -59,9 +60,11 @@ export function QuoteEditForm({ quoteId, initial, items: initItems, priceBook }:
           name: i.name.trim(),
           description: i.description ?? undefined,
           qty: i.qty,
-          unit_price_cents: i.unit_price_cents,
+          unit_price_cents: effectivePrice(i),
           unit: i.unit ?? undefined,
           price_book_item_id: i.price_book_item_id ?? undefined,
+          markup_pct: i.markup_pct ?? null,
+          item_type: i.item_type ?? null,
         }))),
         updateQuoteMeta(quoteId, { notes: notes || undefined, expires_at: expiresAt ? new Date(expiresAt).toISOString() : null }),
       ]);
@@ -127,15 +130,36 @@ export function QuoteEditForm({ quoteId, initial, items: initItems, priceBook }:
                     className="rounded-xl border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" />
                 </div>
                 <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-semibold text-[var(--text-tertiary)]">Markup %</label>
+                  <input type="number" min="0" step="1" placeholder="0"
+                    value={item.markup_pct ?? ''}
+                    onChange={e => {
+                      const pct = parseFloat(e.target.value) || null;
+                      updateItem(idx, { markup_pct: pct });
+                    }}
+                    className="rounded-xl border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-semibold text-[var(--text-tertiary)]">Unidad</label>
                   <input value={item.unit ?? ''} onChange={e => updateItem(idx, { unit: e.target.value || null })}
                     placeholder="hr, m²..."
                     className="rounded-xl border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" />
                 </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-semibold text-[var(--text-tertiary)]">Tipo</label>
+                  <select value={item.item_type ?? 'service'} onChange={e => updateItem(idx, { item_type: e.target.value })}
+                    className="rounded-xl border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]">
+                    <option value="service">Servicio</option>
+                    <option value="labor">Labor</option>
+                    <option value="material">Material</option>
+                  </select>
+                </div>
               </div>
               <div className="flex justify-end">
                 <span className="text-sm font-bold tabular-nums text-[var(--text-primary)]">
-                  = {fmt(item.qty * item.unit_price_cents)}
+                  = {fmt(item.qty * item.unit_price_cents * (1 + (item.markup_pct ?? 0) / 100))}
                 </span>
               </div>
             </motion.div>

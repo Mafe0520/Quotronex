@@ -894,6 +894,8 @@ export type Database = {
           total_cents: number
           unit: string | null
           unit_price_cents: number
+          markup_pct: number | null
+          item_type: string | null
         }
         Insert: {
           business_id: string
@@ -909,6 +911,8 @@ export type Database = {
           total_cents: number
           unit?: string | null
           unit_price_cents: number
+          markup_pct?: number | null
+          item_type?: string | null
         }
         Update: {
           business_id?: string

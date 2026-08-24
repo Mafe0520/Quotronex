@@ -22,6 +22,8 @@ export type QuoteItemDraft = {
   unit?: string
   price_book_item_id?: string
   optional?: boolean
+  markup_pct?: number | null
+  item_type?: string | null
 }
 
 export async function createQuote(clientId: string | null, items: QuoteItemDraft[]) {
@@ -49,6 +51,8 @@ export async function createQuote(clientId: string | null, items: QuoteItemDraft
       unit: item.unit ?? null,
       price_book_item_id: item.price_book_item_id ?? null,
       optional: item.optional ?? false,
+      markup_pct: item.markup_pct ?? null,
+      item_type: item.item_type ?? null,
       sort_order: i,
     }))
     await supabase.from('quote_items').insert(rows)
@@ -179,6 +183,8 @@ export async function updateQuoteItems(quoteId: string, items: QuoteItemDraft[])
       unit: item.unit ?? null,
       price_book_item_id: item.price_book_item_id ?? null,
       optional: item.optional ?? false,
+      markup_pct: item.markup_pct ?? null,
+      item_type: item.item_type ?? null,
       sort_order: i,
     }))
     const { error } = await supabase.from('quote_items').insert(rows)
