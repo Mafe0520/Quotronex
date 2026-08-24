@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   ChevronLeft, CheckCircle2, DollarSign, Send, Copy,
-  MoreHorizontal, Phone, Mail, FileText, Calendar, Banknote,
+  MoreHorizontal, Phone, Mail, FileText, Calendar, Banknote, AlertTriangle,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { recordPayment, updateInvoiceStatus, sendInvoice } from '@/app/actions/invoices'
@@ -370,6 +370,28 @@ export function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                   className="h-12 w-full rounded-2xl border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" />
               </div>
 
+              {/* Payment mismatch warning */}
+              {(() => {
+                const entered = Math.round(parseFloat(amountInput) * 100);
+                if (!entered || !amountInput) return null;
+                if (entered > remaining + 100) {
+                  return (
+                    <div className="mb-3 flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-700">
+                      <AlertTriangle size={13} className="shrink-0" />
+                      Este monto supera el saldo pendiente ({fmt(remaining)}) — ¿es un pago adelantado?
+                    </div>
+                  );
+                }
+                if (entered < remaining - 100 && entered > 0) {
+                  return (
+                    <div className="mb-3 flex items-center gap-2 rounded-xl bg-blue-50 px-3 py-2.5 text-xs font-semibold text-blue-700">
+                      <AlertTriangle size={13} className="shrink-0" />
+                      Pago parcial — quedará un saldo de {fmt(remaining - entered)}.
+                    </div>
+                  );
+                }
+                return null;
+              })()}
               <motion.button whileTap={{ scale: 0.97 }} onClick={handlePay} disabled={paying || !amountInput}
                 className="flex h-13 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-base font-bold text-white [box-shadow:var(--shadow-cta)] disabled:opacity-50">
                 <Banknote size={18} />
