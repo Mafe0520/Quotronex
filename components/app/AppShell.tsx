@@ -542,8 +542,13 @@ function InvoicesTab({ invoices, router }: { invoices: InvoiceRow[]; router: Ret
               {/* Amount + due */}
               <div className="shrink-0 text-right">
                 <p className={`text-sm font-black tabular-nums [font-family:var(--font-display)] ${isPaid ? 'text-green-400' : 'text-amber-400'}`}>
-                  {fmt(inv.total_cents)}
+                  {!isPaid && inv.amount_paid_cents > 0
+                    ? fmt(inv.total_cents - inv.amount_paid_cents)
+                    : fmt(inv.total_cents)}
                 </p>
+                {!isPaid && inv.amount_paid_cents > 0 && (
+                  <p className="text-[10px] text-[var(--text-tertiary)]">de {fmt(inv.total_cents)}</p>
+                )}
                 <p className="text-[10px] text-[var(--text-tertiary)]">
                   {isPaid
                     ? `Pagada el ${fmtShort(inv.updated_at)}`
