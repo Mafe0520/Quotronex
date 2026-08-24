@@ -25,6 +25,7 @@ type Business = {
   phone: string | null; email: string | null;
   address: string | null; website: string | null; tagline: string | null;
   logo_url: string | null;
+  zelle_tag: string | null; cashapp_tag: string | null; venmo_tag: string | null;
   default_tax_pct: number | null;
   default_deposit_pct: number | null;
   default_payment_terms: string | null;
@@ -99,6 +100,25 @@ function BusinessSheet({ business, onClose }: { business: NonNullable<Business>;
             </div>
           </div>
         ))}
+
+        {/* Payment tags */}
+        <div className="mt-1">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">Pagos digitales (opcional)</p>
+          <div className="flex flex-col gap-3">
+            {[
+              { name: 'zelle_tag',   label: '💳 Zelle',    val: business.zelle_tag,   placeholder: 'correo o teléfono' },
+              { name: 'cashapp_tag', label: '💚 Cash App',  val: business.cashapp_tag, placeholder: '$tucashtag' },
+              { name: 'venmo_tag',   label: '🔵 Venmo',     val: business.venmo_tag,   placeholder: '@tuvenmo' },
+            ].map(({ name, label, val, placeholder }) => (
+              <div key={name} className="flex flex-col gap-1.5">
+                <label className={labelCls}>{label}</label>
+                <input name={name} type="text" defaultValue={val ?? ''} placeholder={placeholder}
+                  className={inputCls} />
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-[var(--text-tertiary)]">Aparecen en la cotización y factura como instrucciones de pago.</p>
+        </div>
 
         {typeof result === 'string' && (
           <p className="rounded-xl bg-red-50 px-3 py-2 text-xs text-red-600">{result}</p>

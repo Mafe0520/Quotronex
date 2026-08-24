@@ -15,7 +15,7 @@ export default async function SettingsPage() {
 
   const [businessRes, membersRes, invitesRes, callerRes, subRes] = await Promise.all([
     businessId
-      ? supabase.from('businesses').select('id, name, phone, email, address, website, tagline, logo_url, default_tax_pct, default_deposit_pct, default_payment_terms, lang').eq('id', businessId).single()
+      ? supabase.from('businesses').select('id, name, phone, email, address, website, tagline, logo_url, zelle_tag, cashapp_tag, venmo_tag, default_tax_pct, default_deposit_pct, default_payment_terms, lang').eq('id', businessId).single()
       : { data: null },
     businessId
       ? supabase.from('business_members').select('id, user_id, role, name, email, accepted_at').eq('business_id', businessId).order('role')

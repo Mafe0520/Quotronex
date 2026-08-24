@@ -34,7 +34,7 @@ type Quote = {
   expires_at: string | null; notes: string | null
   deposit_cents: number | null; deposit_pct: number | null
   clients: { name: string; email: string | null; phone: string | null } | null
-  businesses: { name: string; phone: string | null; email: string | null; address: string | null; website: string | null; tagline: string | null; logo_url?: string | null } | null
+  businesses: { name: string; phone: string | null; email: string | null; address: string | null; website: string | null; tagline: string | null; logo_url?: string | null; zelle_tag?: string | null; cashapp_tag?: string | null; venmo_tag?: string | null } | null
 }
 
 export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteItem[] }) {
@@ -490,6 +490,33 @@ export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteIt
             <div className="border-t border-gray-100 px-8 py-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Notas</p>
               <p className="text-sm text-gray-600 whitespace-pre-wrap">{quote.notes}</p>
+            </div>
+          )}
+
+          {/* Payment instructions */}
+          {(biz?.zelle_tag || biz?.cashapp_tag || biz?.venmo_tag) && (
+            <div className="border-t border-gray-100 px-8 py-5">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Instrucciones de pago</p>
+              <div className="flex flex-col gap-2">
+                {biz.zelle_tag && (
+                  <div className="flex items-center justify-between rounded-xl bg-violet-50 px-4 py-2.5">
+                    <span className="text-sm font-semibold text-violet-700">💳 Zelle</span>
+                    <span className="text-sm text-violet-800 font-mono">{biz.zelle_tag}</span>
+                  </div>
+                )}
+                {biz.cashapp_tag && (
+                  <div className="flex items-center justify-between rounded-xl bg-green-50 px-4 py-2.5">
+                    <span className="text-sm font-semibold text-green-700">💚 Cash App</span>
+                    <span className="text-sm text-green-800 font-mono">{biz.cashapp_tag}</span>
+                  </div>
+                )}
+                {biz.venmo_tag && (
+                  <div className="flex items-center justify-between rounded-xl bg-blue-50 px-4 py-2.5">
+                    <span className="text-sm font-semibold text-blue-700">🔵 Venmo</span>
+                    <span className="text-sm text-blue-800 font-mono">{biz.venmo_tag}</span>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

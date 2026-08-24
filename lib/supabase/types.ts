@@ -172,6 +172,9 @@ export type Database = {
           id: string
           lang: string | null
           logo_url: string | null
+          cashapp_tag: string | null
+          venmo_tag: string | null
+          zelle_tag: string | null
           name: string
           phone: string | null
           slug: string
@@ -188,6 +191,9 @@ export type Database = {
           id?: string
           lang?: string | null
           logo_url?: string | null
+          cashapp_tag?: string | null
+          venmo_tag?: string | null
+          zelle_tag?: string | null
           name: string
           phone?: string | null
           slug: string
@@ -204,6 +210,9 @@ export type Database = {
           id?: string
           lang?: string | null
           logo_url?: string | null
+          cashapp_tag?: string | null
+          venmo_tag?: string | null
+          zelle_tag?: string | null
           name?: string
           phone?: string | null
           slug?: string

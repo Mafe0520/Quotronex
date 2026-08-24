@@ -12,7 +12,7 @@ export default async function PublicQuotePage({ params }: { params: Promise<{ id
   )
 
   const [{ data: quote }, { data: items }] = await Promise.all([
-    db.from('quotes').select('id, status, total_cents, created_at, accepted_at, accepted_name, expires_at, notes, deposit_cents, deposit_pct, clients(name, email, phone), businesses(name, phone, email, address, website, tagline, logo_url)').eq('id', id).single(),
+    db.from('quotes').select('id, status, total_cents, created_at, accepted_at, accepted_name, expires_at, notes, deposit_cents, deposit_pct, clients(name, email, phone), businesses(name, phone, email, address, website, tagline, logo_url, zelle_tag, cashapp_tag, venmo_tag)').eq('id', id).single(),
     db.from('quote_items').select('id, name, description, qty, unit_price_cents, total_cents, unit, optional, sort_order').eq('quote_id', id).order('sort_order'),
   ])
 

@@ -33,13 +33,16 @@ export async function updateBusinessProfile(
   if (!businessId) return 'No se encontró el negocio'
 
   const { error } = await supabase.from('businesses').update({
-    name:     (formData.get('name')     as string ?? '').trim() || undefined,
-    phone:    (formData.get('phone')    as string ?? '').trim() || null,
-    email:    (formData.get('email')    as string ?? '').trim() || null,
-    address:  (formData.get('address')  as string ?? '').trim() || null,
-    website:  (formData.get('website')  as string ?? '').trim() || null,
-    tagline:  (formData.get('tagline')  as string ?? '').trim() || null,
-    logo_url: (formData.get('logo_url') as string ?? '').trim() || null,
+    name:        (formData.get('name')        as string ?? '').trim() || undefined,
+    phone:       (formData.get('phone')       as string ?? '').trim() || null,
+    email:       (formData.get('email')       as string ?? '').trim() || null,
+    address:     (formData.get('address')     as string ?? '').trim() || null,
+    website:     (formData.get('website')     as string ?? '').trim() || null,
+    tagline:     (formData.get('tagline')     as string ?? '').trim() || null,
+    logo_url:    (formData.get('logo_url')    as string ?? '').trim() || null,
+    zelle_tag:   (formData.get('zelle_tag')   as string ?? '').trim() || null,
+    cashapp_tag: (formData.get('cashapp_tag') as string ?? '').trim() || null,
+    venmo_tag:   (formData.get('venmo_tag')   as string ?? '').trim() || null,
   }).eq('id', businessId)
 
   if (error) return error.message
