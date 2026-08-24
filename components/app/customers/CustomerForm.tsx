@@ -3,7 +3,7 @@
 import { useActionState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { ChevronLeft, User, Phone, Mail, FileText } from 'lucide-react';
+import { ChevronLeft, User, Phone, Mail, FileText, MapPin, Tag, MessageCircle } from 'lucide-react';
 import { createCustomer, updateCustomer } from '@/app/actions/clients';
 import { useT } from '@/lib/i18n';
 
@@ -16,7 +16,7 @@ interface Props {
 interface EditProps {
   mode: 'edit';
   customerId: string;
-  initial: { name: string; email: string | null; phone: string | null; notes: string | null };
+  initial: { name: string; email: string | null; phone: string | null; address: string | null; notes: string | null; tags?: string[]; contact_pref?: string | null };
 }
 
 const t = { duration: 0.22, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] };
@@ -84,6 +84,21 @@ export function CustomerForm(props: Props | EditProps) {
             </div>
           </div>
 
+          {/* Address */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">Dirección</label>
+            <div className="relative">
+              <MapPin size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+              <input
+                name="address"
+                type="text"
+                defaultValue={initial?.address ?? ''}
+                placeholder="123 Main St, Ciudad, Estado"
+                className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] pl-10 pr-4 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
+              />
+            </div>
+          </div>
+
           {/* Email */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">{tr.customers.email}</label>
@@ -111,6 +126,40 @@ export function CustomerForm(props: Props | EditProps) {
                 placeholder={tr.customers.notesPh}
                 className="w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] pl-10 pr-4 pt-3 pb-3 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)] resize-none"
               />
+            </div>
+          </div>
+
+          {/* Tags */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">Tags</label>
+            <div className="relative">
+              <Tag size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+              <input
+                name="tags"
+                type="text"
+                defaultValue={(initial as EditProps['initial'] | null)?.tags?.join(', ') ?? ''}
+                placeholder="VIP, residencial, referido..."
+                className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] pl-10 pr-4 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
+              />
+            </div>
+            <p className="text-xs text-[var(--text-tertiary)]">Separa con comas</p>
+          </div>
+
+          {/* Contact preference */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">Preferencia de contacto</label>
+            <div className="relative">
+              <MessageCircle size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+              <select
+                name="contact_pref"
+                defaultValue={(initial as EditProps['initial'] | null)?.contact_pref ?? 'any'}
+                className="h-13 w-full appearance-none rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] pl-10 pr-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+              >
+                <option value="any">Sin preferencia</option>
+                <option value="phone">Llamada</option>
+                <option value="sms">SMS / Texto</option>
+                <option value="email">Email</option>
+              </select>
             </div>
           </div>
 

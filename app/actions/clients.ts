@@ -19,6 +19,9 @@ export async function createCustomer(prevState: string | null, formData: FormDat
   const supabase = await createClient();
   const businessId = await getBusinessId();
 
+  const rawTags = (formData.get('tags') as string ?? '').trim();
+  const tags = rawTags ? rawTags.split(',').map(t => t.trim()).filter(Boolean) : [];
+
   const { data, error } = await supabase
     .from('clients')
     .insert({
@@ -26,7 +29,10 @@ export async function createCustomer(prevState: string | null, formData: FormDat
       name,
       email: (formData.get('email') as string ?? '').trim() || null,
       phone: (formData.get('phone') as string ?? '').trim() || null,
+      address: (formData.get('address') as string ?? '').trim() || null,
       notes: (formData.get('notes') as string ?? '').trim() || null,
+      tags,
+      contact_pref: (formData.get('contact_pref') as string) || 'any',
     })
     .select('id')
     .single();
@@ -42,13 +48,19 @@ export async function updateCustomer(id: string, prevState: string | null, formD
   if (!name) return 'Name is required';
 
   const supabase = await createClient();
+  const rawTags = (formData.get('tags') as string ?? '').trim();
+  const tags = rawTags ? rawTags.split(',').map(t => t.trim()).filter(Boolean) : [];
+
   const { error } = await supabase
     .from('clients')
     .update({
       name,
       email: (formData.get('email') as string ?? '').trim() || null,
       phone: (formData.get('phone') as string ?? '').trim() || null,
+      address: (formData.get('address') as string ?? '').trim() || null,
       notes: (formData.get('notes') as string ?? '').trim() || null,
+      tags,
+      contact_pref: (formData.get('contact_pref') as string) || 'any',
     })
     .eq('id', id);
 
@@ -64,4 +76,12 @@ export async function archiveCustomer(id: string): Promise<void> {
   await supabase.from('clients').update({ archived_at: new Date().toISOString() }).eq('id', id);
   revalidatePath('/app/customers');
   redirect('/app/customers');
+}
+
+export async function reactivateCustomer(id: string): Promise<void> {
+  const supabase = await createClient();
+  await supabase.from('clients').update({ archived_at: null }).eq('id', id);
+  revalidatePath('/app/customers');
+  revalidatePath(`/app/customers/${id}`);
+  redirect(`/app/customers/${id}`);
 }

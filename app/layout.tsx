@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Archivo_Black, Work_Sans } from 'next/font/google';
 import './globals.css';
 import { LangProvider } from './lang-context';
+import { PWAInit } from '@/components/PWAInit';
 
 const archivoBlack = Archivo_Black({
   weight: '400',
@@ -17,10 +18,26 @@ const workSans = Work_Sans({
   weight: ['400', '500', '600'],
 });
 
+export const viewport: Viewport = {
+  themeColor: '#0a0a0a',
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
+
 export const metadata: Metadata = {
   title: 'Quotronex — Quote in 30 seconds. Land the job.',
   description:
     'The Voice Price Book generates a professional estimate using your own rates in 30 seconds. Built for contractors with 1–15 employees. English + Spanish.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Quotronex',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
 };
 
 export default function RootLayout({
@@ -41,6 +58,7 @@ export default function RootLayout({
     >
       <body className="min-h-dvh flex flex-col">
           <LangProvider>{children}</LangProvider>
+          <PWAInit />
         </body>
     </html>
   );

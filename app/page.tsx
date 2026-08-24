@@ -11,7 +11,7 @@ import {
   DollarSign,
 } from 'lucide-react';
 import { HeroMockup } from '@/components/landing/HeroMockup';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLang } from './lang-context';
 import { Hero } from '@/components/landing/Hero';
@@ -449,15 +449,10 @@ const COPY = {
   },
 } as const;
 
-// ── PÁGINA ───────────────────────────────────────────────────────────────────
-
-export default function LandingQuotronex() {
-  const { lang } = useLang();
-  const c = COPY[lang];
+// ── AUTH ERROR REDIRECT ───────────────────────────────────────────────────────
+function AuthErrorRedirect() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // Supabase redirige errores de auth (otp_expired, etc.) al Site URL (esta página)
   useEffect(() => {
     const errorCode = searchParams.get('error_code') ?? searchParams.get('error');
     if (errorCode) {
@@ -465,11 +460,20 @@ export default function LandingQuotronex() {
       router.replace(`/login?error=${encodeURIComponent(desc.replace(/\+/g, ' '))}`);
     }
   }, [searchParams, router]);
+  return null;
+}
+
+// ── PÁGINA ───────────────────────────────────────────────────────────────────
+
+export default function LandingQuotronex() {
+  const { lang } = useLang();
+  const c = COPY[lang];
 
   const icons = [Clock, FileText, TrendingDown, DollarSign];
 
   return (
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--text-primary)] [font-family:var(--font-body)]">
+      <Suspense><AuthErrorRedirect /></Suspense>
 
       {/* 1. HERO */}
       <Hero

@@ -14,7 +14,7 @@ export default async function EditProjectPage({ params }: Props) {
 
   const { data } = await supabase
     .from('projects')
-    .select('name, job_address, client_id, clients(name)')
+    .select('name, job_address, status, notes, client_id, clients(name)')
     .eq('id', id)
     .single();
 
@@ -28,7 +28,7 @@ export default async function EditProjectPage({ params }: Props) {
       projectId={id}
       clientId={data.client_id}
       clientName={client?.name ?? ''}
-      initial={{ name: data.name, job_address: data.job_address }}
+      initial={{ name: data.name, job_address: data.job_address, status: data.status, notes: data.notes ?? null }}
     />
   );
 }

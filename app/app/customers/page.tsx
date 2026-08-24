@@ -16,9 +16,8 @@ export default async function CustomersPage() {
   const customers = businessId
     ? (await supabase
         .from('clients')
-        .select('id, name, email, phone, projects(id, archived_at)')
+        .select('id, name, email, phone, address, tags, archived_at, projects(id, archived_at)')
         .eq('business_id', businessId)
-        .is('archived_at', null)
         .order('name')
       ).data ?? []
     : [];

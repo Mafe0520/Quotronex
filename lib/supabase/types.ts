@@ -7,33 +7,147 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.15"
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_user_id: string
+          after_json: Json | null
+          before_json: Json | null
+          created_at: string
+          id: string
+          target_id: string | null
+          target_type: string
+        }
+        Insert: {
+          action: string
+          admin_user_id: string
+          after_json?: Json | null
+          before_json?: Json | null
+          created_at?: string
+          id?: string
+          target_id?: string | null
+          target_type: string
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string
+          after_json?: Json | null
+          before_json?: Json | null
+          created_at?: string
+          id?: string
+          target_id?: string | null
+          target_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_audit_log_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_usage_log: {
+        Row: {
+          business_id: string | null
+          cost_usd: number
+          created_at: string
+          feature: string
+          id: string
+          input_tokens: number
+          output_tokens: number
+        }
+        Insert: {
+          business_id?: string | null
+          cost_usd?: number
+          created_at?: string
+          feature: string
+          id?: string
+          input_tokens?: number
+          output_tokens?: number
+        }
+        Update: {
+          business_id?: string | null
+          cost_usd?: number
+          created_at?: string
+          feature?: string
+          id?: string
+          input_tokens?: number
+          output_tokens?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_usage_log_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_members: {
         Row: {
           accepted_at: string | null
           business_id: string
+          email: string | null
           id: string
           invited_at: string
+          invited_by: string | null
+          name: string | null
           role: Database["public"]["Enums"]["member_role"]
           user_id: string
         }
         Insert: {
           accepted_at?: string | null
           business_id: string
+          email?: string | null
           id?: string
           invited_at?: string
+          invited_by?: string | null
+          name?: string | null
           role?: Database["public"]["Enums"]["member_role"]
           user_id: string
         }
         Update: {
           accepted_at?: string | null
           business_id?: string
+          email?: string | null
           id?: string
           invited_at?: string
+          invited_by?: string | null
+          name?: string | null
           role?: Database["public"]["Enums"]["member_role"]
           user_id?: string
         }
@@ -49,57 +163,134 @@ export type Database = {
       }
       businesses: {
         Row: {
+          address: string | null
           created_at: string
+          default_deposit_pct: number | null
+          default_payment_terms: string | null
+          default_tax_pct: number | null
+          email: string | null
           id: string
+          lang: string | null
+          logo_url: string | null
           name: string
+          phone: string | null
           slug: string
+          tagline: string | null
+          website: string | null
         }
         Insert: {
+          address?: string | null
           created_at?: string
+          default_deposit_pct?: number | null
+          default_payment_terms?: string | null
+          default_tax_pct?: number | null
+          email?: string | null
           id?: string
+          lang?: string | null
+          logo_url?: string | null
           name: string
+          phone?: string | null
           slug: string
+          tagline?: string | null
+          website?: string | null
         }
         Update: {
+          address?: string | null
           created_at?: string
+          default_deposit_pct?: number | null
+          default_payment_terms?: string | null
+          default_tax_pct?: number | null
+          email?: string | null
           id?: string
+          lang?: string | null
+          logo_url?: string | null
           name?: string
+          phone?: string | null
           slug?: string
+          tagline?: string | null
+          website?: string | null
         }
         Relationships: []
       }
+      change_orders: {
+        Row: {
+          amount_cents: number
+          business_id: string
+          created_at: string
+          description: string
+          id: string
+          job_id: string
+          status: string
+        }
+        Insert: {
+          amount_cents?: number
+          business_id: string
+          created_at?: string
+          description: string
+          id?: string
+          job_id: string
+          status?: string
+        }
+        Update: {
+          amount_cents?: number
+          business_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          job_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "change_orders_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
+          address: string | null
           archived_at: string | null
           business_id: string
+          contact_pref: string | null
           created_at: string
           email: string | null
           id: string
           name: string
           notes: string | null
           phone: string | null
+          tags: string[]
           updated_at: string
         }
         Insert: {
+          address?: string | null
           archived_at?: string | null
           business_id: string
+          contact_pref?: string | null
           created_at?: string
           email?: string | null
           id?: string
           name: string
           notes?: string | null
           phone?: string | null
+          tags?: string[]
           updated_at?: string
         }
         Update: {
+          address?: string | null
           archived_at?: string | null
           business_id?: string
+          contact_pref?: string | null
           created_at?: string
           email?: string | null
           id?: string
           name?: string
           notes?: string | null
           phone?: string | null
+          tags?: string[]
           updated_at?: string
         }
         Relationships: [
@@ -157,6 +348,56 @@ export type Database = {
           },
         ]
       }
+      expenses: {
+        Row: {
+          amount_cents: number
+          business_id: string
+          category: string
+          created_at: string
+          description: string
+          expense_date: string
+          id: string
+          job_id: string | null
+          receipt_url: string | null
+          user_id: string | null
+          vendor: string | null
+        }
+        Insert: {
+          amount_cents?: number
+          business_id: string
+          category?: string
+          created_at?: string
+          description: string
+          expense_date?: string
+          id?: string
+          job_id?: string | null
+          receipt_url?: string | null
+          user_id?: string | null
+          vendor?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          business_id?: string
+          category?: string
+          created_at?: string
+          description?: string
+          expense_date?: string
+          id?: string
+          job_id?: string | null
+          receipt_url?: string | null
+          user_id?: string | null
+          vendor?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
           amount_paid_cents: number
@@ -170,6 +411,7 @@ export type Database = {
           job_id: string | null
           notes: string | null
           project_id: string | null
+          quote_id: string | null
           status: Database["public"]["Enums"]["invoice_status"]
           subtotal_cents: number
           tax_cents: number
@@ -188,6 +430,7 @@ export type Database = {
           job_id?: string | null
           notes?: string | null
           project_id?: string | null
+          quote_id?: string | null
           status?: Database["public"]["Enums"]["invoice_status"]
           subtotal_cents?: number
           tax_cents?: number
@@ -206,6 +449,7 @@ export type Database = {
           job_id?: string | null
           notes?: string | null
           project_id?: string | null
+          quote_id?: string | null
           status?: Database["public"]["Enums"]["invoice_status"]
           subtotal_cents?: number
           tax_cents?: number
@@ -239,6 +483,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
             referencedColumns: ["id"]
           },
         ]
@@ -285,45 +536,101 @@ export type Database = {
           },
         ]
       }
+      job_photos: {
+        Row: {
+          business_id: string
+          caption: string | null
+          created_at: string
+          id: string
+          job_id: string
+          phase: string
+          url: string
+        }
+        Insert: {
+          business_id: string
+          caption?: string | null
+          created_at?: string
+          id?: string
+          job_id: string
+          phase: string
+          url: string
+        }
+        Update: {
+          business_id?: string
+          caption?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string
+          phase?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_photos_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jobs: {
         Row: {
           archived_at: string | null
+          assigned_to: string | null
           business_id: string
+          completed_at: string | null
+          completion_summary: string | null
           created_at: string
           end_date: string | null
+          flags: string[]
           id: string
           notes: string | null
           project_id: string | null
           quote_id: string | null
           start_date: string | null
           status: Database["public"]["Enums"]["job_status"]
+          title: string | null
           updated_at: string
+          warranty_notes: string | null
         }
         Insert: {
           archived_at?: string | null
+          assigned_to?: string | null
           business_id: string
+          completed_at?: string | null
+          completion_summary?: string | null
           created_at?: string
           end_date?: string | null
+          flags?: string[]
           id?: string
           notes?: string | null
           project_id?: string | null
           quote_id?: string | null
           start_date?: string | null
           status?: Database["public"]["Enums"]["job_status"]
+          title?: string | null
           updated_at?: string
+          warranty_notes?: string | null
         }
         Update: {
           archived_at?: string | null
+          assigned_to?: string | null
           business_id?: string
+          completed_at?: string | null
+          completion_summary?: string | null
           created_at?: string
           end_date?: string | null
+          flags?: string[]
           id?: string
           notes?: string | null
           project_id?: string | null
           quote_id?: string | null
           start_date?: string | null
           status?: Database["public"]["Enums"]["job_status"]
+          title?: string | null
           updated_at?: string
+          warranty_notes?: string | null
         }
         Relationships: [
           {
@@ -438,7 +745,10 @@ export type Database = {
           archived_at: string | null
           business_id: string
           created_at: string
+          description: string | null
+          favorite: boolean
           id: string
+          last_used_at: string | null
           name: string
           price_cents: number
           trade: string | null
@@ -450,7 +760,10 @@ export type Database = {
           archived_at?: string | null
           business_id: string
           created_at?: string
+          description?: string | null
+          favorite?: boolean
           id?: string
+          last_used_at?: string | null
           name: string
           price_cents: number
           trade?: string | null
@@ -462,7 +775,10 @@ export type Database = {
           archived_at?: string | null
           business_id?: string
           created_at?: string
+          description?: string | null
+          favorite?: boolean
           id?: string
+          last_used_at?: string | null
           name?: string
           price_cents?: number
           trade?: string | null
@@ -488,6 +804,7 @@ export type Database = {
           id: string
           job_address: string | null
           name: string
+          notes: string | null
           status: Database["public"]["Enums"]["project_status"]
           updated_at: string
         }
@@ -499,6 +816,7 @@ export type Database = {
           id?: string
           job_address?: string | null
           name: string
+          notes?: string | null
           status?: Database["public"]["Enums"]["project_status"]
           updated_at?: string
         }
@@ -510,6 +828,7 @@ export type Database = {
           id?: string
           job_address?: string | null
           name?: string
+          notes?: string | null
           status?: Database["public"]["Enums"]["project_status"]
           updated_at?: string
         }
@@ -537,6 +856,7 @@ export type Database = {
           description: string | null
           id: string
           name: string
+          optional: boolean
           price_book_item_id: string | null
           qty: number
           quote_id: string
@@ -551,6 +871,7 @@ export type Database = {
           description?: string | null
           id?: string
           name: string
+          optional?: boolean
           price_book_item_id?: string | null
           qty?: number
           quote_id: string
@@ -565,6 +886,7 @@ export type Database = {
           description?: string | null
           id?: string
           name?: string
+          optional?: boolean
           price_book_item_id?: string | null
           qty?: number
           quote_id?: string
@@ -695,7 +1017,11 @@ export type Database = {
           business_id: string
           client_id: string | null
           created_at: string
+          deposit_cents: number | null
+          deposit_pct: number | null
+          expires_at: string | null
           id: string
+          notes: string | null
           project_id: string | null
           status: Database["public"]["Enums"]["quote_status"]
           total_cents: number
@@ -713,7 +1039,11 @@ export type Database = {
           business_id: string
           client_id?: string | null
           created_at?: string
+          deposit_cents?: number | null
+          deposit_pct?: number | null
+          expires_at?: string | null
           id?: string
+          notes?: string | null
           project_id?: string | null
           status?: Database["public"]["Enums"]["quote_status"]
           total_cents?: number
@@ -731,7 +1061,11 @@ export type Database = {
           business_id?: string
           client_id?: string | null
           created_at?: string
+          deposit_cents?: number | null
+          deposit_pct?: number | null
+          expires_at?: string | null
           id?: string
+          notes?: string | null
           project_id?: string | null
           status?: Database["public"]["Enums"]["quote_status"]
           total_cents?: number
@@ -819,6 +1153,168 @@ export type Database = {
           },
         ]
       }
+      support_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          sender: string
+          ticket_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          sender: string
+          ticket_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          sender?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_tickets: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          priority: string
+          resolved_at: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          priority?: string
+          resolved_at?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          priority?: string
+          resolved_at?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_invites: {
+        Row: {
+          accepted_at: string | null
+          business_id: string
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string | null
+          name: string | null
+          role: Database["public"]["Enums"]["member_role"]
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          business_id: string
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          name?: string | null
+          role?: Database["public"]["Enums"]["member_role"]
+          token?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          business_id?: string
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          name?: string | null
+          role?: Database["public"]["Enums"]["member_role"]
+          token?: string
+        }
+        Relationships: []
+      }
+      time_entries: {
+        Row: {
+          approved_by: string | null
+          business_id: string
+          clocked_in_at: string
+          clocked_out_at: string | null
+          created_at: string
+          id: string
+          job_id: string | null
+          notes: string | null
+          status: string
+          user_id: string
+          worker_name: string | null
+        }
+        Insert: {
+          approved_by?: string | null
+          business_id: string
+          clocked_in_at?: string
+          clocked_out_at?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string | null
+          notes?: string | null
+          status?: string
+          user_id: string
+          worker_name?: string | null
+        }
+        Update: {
+          approved_by?: string | null
+          business_id?: string
+          clocked_in_at?: string
+          clocked_out_at?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string | null
+          notes?: string | null
+          status?: string
+          user_id?: string
+          worker_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_entries_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -828,7 +1324,7 @@ export type Database = {
         Args: { p_name: string; p_slug: string; p_user_id: string }
         Returns: string
       }
-      get_my_business_ids: { Args: Record<PropertyKey, never>; Returns: string[] }
+      get_my_business_ids: { Args: never; Returns: string[] }
       my_role_in: {
         Args: { p_business_id: string }
         Returns: Database["public"]["Enums"]["member_role"]
@@ -858,7 +1354,12 @@ export type Database = {
         | "completed"
         | "on_hold"
         | "canceled"
-      member_role: "owner" | "office_manager" | "estimator" | "field_worker"
+      member_role:
+        | "owner"
+        | "office_manager"
+        | "estimator"
+        | "field_worker"
+        | "admin"
       payment_method: "cash" | "check" | "card" | "transfer" | "other"
       payment_status: "pending" | "received" | "failed" | "refunded"
       payment_type: "deposit" | "partial" | "final"
@@ -886,16 +1387,179 @@ export type Database = {
 }
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
 type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
-  T extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"]),
-> = (DefaultSchema["Tables"] & DefaultSchema["Views"])[T] extends { Row: infer R } ? R : never
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
 
-export type TablesInsert<T extends keyof DefaultSchema["Tables"]> =
-  DefaultSchema["Tables"][T] extends { Insert: infer I } ? I : never
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
 
-export type TablesUpdate<T extends keyof DefaultSchema["Tables"]> =
-  DefaultSchema["Tables"][T] extends { Update: infer U } ? U : never
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
 
-export type Enums<T extends keyof DefaultSchema["Enums"]> = DefaultSchema["Enums"][T]
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      billing_cycle: ["monthly", "annual"],
+      estimate_event_type: [
+        "created",
+        "sent",
+        "viewed",
+        "accepted",
+        "declined",
+        "resent",
+        "expired",
+        "archived",
+      ],
+      invoice_status: [
+        "draft",
+        "sent",
+        "partial",
+        "paid",
+        "overdue",
+        "canceled",
+      ],
+      job_status: [
+        "scheduled",
+        "in_progress",
+        "completed",
+        "on_hold",
+        "canceled",
+      ],
+      member_role: [
+        "owner",
+        "office_manager",
+        "estimator",
+        "field_worker",
+        "admin",
+      ],
+      payment_method: ["cash", "check", "card", "transfer", "other"],
+      payment_status: ["pending", "received", "failed", "refunded"],
+      payment_type: ["deposit", "partial", "final"],
+      project_status: ["lead", "active", "completed", "canceled"],
+      quote_status: [
+        "draft",
+        "sent",
+        "viewed",
+        "accepted",
+        "declined",
+        "expired",
+        "converted",
+      ],
+      subscription_status: [
+        "trialing",
+        "active",
+        "past_due",
+        "canceled",
+        "unpaid",
+        "paused",
+      ],
+    },
+  },
+} as const

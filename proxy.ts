@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -40,8 +40,8 @@ export async function middleware(request: NextRequest) {
     return new NextResponse(null, { status: 404 })
   }
 
-  // Redirect authenticated users away from /login
-  if (pathname === '/login' && user) {
+  // Redirect authenticated users away from auth pages
+  if ((pathname === '/login' || pathname === '/signup') && user) {
     const url = request.nextUrl.clone()
     url.pathname = '/app'
     return NextResponse.redirect(url)

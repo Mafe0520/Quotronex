@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { createClient, createServiceClient } from '@/lib/supabase/server';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 export async function signUp(email: string, password: string) {
   const supabase = await createClient();
@@ -33,9 +34,26 @@ export async function signUp(email: string, password: string) {
 
 export async function signIn(email: string, password: string) {
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: mapAuthError(error.message) };
-  return { error: null };
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) return { error: mapAuthError(error.message), redirectTo: null };
+
+  // Check admin_users to determine redirect destination
+  const userId = data.user?.id;
+  let redirectTo = '/app';
+  if (userId) {
+    const service = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    );
+    const { data: admin } = await service
+      .from('admin_users')
+      .select('id')
+      .eq('user_id', userId)
+      .maybeSingle();
+    if (admin) redirectTo = '/admin';
+  }
+
+  return { error: null, redirectTo };
 }
 
 export async function resendConfirmation(email: string) {

@@ -3,7 +3,7 @@
 import { useActionState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { ChevronLeft, FolderOpen, MapPin } from 'lucide-react';
+import { ChevronLeft, FolderOpen, MapPin, FileText } from 'lucide-react';
 import { createProject, updateProject } from '@/app/actions/projects';
 import { useT } from '@/lib/i18n';
 
@@ -20,7 +20,7 @@ interface EditProps {
   clientId: string;
   clientName: string;
   projectId: string;
-  initial: { name: string; job_address: string | null };
+  initial: { name: string; job_address: string | null; status: string; notes: string | null };
 }
 
 const t = { duration: 0.22, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] };
@@ -75,6 +75,21 @@ export function ProjectForm(props: CreateProps | EditProps) {
             </div>
           </div>
 
+          {/* Status */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">Estado</label>
+            <select
+              name="status"
+              defaultValue={initial?.status ?? 'active'}
+              className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+            >
+              <option value="lead">Lead</option>
+              <option value="active">Activo</option>
+              <option value="completed">Completado</option>
+              <option value="canceled">Cancelado</option>
+            </select>
+          </div>
+
           {/* Job address */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">{tr.projects.address}</label>
@@ -86,6 +101,21 @@ export function ProjectForm(props: CreateProps | EditProps) {
                 defaultValue={initial?.job_address ?? ''}
                 placeholder={tr.projects.addressPh}
                 className="h-13 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] pl-10 pr-4 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
+              />
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">Notas internas</label>
+            <div className="relative">
+              <FileText size={15} className="absolute left-3.5 top-3.5 text-[var(--text-tertiary)]" />
+              <textarea
+                name="notes"
+                rows={3}
+                defaultValue={initial?.notes ?? ''}
+                placeholder="Detalles del trabajo, acceso, preferencias..."
+                className="w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] pl-10 pr-4 pt-3 pb-3 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_15%,transparent)] resize-none"
               />
             </div>
           </div>

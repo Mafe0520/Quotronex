@@ -5,14 +5,16 @@ import { motion, AnimatePresence, useMotionValue, useTransform, animate } from '
 import {
   Paintbrush, Wrench, Zap, Flame, Hammer,
   ChevronRight, ChevronLeft, Mic, FileText, CheckCircle2, Lock,
+  Building2, Phone, MapPin, Globe,
 } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { saveQuoteAndRedirect } from '@/app/actions/quotes';
+import { saveBusinessProfileOnboarding } from '@/app/actions/business';
 
 // ── Tipos ──────────────────────────────────────────────────────────────────
 type Trade = { id: string; label: string; icon: React.ElementType; placeholder: string; suggestions: string[] };
-type Step  = 'trade' | 'pricebook' | 'describe' | 'loading' | 'preview';
+type Step  = 'business' | 'trade' | 'pricebook' | 'describe' | 'loading' | 'preview';
 
 const TRADES: Trade[] = [
   { id: 'painting', label: 'Pintura',             icon: Paintbrush, placeholder: 'ej. Pintura interior, 3 cuartos', suggestions: ['Pintura interior', 'Pintura de exteriores', 'Pintura de techo']          },
@@ -22,8 +24,8 @@ const TRADES: Trade[] = [
   { id: 'remodel',  label: 'Remodelación',         icon: Hammer,     placeholder: 'ej. Remodelación de cocina',     suggestions: ['Remodelación de cocina', 'Remodelación de baño', 'Cambio de pisos']          },
 ];
 
-const STEPS: Step[]     = ['trade', 'pricebook', 'describe', 'loading', 'preview'];
-const BAR_STEPS: Step[] = ['trade', 'pricebook', 'describe'];
+const STEPS: Step[]     = ['business', 'trade', 'pricebook', 'describe', 'loading', 'preview'];
+const BAR_STEPS: Step[] = ['business', 'trade', 'pricebook', 'describe'];
 const T = { duration: 0.26, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] };
 
 // ── Progress dots ─────────────────────────────────────────────────────────
@@ -72,6 +74,78 @@ function AnimatedTotal({ target, reduce }: { target: number; reduce: boolean }) 
     return () => ctrl.stop();
   }, [mv, target, reduce]);
   return <motion.span className="text-xl font-bold tabular-nums text-[var(--accent)]">{rounded}</motion.span>;
+}
+
+// ── STEP 0: Business profile ───────────────────────────────────────────────
+const inputCls = 'h-12 w-full rounded-[var(--radius-button)] border border-[var(--border-subtle)] bg-[var(--surface)] pl-10 pr-4 text-base text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_20%,transparent)]'
+
+function StepBusiness({ onNext }: { onNext: (data: { name: string; phone: string; address: string; website: string }) => void }) {
+  const [name,    setName]    = useState('')
+  const [phone,   setPhone]   = useState('')
+  const [address, setAddress] = useState('')
+  const [website, setWebsite] = useState('')
+  const [tried,   setTried]   = useState(false)
+  const [saving,  setSaving]  = useState(false)
+
+  async function handleNext() {
+    if (!name.trim()) { setTried(true); return }
+    setSaving(true)
+    await saveBusinessProfileOnboarding({ name: name.trim(), phone, address, website })
+    onNext({ name: name.trim(), phone, address, website })
+  }
+
+  return (
+    <motion.div key="business" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -24 }} transition={T}>
+      <h1 className="text-3xl font-black tracking-tight text-[var(--text-primary)] leading-tight mb-2">
+        Tu negocio
+      </h1>
+      <p className="text-sm text-[var(--text-secondary)] mb-6">
+        Esta información aparece en todas tus cotizaciones. Puedes editarla después.
+      </p>
+
+      <div className="flex flex-col gap-3">
+        {/* Name — required */}
+        <div className="relative">
+          <Building2 size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+          <input autoFocus type="text" placeholder="Nombre del negocio *" value={name}
+            onChange={e => setName(e.target.value)}
+            className={inputCls} />
+        </div>
+        {tried && !name.trim() && (
+          <p className="text-xs text-red-500 -mt-1">El nombre es obligatorio</p>
+        )}
+
+        {/* Phone */}
+        <div className="relative">
+          <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+          <input type="tel" placeholder="Teléfono (opcional)" value={phone}
+            onChange={e => setPhone(e.target.value)}
+            className={inputCls} />
+        </div>
+
+        {/* Address */}
+        <div className="relative">
+          <MapPin size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+          <input type="text" placeholder="Dirección (opcional)" value={address}
+            onChange={e => setAddress(e.target.value)}
+            className={inputCls} />
+        </div>
+
+        {/* Website */}
+        <div className="relative">
+          <Globe size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+          <input type="text" placeholder="Sitio web (opcional)" value={website}
+            onChange={e => setWebsite(e.target.value)}
+            className={inputCls} />
+        </div>
+      </div>
+
+      <motion.button whileTap={{ scale: 0.97 }} onClick={handleNext} disabled={saving}
+        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-base font-bold text-[var(--bg)] [box-shadow:var(--shadow-cta)] disabled:opacity-60 [touch-action:manipulation]">
+        {saving ? 'Guardando…' : 'Continuar →'}
+      </motion.button>
+    </motion.div>
+  )
 }
 
 // ── STEP 1: Trade ─────────────────────────────────────────────────────────
@@ -481,14 +555,14 @@ function StepPreview({
 // ── Main flow ──────────────────────────────────────────────────────────────
 export function OnboardingFlow() {
   const router = useRouter();
-  const [step,    setStep]    = useState<Step>('trade');
+  const [step,    setStep]    = useState<Step>('business');
   const [trade,   setTrade]   = useState<Trade>(TRADES[0]);
   const [service, setService] = useState('');
   const [price,   setPrice]   = useState('');
   const [desc,    setDesc]    = useState('');
 
   const prevStep: Record<Step, Step> = {
-    trade: 'trade', pricebook: 'trade', describe: 'pricebook',
+    business: 'business', trade: 'business', pricebook: 'trade', describe: 'pricebook',
     loading: 'describe', preview: 'describe',
   };
 
@@ -496,7 +570,7 @@ export function OnboardingFlow() {
     <div className="flex min-h-dvh flex-col bg-[var(--bg)]">
       {/* Header fijo */}
       <header className="flex h-14 shrink-0 items-center justify-between px-6">
-        {step !== 'trade' && step !== 'loading' ? (
+        {step !== 'business' && step !== 'loading' ? (
           <button
             onClick={() => setStep(prevStep[step])}
             className="flex size-10 items-center justify-center rounded-full hover:bg-[var(--surface)] [touch-action:manipulation]"
@@ -531,6 +605,9 @@ export function OnboardingFlow() {
       <main className="flex flex-1 flex-col overflow-y-auto px-6 pt-2 pb-12">
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col">
           <AnimatePresence mode="wait">
+            {step === 'business' && (
+              <StepBusiness onNext={() => setStep('trade')} />
+            )}
             {step === 'trade' && (
               <StepTrade onNext={t => { setTrade(t); setStep('pricebook'); }} />
             )}

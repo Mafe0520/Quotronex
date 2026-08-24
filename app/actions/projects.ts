@@ -26,7 +26,8 @@ export async function createProject(clientId: string, prevState: string | null, 
       client_id: clientId,
       name,
       job_address: (formData.get('job_address') as string ?? '').trim() || null,
-      status: 'active',
+      notes: (formData.get('notes') as string ?? '').trim() || null,
+      status: (formData.get('status') as string || 'active') as 'lead' | 'active' | 'completed' | 'canceled',
     });
 
   if (error) return error.message;
@@ -45,6 +46,8 @@ export async function updateProject(id: string, clientId: string, prevState: str
     .update({
       name,
       job_address: (formData.get('job_address') as string ?? '').trim() || null,
+      notes: (formData.get('notes') as string ?? '').trim() || null,
+      status: (formData.get('status') as string || 'active') as 'lead' | 'active' | 'completed' | 'canceled',
     })
     .eq('id', id);
 
@@ -58,5 +61,14 @@ export async function archiveProject(id: string, clientId: string): Promise<void
   const supabase = await createClient();
   await supabase.from('projects').update({ archived_at: new Date().toISOString() }).eq('id', id);
   revalidatePath(`/app/customers/${clientId}`);
+  revalidatePath(`/app/projects/${id}`);
   redirect(`/app/customers/${clientId}`);
+}
+
+export async function reactivateProject(id: string, clientId: string): Promise<void> {
+  const supabase = await createClient();
+  await supabase.from('projects').update({ archived_at: null }).eq('id', id);
+  revalidatePath(`/app/customers/${clientId}`);
+  revalidatePath(`/app/projects/${id}`);
+  redirect(`/app/projects/${id}`);
 }

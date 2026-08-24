@@ -1,0 +1,37 @@
+{
+  "name": "Quotronex",
+  "short_name": "Quotronex",
+  "description": "Cotizaciones para contratistas en 30 segundos",
+  "start_url": "/app",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nueva cotización",
+      "url": "/app?new=1",
+      "description": "Crear cotización nueva"
+    },
+    {
+      "name": "Trabajos",
+      "url": "/app/jobs",
+      "description": "Ver trabajos activos"
+    }
+  ],
+  "categories": ["business", "productivity"]
+}

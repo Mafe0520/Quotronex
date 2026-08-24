@@ -1,11 +1,14 @@
 import { requireAdmin } from '@/lib/admin/require-admin'
-import { createServiceClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { AdminOverview, type OverviewData } from '@/components/admin/AdminOverview'
 import { PLANS, type PlanId, estimatedMRR } from '@/lib/plans'
 
 export default async function AdminPage() {
   const admin = await requireAdmin()
-  const db = await createServiceClient()
+  const db = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
 
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
@@ -35,7 +38,7 @@ export default async function AdminPage() {
 
   const mrrCents = subList
     .filter(s => s.status === 'active' || s.status === 'trialing')
-    .reduce((sum, s) => sum + estimatedMRR(s.plan_id as PlanId, s.is_founder), 0)
+    .reduce((sum, s) => sum + estimatedMRR(s.plan_id as PlanId, (s as any).billing ?? 'monthly', s.is_founder), 0)
 
   const events = estimates ?? []
   const estimatesCreated  = events.filter(e => e.event_type === 'created').length

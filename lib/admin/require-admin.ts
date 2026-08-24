@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { createClient, createServiceClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 export type AdminRole = 'superadmin' | 'support'
 
@@ -24,9 +25,11 @@ export async function requireAdmin(): Promise<AdminUser> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) notFound()
 
-  // Capa 2 — verificación en admin_users vía service role
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const service = await createServiceClient() as any
+  // Capa 2 — verificación en admin_users vía service role (plain client, no SSR cookies)
+  const service = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
   const { data: admin, error } = await service
     .from('admin_users')
     .select('id, user_id, email, role')
@@ -57,8 +60,10 @@ export async function logAdminAction({
   before?: object
   after?: object
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const service = await createServiceClient() as any
+  const service = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
   await service.from('admin_audit_log').insert({
     admin_user_id: adminUserId,
     action,

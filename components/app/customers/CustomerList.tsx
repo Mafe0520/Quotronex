@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { Search, ChevronRight, Users, Plus } from 'lucide-react';
+import { Search, ChevronRight, Users, Plus, Archive } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 
 type Customer = {
@@ -11,6 +11,9 @@ type Customer = {
   name: string;
   email: string | null;
   phone: string | null;
+  address: string | null;
+  tags: string[];
+  archived_at: string | null;
   projects: { id: string; archived_at: string | null }[];
 };
 
@@ -21,14 +24,20 @@ const anim = { duration: 0.2, ease: [0.16, 1, 0.3, 1] as [number,number,number,n
 export function CustomerList({ customers }: Props) {
   const tr = useT();
   const [q, setQ] = useState('');
+  const [showArchived, setShowArchived] = useState(false);
 
+  const visible = customers.filter(c => showArchived ? !!c.archived_at : !c.archived_at);
   const filtered = q.trim()
-    ? customers.filter(c =>
+    ? visible.filter(c =>
         c.name.toLowerCase().includes(q.toLowerCase()) ||
         c.email?.toLowerCase().includes(q.toLowerCase()) ||
-        c.phone?.includes(q)
+        c.phone?.includes(q) ||
+        c.address?.toLowerCase().includes(q.toLowerCase()) ||
+        c.tags?.some(t => t.toLowerCase().includes(q.toLowerCase()))
       )
-    : customers;
+    : visible;
+
+  const archivedCount = customers.filter(c => !!c.archived_at).length;
 
   if (customers.length === 0) {
     return (
@@ -64,9 +73,19 @@ export function CustomerList({ customers }: Props) {
         />
       </div>
 
-      <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">
-        {filtered.length} {filtered.length === 1 ? tr.customers.title.slice(0, -1) : tr.customers.title}
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">
+          {filtered.length} {filtered.length === 1 ? tr.customers.title.slice(0, -1) : tr.customers.title}
+          {showArchived && ' archivados'}
+        </p>
+        {archivedCount > 0 && (
+          <button onClick={() => setShowArchived(v => !v)}
+            className="flex items-center gap-1.5 text-xs font-semibold text-[var(--accent)]">
+            <Archive size={12} />
+            {showArchived ? 'Ver activos' : `Archivados (${archivedCount})`}
+          </button>
+        )}
+      </div>
 
       <div className="flex flex-col gap-2">
         {filtered.length === 0 && (

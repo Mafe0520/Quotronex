@@ -12,7 +12,7 @@ export default async function EditCustomerPage({ params }: Props) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const { data } = await supabase.from('clients').select('name, email, phone, notes').eq('id', id).single();
+  const { data } = await supabase.from('clients').select('name, email, phone, address, notes, tags, contact_pref').eq('id', id).single();
   if (!data) notFound();
 
   return <CustomerForm mode="edit" customerId={id} initial={data} />;

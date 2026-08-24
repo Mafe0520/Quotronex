@@ -1,91 +1,109 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { Star, ShieldCheck, Clock, Users } from 'lucide-react';
-import { CheckCustom, CtaButton, Hairline, Kicker, SectionShell, useReveal, VIEWPORT_ONCE } from './ui';
+import { motion, AnimatePresence } from 'motion/react';
+import { Check, ShieldCheck, Users, Sparkles } from 'lucide-react';
+import { Kicker, SectionShell, useReveal, VIEWPORT_ONCE } from './ui';
 import { MarkedCopy } from './MarkedCopy';
 import { useLang } from '@/app/lang-context';
+import { PLAN_LIST, type PlanId } from '@/lib/plans';
 
-export interface PlanOferta {
-  nombre: string;
-  precioMes: string;
-  sufijo?: string;
-  descomposicionDia?: string;
-  ctaLabel: string;
-  ctaHref: string;
-  features: string[];
-}
-
-export interface OfertaProps {
-  kicker?: string;
-  tituloMarked: string;
-  trialDias?: number;
-  anual: PlanOferta & {
-    totalAnual: string;
-    ahorro: string;
-    badge?: string;
-  };
-  mensual: PlanOferta;
-  stack?: {
-    lineas: { resultado: string; valor: string }[];
-    totalTachado: string;
-    nota?: string;
-  };
-  id?: string;
-}
-
-// Contador de fundadores — se reinicia en 47 al cargar (urgencia real de sesión)
+// Founding counter — reinicia en sesión para urgencia real
 function FounderCounter() {
   const { lang } = useLang();
   const [spots, setSpots] = useState(47);
-
   useEffect(() => {
     const saved = sessionStorage.getItem('qx-spots');
     if (saved) { setSpots(Number(saved)); return; }
-    const n = Math.floor(Math.random() * 8) + 43; // 43–50
+    const n = Math.floor(Math.random() * 8) + 43;
     setSpots(n);
     sessionStorage.setItem('qx-spots', String(n));
   }, []);
-
   return (
     <div className="flex items-center justify-center gap-2 rounded-full bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] border border-[color-mix(in_oklab,var(--accent)_25%,transparent)] px-4 py-2">
-      <Users className="size-4 text-[var(--accent)]" strokeWidth={2} />
+      <Sparkles className="size-4 text-[var(--accent)]" strokeWidth={2} />
       <span className="text-sm font-bold text-[var(--accent)]">
         {lang === 'es'
           ? `Solo quedan ${spots} lugares al precio de fundadores`
-          : `Only ${spots} spots left at founder pricing`}
+          : `Only ${spots} founding spots remaining`}
       </span>
     </div>
   );
 }
 
-function TrialBadge({ dias }: { dias: number }) {
-  const { lang } = useLang();
-  return (
-    <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[color-mix(in_oklab,var(--accent)_13%,transparent)] px-3 py-1 text-xs font-bold uppercase tracking-[0.06em] text-[var(--accent)]">
-      <Star size={11} strokeWidth={2.5} aria-hidden />
-      {lang === 'es' ? `${dias} días gratis` : `${dias}-day free trial`}
-    </span>
-  );
+const FEATURES: Record<PlanId, { es: string; en: string }[]> = {
+  solo: [
+    { es: '1 usuario', en: '1 user' },
+    { es: 'Cotizaciones ilimitadas', en: 'Unlimited quotes' },
+    { es: 'Facturas y cobro en línea', en: 'Invoices & online payment' },
+    { es: 'Catálogo de precios', en: 'Price catalog' },
+    { es: 'Vista pública para clientes', en: 'Client-facing quote view' },
+  ],
+  crew: [
+    { es: 'Hasta 3 usuarios', en: 'Up to 3 users' },
+    { es: 'Todo lo del plan Solo', en: 'Everything in Solo' },
+    { es: 'Trabajos y asignación de cuadrilla', en: 'Jobs & crew assignment' },
+    { es: 'Registro de horas', en: 'Time tracking' },
+    { es: 'Gastos y recibos con IA', en: 'AI receipt scanning' },
+  ],
+  business: [
+    { es: 'Hasta 7 usuarios', en: 'Up to 7 users' },
+    { es: 'Todo lo del plan Crew', en: 'Everything in Crew' },
+    { es: 'Órdenes de cambio', en: 'Change orders' },
+    { es: 'Fotos antes/durante/después', en: 'Before/during/after photos' },
+    { es: 'Soporte prioritario', en: 'Priority support' },
+  ],
+  pro_team: [
+    { es: 'Hasta 15 usuarios', en: 'Up to 15 users' },
+    { es: 'Todo lo del plan Business', en: 'Everything in Business' },
+    { es: 'Acceso anticipado a funciones', en: 'Early access to features' },
+    { es: 'Onboarding personalizado', en: 'Personalized onboarding' },
+    { es: 'Soporte dedicado', en: 'Dedicated support' },
+  ],
+};
+
+const PLAN_NAMES: Record<PlanId, { es: string; en: string }> = {
+  solo:     { es: 'Solo',     en: 'Solo'     },
+  crew:     { es: 'Crew',     en: 'Crew'     },
+  business: { es: 'Business', en: 'Business' },
+  pro_team: { es: 'Pro Team', en: 'Pro Team' },
+};
+
+export interface OfertaProps {
+  kicker?: string;
+  tituloMarked: string;
+  trialDias?: number;
+  // legacy props — ignored, data comes from lib/plans.ts
+  anual?: unknown;
+  mensual?: unknown;
+  stack?: unknown;
+  id?: string;
 }
 
 export function Oferta({
   kicker = 'LA OFERTA',
   tituloMarked,
-  trialDias,
-  anual,
-  mensual,
-  stack,
+  trialDias = 14,
   id = 'oferta',
 }: OfertaProps) {
   const { contenedor, item } = useReveal();
   const { lang } = useLang();
-
   const es = lang === 'es';
 
+  const [billing, setBilling] = useState<'annual' | 'monthly'>('annual');
+  const [selected, setSelected] = useState<PlanId>('crew');
+
+  const plan = PLAN_LIST.find(p => p.id === selected)!;
+  const monthlyEquiv = billing === 'annual'
+    ? Math.round(plan.annualPriceCents / 12 / 100)
+    : plan.monthlyPriceCents / 100;
+  const annualTotal = plan.annualPriceCents / 100;
+  const savings = (plan.monthlyPriceCents * 12 - plan.annualPriceCents) / 100;
+
+  const ctaHref = `/signup?plan=${selected}&billing=${billing}`;
+
   return (
-    <SectionShell id={id} elevacion="base" ariaLabel="Planes y precios">
+    <SectionShell id={id} elevacion="base" ariaLabel={es ? 'Planes y precios' : 'Plans & pricing'}>
       <motion.div variants={contenedor} initial="hidden" whileInView="visible" viewport={VIEWPORT_ONCE}>
 
         {/* Header */}
@@ -96,7 +114,7 @@ export function Oferta({
           </h2>
         </motion.div>
 
-        {/* Ancla emocional — comparación genérica vs campo */}
+        {/* Comparativa rápida */}
         <motion.div variants={item} className="mx-auto max-w-xl mb-8">
           <div className="rounded-[var(--radius-card)] border border-[var(--border-subtle)] bg-[var(--surface)] divide-y divide-[var(--border-subtle)] overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3.5">
@@ -110,146 +128,143 @@ export function Oferta({
             <div className="flex items-center justify-between px-5 py-3.5 bg-[color-mix(in_oklab,var(--accent)_5%,transparent)]">
               <span className="text-sm font-bold text-[var(--text-primary)]">Quotronex</span>
               <span className="text-sm font-bold text-[var(--accent)] tabular-nums">
-                {es ? '$32/mes · todo incluido' : '$32/mo · everything included'}
+                {es ? 'Desde $29/mes · todo incluido' : 'From $29/mo · everything included'}
               </span>
             </div>
           </div>
         </motion.div>
 
         {/* Urgencia fundadores */}
-        <motion.div variants={item} className="flex justify-center mb-10">
+        <motion.div variants={item} className="flex justify-center mb-8">
           <FounderCounter />
         </motion.div>
 
-        {/* Cards de precio */}
-        <div className="mx-auto max-w-4xl grid grid-cols-1 items-start gap-6 md:grid-cols-2">
-
-          {/* ── ANUAL (recomendado) ── */}
-          <motion.div variants={item} className="relative md:-translate-y-2">
-            {anual.badge && (
-              <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full border border-[color-mix(in_oklab,var(--accent)_25%,transparent)] bg-[var(--accent)] px-4 py-1 text-xs font-bold uppercase tracking-[0.06em] text-[var(--bg)]">
-                {anual.badge}
-              </span>
-            )}
-            <Hairline emphasis surface="surface" className="shadow-[0_12px_36px_color-mix(in_oklab,var(--accent)_16%,transparent)]">
-              <div className="rounded-[var(--radius-card)] bg-[color-mix(in_oklab,var(--accent)_5%,transparent)] p-6 md:p-8">
-                <div className="flex items-center justify-between gap-3 mb-4">
-                  <h3 className="text-lg font-semibold text-[var(--text-primary)]">{anual.nombre}</h3>
-                  {trialDias !== undefined && <TrialBadge dias={trialDias} />}
-                </div>
-
-                {/* Precio héroe */}
-                <div className="mb-2">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-5xl font-black tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">
-                      {anual.precioMes}
+        {/* Billing toggle */}
+        <motion.div variants={item} className="mx-auto max-w-sm mb-6">
+          <div className="flex items-center gap-1 p-1 rounded-2xl bg-[var(--surface)] border border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)]">
+            {(['annual', 'monthly'] as const).map(b => (
+              <button key={b} onClick={() => setBilling(b)}
+                className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${billing === b ? 'bg-[var(--accent)] text-white shadow-sm' : 'text-[var(--text-secondary)]'}`}>
+                {b === 'annual' ? (
+                  <span className="flex items-center justify-center gap-1.5">
+                    {es ? 'Anual' : 'Annual'}
+                    <span className="text-[10px] font-black bg-white/20 px-1.5 py-0.5 rounded-full">
+                      {es ? '2 meses gratis' : '2 months free'}
                     </span>
-                    <span className="text-base text-[var(--text-secondary)]">
-                      {anual.sufijo ?? (es ? '/mes' : '/mo')}
+                  </span>
+                ) : (es ? 'Mensual' : 'Monthly')}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Plan grid */}
+        <motion.div variants={item} className="mx-auto max-w-4xl grid grid-cols-2 gap-3 mb-6 md:grid-cols-4">
+          {PLAN_LIST.map(p => {
+            const isSelected = p.id === selected;
+            const mEquiv = billing === 'annual'
+              ? Math.round(p.annualPriceCents / 12 / 100)
+              : p.monthlyPriceCents / 100;
+            return (
+              <button key={p.id} onClick={() => setSelected(p.id)}
+                className={[
+                  'rounded-2xl border-2 p-3 text-left transition-all [touch-action:manipulation]',
+                  isSelected
+                    ? 'border-[var(--accent)] bg-[color-mix(in_oklab,var(--accent)_6%,var(--surface))] shadow-[0_4px_16px_color-mix(in_oklab,var(--accent)_14%,transparent)]'
+                    : 'border-[color-mix(in_oklab,var(--text-tertiary)_25%,transparent)] bg-[var(--surface)] opacity-75',
+                ].join(' ')}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className={`text-xs font-bold ${isSelected ? 'text-[var(--accent)]' : 'text-[var(--text-tertiary)]'}`}>
+                    {PLAN_NAMES[p.id][lang === 'es' ? 'es' : 'en']}
+                  </span>
+                  {p.id === 'crew' && (
+                    <span className="text-[9px] font-black bg-[var(--accent)] text-white px-1.5 py-0.5 rounded-full">
+                      {es ? 'Popular' : 'Popular'}
                     </span>
-                  </div>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1">{anual.totalAnual}</p>
-                  <p className="text-sm font-bold text-[var(--accent)] mt-2">{anual.ahorro}</p>
+                  )}
                 </div>
-
-                {/* Stack de valor dentro de la card */}
-                {stack && (
-                  <div className="my-4 rounded-xl border border-[color-mix(in_oklab,var(--border-subtle)_60%,transparent)] bg-[var(--surface)] divide-y divide-[var(--border-subtle)]">
-                    {stack.lineas.map((l, i) => (
-                      <div key={i} className="flex items-start justify-between gap-4 px-4 py-2.5 text-sm">
-                        <span className="flex items-start gap-2 text-[var(--text-secondary)]">
-                          <CheckCustom />
-                          <span>{l.resultado}</span>
-                        </span>
-                        <span className="shrink-0 tabular-nums font-semibold text-[var(--text-tertiary)] line-through text-xs pt-0.5">{l.valor}</span>
-                      </div>
-                    ))}
-                    <div className="flex items-center justify-between px-4 py-2.5">
-                      <span className="text-xs text-[var(--text-tertiary)]">
-                        {es ? 'Valor total:' : 'Total value:'}{' '}
-                        <span className="tabular-nums line-through">{stack?.totalTachado}</span>
-                      </span>
-                      <span className="text-sm font-black text-[var(--accent)] tabular-nums">{anual.precioMes}{es ? '/mes' : '/mo'}</span>
-                    </div>
-                  </div>
-                )}
-
-                {!stack && (
-                  <ul className="my-5 flex flex-col gap-3">
-                    {anual.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm leading-snug text-[var(--text-primary)]">
-                        <CheckCustom /><span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                <CtaButton href={anual.ctaHref} fullMobile>
-                  {anual.ctaLabel}
-                </CtaButton>
-
-                {/* Garantía pegada al CTA */}
-                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-[var(--text-tertiary)]">
-                  <ShieldCheck className="size-4 text-[var(--accent)]" strokeWidth={2} />
-                  <span>
-                    {es
-                      ? 'Prueba 14 días gratis · No se cobra hasta el día 15 · Cancela cuando quieras'
-                      : '14-day free trial · No charge until day 15 · Cancel anytime'}
+                <div className="flex items-baseline gap-0.5">
+                  <span className={`text-xl font-black [font-family:var(--font-display)] ${isSelected ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
+                    ${mEquiv}
+                  </span>
+                  <span className="text-[10px] text-[var(--text-tertiary)]">{es ? '/mes' : '/mo'}</span>
+                </div>
+                <div className="flex items-center gap-1 mt-1">
+                  <Users size={10} className="text-[var(--text-tertiary)]" />
+                  <span className="text-[10px] text-[var(--text-tertiary)]">
+                    {p.includedSeats === 1 ? '1' : `≤${p.includedSeats}`}
                   </span>
                 </div>
+              </button>
+            );
+          })}
+        </motion.div>
+
+        {/* Selected plan detail */}
+        <motion.div variants={item} className="mx-auto max-w-md">
+          <AnimatePresence mode="wait">
+            <motion.div key={selected + billing}
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18 }}
+              className="rounded-2xl border-2 border-[var(--accent)] bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] p-6 shadow-[0_8px_32px_color-mix(in_oklab,var(--accent)_14%,transparent)]">
+
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-[var(--text-primary)]">
+                  {PLAN_NAMES[selected][es ? 'es' : 'en']}
+                </h3>
+                <span className="rounded-full bg-[color-mix(in_oklab,var(--accent)_15%,transparent)] px-3 py-1 text-xs font-bold text-[var(--accent)]">
+                  {es ? `${trialDias} días gratis` : `${trialDias}-day free trial`}
+                </span>
               </div>
-            </Hairline>
-          </motion.div>
 
-          {/* ── MENSUAL ── */}
-          <motion.div
-            variants={item}
-            className="rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-tertiary)_28%,transparent)] bg-[var(--surface)] p-6 shadow-[var(--shadow-1)] md:p-7"
-          >
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h3 className="text-lg font-semibold text-[var(--text-primary)]">{mensual.nombre}</h3>
-              {trialDias !== undefined && <TrialBadge dias={trialDias} />}
-            </div>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-5xl font-black tabular-nums [font-family:var(--font-display)] text-[var(--text-primary)]">
+                  ${monthlyEquiv}
+                </span>
+                <span className="text-base text-[var(--text-secondary)]">{es ? '/mes' : '/mo'}</span>
+              </div>
 
-            <div className="flex items-baseline gap-1 mb-1">
-              <span className="text-4xl font-black tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">
-                {mensual.precioMes}
-              </span>
-              <span className="text-base text-[var(--text-secondary)]">
-                {mensual.sufijo ?? (es ? '/mes' : '/mo')}
-              </span>
-            </div>
-            {mensual.descomposicionDia && (
-              <p className="text-xs text-[var(--text-secondary)] mb-4">{mensual.descomposicionDia}</p>
-            )}
+              {billing === 'annual' ? (
+                <div className="mb-4">
+                  <p className="text-xs text-[var(--text-secondary)]">
+                    {es ? `Facturado a $${annualTotal}/año` : `Billed $${annualTotal}/year`}
+                  </p>
+                  <p className="text-sm font-bold text-[var(--accent)] mt-1">
+                    {es ? `Ahorras $${savings} al año` : `Save $${savings}/year`}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-[var(--text-secondary)] mb-4">
+                  {es ? 'Cancela cuando quieras' : 'Cancel anytime'}
+                </p>
+              )}
 
-            <ul className="my-4 flex flex-col gap-3">
-              {mensual.features.map((f, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm leading-snug text-[var(--text-primary)]">
-                  <CheckCustom /><span>{f}</span>
-                </li>
-              ))}
-            </ul>
+              <ul className="flex flex-col gap-2.5 mb-5">
+                {FEATURES[selected].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2.5 text-sm text-[var(--text-primary)]">
+                    <Check size={14} className="text-[var(--accent)] shrink-0" strokeWidth={3} />
+                    {es ? f.es : f.en}
+                  </li>
+                ))}
+              </ul>
 
-            <motion.a
-              whileTap={{ scale: 0.97 }}
-              href={mensual.ctaHref}
-              className="flex h-12 w-full items-center justify-center rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--accent)_45%,transparent)] text-base font-semibold text-[var(--accent)] transition-colors duration-150 hover:bg-[var(--chip-bg)] [touch-action:manipulation]"
-            >
-              {mensual.ctaLabel}
-            </motion.a>
+              <a href={ctaHref}
+                className="flex h-14 w-full items-center justify-center rounded-[var(--radius-button)] bg-[var(--accent)] text-base font-bold text-white [box-shadow:var(--shadow-cta)] [touch-action:manipulation]">
+                {es ? 'Empezar gratis →' : 'Start free trial →'}
+              </a>
 
-            {/* Comparativa de ahorro */}
-            <div className="mt-4 flex items-center gap-2 rounded-lg bg-[color-mix(in_oklab,var(--accent)_7%,transparent)] px-3 py-2.5">
-              <Clock className="size-4 shrink-0 text-[var(--accent)]" strokeWidth={2} />
-              <p className="text-xs text-[var(--text-secondary)]">
-                {es
-                  ? `Con el plan anual ahorras $84 — equivale a ${Math.round(84 / 32)} meses gratis`
-                  : `Annual plan saves you $84 — that's ${Math.round(84 / 39)} months free`}
-              </p>
-            </div>
-          </motion.div>
-        </div>
+              <div className="mt-4 flex items-center justify-center gap-2 text-xs text-[var(--text-tertiary)]">
+                <ShieldCheck className="size-4 text-[var(--accent)]" strokeWidth={2} />
+                <span>
+                  {es
+                    ? '$0 hoy · no se cobra hasta el día 15 · cancela cuando quieras'
+                    : '$0 today · no charge until day 15 · cancel anytime'}
+                </span>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
+
       </motion.div>
     </SectionShell>
   );

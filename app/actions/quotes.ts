@@ -1,121 +1,232 @@
-'use server';
+'use server'
 
-import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 
-interface SaveQuoteInput {
-  trade: string;
-  serviceName: string;
-  priceTotal: number; // in dollars
-  description: string;
+async function getBusinessId() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+  const { data: ids } = await supabase.rpc('get_my_business_ids')
+  const id = ids?.[0] ?? null
+  if (!id) redirect('/app')
+  return { supabase, user, businessId: id as string }
 }
 
-export async function saveQuoteAndRedirect(input: SaveQuoteInput) {
-  const supabase = await createClient();
+export type QuoteItemDraft = {
+  name: string
+  description?: string
+  qty: number
+  unit_price_cents: number
+  unit?: string
+  price_book_item_id?: string
+  optional?: boolean
+}
 
-  const { data: { user } } = await supabase.auth.getUser();
+export async function createQuote(clientId: string | null, items: QuoteItemDraft[]) {
+  const { supabase, businessId } = await getBusinessId()
 
-  // Not authenticated → go to paywall (quote will be re-created post-signup)
-  if (!user) {
-    redirect('/paywall');
-  }
+  const total_cents = items.reduce((s, i) => s + i.qty * i.unit_price_cents, 0)
 
-  const { data: bizIds } = await supabase.rpc('get_my_business_ids');
-  const businessId = bizIds?.[0];
-
-  if (!businessId) {
-    // No business yet — go to paywall, bootstrap will create it on signup
-    redirect('/paywall');
-  }
-
-  const totalCents = Math.round(input.priceTotal * 100);
-  const laborCents = Math.round(totalCents * 0.65);
-  const materialsCents = Math.round(totalCents * 0.30);
-  const miscCents = totalCents - laborCents - materialsCents;
-
-  // Upsert price book item (find by name+business or create)
-  let pbItemId: string | null = null;
-  const { data: existing } = await supabase
-    .from('price_book_items')
-    .select('id')
-    .eq('business_id', businessId)
-    .ilike('name', input.serviceName)
-    .limit(1)
-    .single();
-
-  if (existing) {
-    pbItemId = existing.id;
-  } else {
-    const { data: newItem } = await supabase
-      .from('price_book_items')
-      .insert({
-        business_id: businessId,
-        name: input.serviceName,
-        price_cents: totalCents,
-        trade: input.trade,
-        unit: 'job',
-        active: true,
-      })
-      .select('id')
-      .single();
-    pbItemId = newItem?.id ?? null;
-  }
-
-  // Create quote
-  const { data: quote, error: quoteErr } = await supabase
+  const { data: quote, error } = await supabase
     .from('quotes')
-    .insert({
-      business_id: businessId,
-      status: 'draft',
-      total_cents: totalCents,
-      voice_transcript: input.description,
-    })
+    .insert({ business_id: businessId, client_id: clientId, status: 'draft', total_cents })
     .select('id')
-    .single();
+    .single()
 
-  if (quoteErr || !quote) {
-    // Fail gracefully — still go to paywall
-    redirect('/paywall');
-  }
+  if (error || !quote) return { error: error?.message ?? 'Error al crear la cotización' }
 
-  // Create quote items
-  const items = [
-    { name: 'Labor', unit_price_cents: laborCents, qty: 1, total_cents: laborCents, sort_order: 1 },
-    { name: 'Materials', unit_price_cents: materialsCents, qty: 1, total_cents: materialsCents, sort_order: 2 },
-    ...(miscCents > 0 ? [{ name: 'Miscellaneous', unit_price_cents: miscCents, qty: 1, total_cents: miscCents, sort_order: 3 }] : []),
-  ];
-
-  await supabase.from('quote_items').insert(
-    items.map(it => ({
-      ...it,
-      quote_id: quote.id,
+  if (items.length > 0) {
+    const rows = items.map((item, i) => ({
       business_id: businessId,
-      price_book_item_id: it.sort_order === 1 ? pbItemId : null,
-      description: it.sort_order === 1 ? input.description : null,
-      unit: 'job',
+      quote_id: quote.id,
+      name: item.name,
+      description: item.description ?? null,
+      qty: item.qty,
+      unit_price_cents: item.unit_price_cents,
+      total_cents: item.qty * item.unit_price_cents,
+      unit: item.unit ?? null,
+      price_book_item_id: item.price_book_item_id ?? null,
+      optional: item.optional ?? false,
+      sort_order: i,
     }))
-  );
+    await supabase.from('quote_items').insert(rows)
 
-  // Log estimate event
-  await supabase.from('estimate_events').insert({
-    quote_id: quote.id,
-    business_id: businessId,
-    event_type: 'created',
-    actor_id: user.id,
-  });
-
-  // Check subscription status
-  const { data: sub } = await supabase
-    .from('subscriptions')
-    .select('status')
-    .eq('business_id', businessId)
-    .single();
-
-  const hasAccess = sub && ['trialing', 'active'].includes(sub.status);
-
-  if (hasAccess) {
-    redirect('/app');
-  } else {
-    redirect('/paywall');
+    // Mark price book items as recently used
+    const pbIds = items.map(i => i.price_book_item_id).filter(Boolean) as string[]
+    if (pbIds.length > 0) {
+      await supabase.from('price_book_items')
+        .update({ last_used_at: new Date().toISOString() })
+        .in('id', pbIds)
+    }
   }
+
+  revalidatePath('/app')
+  return { quoteId: quote.id }
+}
+
+export async function updateQuoteStatus(quoteId: string, status: 'draft' | 'sent' | 'viewed' | 'accepted' | 'declined' | 'expired' | 'converted') {
+  const { supabase } = await getBusinessId()
+  const { error } = await supabase
+    .from('quotes')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('id', quoteId)
+  if (error) return { error: error.message }
+  revalidatePath('/app')
+  revalidatePath(`/app/quotes/${quoteId}`)
+  return { ok: true }
+}
+
+export async function saveQuoteAndRedirect({
+  trade, serviceName, priceTotal, description,
+}: {
+  trade: string; serviceName: string; priceTotal: number; description: string
+}) {
+  const { supabase, businessId } = await getBusinessId()
+  const total_cents = Math.round(priceTotal * 100)
+
+  const { data: quote, error } = await supabase
+    .from('quotes')
+    .insert({ business_id: businessId, client_id: null, status: 'draft', total_cents })
+    .select('id')
+    .single()
+
+  if (error || !quote) redirect('/app')
+
+  await supabase.from('quote_items').insert({
+    business_id: businessId,
+    quote_id: quote.id,
+    name: serviceName,
+    description,
+    qty: 1,
+    unit_price_cents: total_cents,
+    total_cents,
+    sort_order: 0,
+  })
+
+  revalidatePath('/app')
+  redirect(`/app/quotes/${quote.id}`)
+}
+
+export async function duplicateQuote(quoteId: string): Promise<{ newId?: string; error?: string }> {
+  const { supabase, businessId } = await getBusinessId()
+
+  const [{ data: quote }, { data: items }] = await Promise.all([
+    supabase.from('quotes').select('client_id, project_id, notes, expires_at').eq('id', quoteId).single(),
+    supabase.from('quote_items').select('name, description, qty, unit_price_cents, total_cents, unit, price_book_item_id, sort_order').eq('quote_id', quoteId).order('sort_order'),
+  ])
+  if (!quote) return { error: 'Cotización no encontrada' }
+
+  const total_cents = (items ?? []).reduce((s, i) => s + i.total_cents, 0)
+  const { data: newQuote, error } = await supabase
+    .from('quotes')
+    .insert({ business_id: businessId, client_id: quote.client_id, project_id: quote.project_id, notes: quote.notes, status: 'draft', total_cents })
+    .select('id').single()
+
+  if (error || !newQuote) return { error: error?.message ?? 'Error al duplicar' }
+
+  if ((items ?? []).length > 0) {
+    await supabase.from('quote_items').insert(
+      items!.map(i => ({ ...i, business_id: businessId, quote_id: newQuote.id }))
+    )
+  }
+
+  revalidatePath('/app')
+  return { newId: newQuote.id }
+}
+
+export async function archiveQuote(quoteId: string): Promise<{ error?: string }> {
+  const { supabase } = await getBusinessId()
+  const { error } = await supabase.from('quotes').update({ archived_at: new Date().toISOString() }).eq('id', quoteId)
+  if (error) return { error: error.message }
+  revalidatePath('/app')
+  return {}
+}
+
+export async function updateQuoteMeta(quoteId: string, data: { notes?: string; expires_at?: string | null; deposit_cents?: number | null; deposit_pct?: number | null }): Promise<{ error?: string }> {
+  const { supabase } = await getBusinessId()
+  const { error } = await supabase.from('quotes').update({ ...data, updated_at: new Date().toISOString() }).eq('id', quoteId)
+  if (error) return { error: error.message }
+  revalidatePath(`/app/quotes/${quoteId}`)
+  revalidatePath('/app')
+  return {}
+}
+
+export async function updateQuoteItems(quoteId: string, items: QuoteItemDraft[]): Promise<{ error?: string }> {
+  const { supabase, businessId } = await getBusinessId()
+  const total_cents = items.reduce((s, i) => s + i.qty * i.unit_price_cents, 0)
+
+  await supabase.from('quote_items').delete().eq('quote_id', quoteId)
+
+  if (items.length > 0) {
+    const rows = items.map((item, i) => ({
+      business_id: businessId,
+      quote_id: quoteId,
+      name: item.name,
+      description: item.description ?? null,
+      qty: item.qty,
+      unit_price_cents: item.unit_price_cents,
+      total_cents: item.qty * item.unit_price_cents,
+      unit: item.unit ?? null,
+      price_book_item_id: item.price_book_item_id ?? null,
+      optional: item.optional ?? false,
+      sort_order: i,
+    }))
+    const { error } = await supabase.from('quote_items').insert(rows)
+    if (error) return { error: error.message }
+  }
+
+  await supabase.from('quotes').update({ total_cents, updated_at: new Date().toISOString() }).eq('id', quoteId)
+  revalidatePath(`/app/quotes/${quoteId}`)
+  revalidatePath('/app')
+  return {}
+}
+
+export async function sendQuote(quoteId: string): Promise<{ ok?: boolean; error?: string }> {
+  const { supabase } = await getBusinessId()
+
+  const { data: quote } = await supabase
+    .from('quotes')
+    .select('id, total_cents, status, clients(name, email), businesses(name)')
+    .eq('id', quoteId)
+    .single()
+
+  if (!quote) return { error: 'Cotización no encontrada' }
+
+  const clientEmail = (quote.clients as { email?: string | null } | null)?.email
+  if (!clientEmail) return { error: 'El cliente no tiene correo registrado' }
+
+  const clientName = (quote.clients as { name: string } | null)?.name ?? 'Cliente'
+  const businessName = (quote.businesses as { name: string } | null)?.name ?? 'Mi Negocio'
+
+  const { sendQuoteEmail } = await import('@/lib/email')
+  const result = await sendQuoteEmail({
+    to: clientEmail,
+    businessName,
+    clientName,
+    quoteId,
+    totalCents: quote.total_cents,
+  })
+
+  if (result.error) return { error: result.error.message }
+
+  if (quote.status === 'draft') {
+    await supabase.from('quotes').update({ status: 'sent', updated_at: new Date().toISOString() }).eq('id', quoteId)
+    revalidatePath('/app')
+    revalidatePath(`/app/quotes/${quoteId}`)
+  }
+
+  return { ok: true }
+}
+
+export async function createClient_(name: string, email?: string, phone?: string, address?: string) {
+  const { supabase, businessId } = await getBusinessId()
+  const { data, error } = await supabase
+    .from('clients')
+    .insert({ business_id: businessId, name, email: email || null, phone: phone || null, address: address || null })
+    .select('id, name, email, phone, address')
+    .single()
+  if (error) return { error: error.message }
+  return { client: data }
 }
