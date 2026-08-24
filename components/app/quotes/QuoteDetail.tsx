@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect } from 'react'
 import { motion } from 'motion/react'
 import { ChevronLeft, Send, Copy, CheckCircle2, Eye, ExternalLink, Mail, MessageSquare, FileCheck, Pencil, CopyPlus, Archive, Calendar, FileText, MoreHorizontal, Briefcase, AlertTriangle, Clock, BadgeDollarSign } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { updateQuoteStatus, duplicateQuote, archiveQuote, sendQuote } from '@/app/actions/quotes'
+import { updateQuoteStatus, duplicateQuote, archiveQuote, unarchiveQuote, sendQuote } from '@/app/actions/quotes'
 import { convertQuoteToInvoice } from '@/app/actions/invoices'
 import { convertQuoteToJob } from '@/app/actions/jobs'
 
@@ -48,12 +48,15 @@ export function QuoteDetail({ quote, items, autoSend }: { quote: Quote; items: Q
   const [convertingJob, startConvertJob] = useTransition()
   const [duping, startDupe] = useTransition()
   const [archiving, startArchive] = useTransition()
+  const [unarchiving, startUnarchive] = useTransition()
   const [sending, startSend] = useTransition()
   const [copied, setCopied] = useState(false)
   const [showSendSheet, setShowSendSheet] = useState(autoSend ?? false)
   const [showMore, setShowMore] = useState(false)
   const [sentToast, setSentToast] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
+  const [undoArchiveVisible, setUndoArchiveVisible] = useState(false)
+  const [undoTimer, setUndoTimer] = useState<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => { if (autoSend) setShowSendSheet(true) }, [autoSend])
 
@@ -111,6 +114,29 @@ export function QuoteDetail({ quote, items, autoSend }: { quote: Quote; items: Q
           className="mx-5 mt-3 flex items-center gap-2 rounded-xl bg-blue-50 px-4 py-2.5 text-sm font-semibold text-blue-600"
         >
           <CheckCircle2 size={15} /> Cotización enviada
+        </motion.div>
+      )}
+
+      {/* Undo archive toast */}
+      {undoArchiveVisible && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+          className="mx-5 mt-3 flex items-center justify-between gap-3 rounded-xl bg-[var(--surface)] border border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] px-4 py-2.5"
+        >
+          <span className="text-sm text-[var(--text-secondary)]">Cotización archivada</span>
+          <button
+            disabled={unarchiving}
+            onClick={() => {
+              if (undoTimer) clearTimeout(undoTimer)
+              setUndoArchiveVisible(false)
+              startUnarchive(async () => {
+                await unarchiveQuote(quote.id)
+              })
+            }}
+            className="text-sm font-bold text-[var(--accent)] disabled:opacity-60"
+          >
+            {unarchiving ? 'Restaurando…' : 'Deshacer'}
+          </button>
         </motion.div>
       )}
 
@@ -294,12 +320,24 @@ export function QuoteDetail({ quote, items, autoSend }: { quote: Quote; items: Q
               }} className="flex h-13 items-center gap-3 rounded-2xl bg-[var(--surface)] px-4 text-sm font-semibold text-[var(--text-primary)] disabled:opacity-60">
                 <CopyPlus size={16} color="var(--accent)" /> {duping ? 'Duplicando...' : 'Duplicar cotización'}
               </button>
+              {['sent', 'viewed'].includes(quote.status) && (
+                <button disabled={sending} onClick={() => {
+                  setShowMore(false)
+                  setShowSendSheet(true)
+                }} className="flex h-13 items-center gap-3 rounded-2xl bg-[var(--surface)] px-4 text-sm font-semibold text-[var(--text-primary)] disabled:opacity-60">
+                  <Mail size={16} color="var(--accent)" /> Reenviar cotización
+                </button>
+              )}
               <button disabled={archiving} onClick={() => {
-                if (!confirm('¿Archivar esta cotización?')) return
                 setShowMore(false)
                 startArchive(async () => {
                   await archiveQuote(quote.id)
-                  router.push('/app')
+                  setUndoArchiveVisible(true)
+                  const t = setTimeout(() => {
+                    setUndoArchiveVisible(false)
+                    router.push('/app')
+                  }, 5000)
+                  setUndoTimer(t)
                 })
               }} className="flex h-13 items-center gap-3 rounded-2xl bg-[var(--surface)] px-4 text-sm font-semibold text-red-500 disabled:opacity-60">
                 <Archive size={16} /> {archiving ? 'Archivando...' : 'Archivar cotización'}
@@ -347,6 +385,7 @@ export function QuoteDetail({ quote, items, autoSend }: { quote: Quote; items: Q
                       setShowSendSheet(false)
                       setSentToast(true)
                       setTimeout(() => setSentToast(false), 3000)
+                      window.dispatchEvent(new Event('quotronex:first-win'))
                     })
                   }}
                   className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-blue-600 text-sm font-bold text-white disabled:opacity-60"

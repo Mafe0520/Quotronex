@@ -138,6 +138,34 @@ export async function POST(req: NextRequest) {
       break
     }
 
+    case 'invoice.paid': {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const inv = event.data.object as any
+      const customerEmail = inv.customer_email as string | null
+      if (customerEmail && inv.billing_reason !== 'subscription_create') {
+        // subscription_create receipt handled by checkout.session.completed welcome email
+        const amountFormatted = `$${((inv.amount_paid ?? 0) / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+        const periodEnd = inv.lines?.data?.[0]?.period?.end
+          ? new Date(inv.lines.data[0].period.end * 1000).toLocaleDateString('es-US', { year: 'numeric', month: 'long', day: 'numeric' })
+          : ''
+        const subId = inv.subscription as string | null
+        let planName = 'Quotronex'
+        if (subId) {
+          const { data: sub } = await supabase.from('subscriptions').select('plan_id').eq('stripe_sub_id', subId).single()
+          if (sub?.plan_id) planName = sub.plan_id.charAt(0).toUpperCase() + sub.plan_id.slice(1).replace('_', ' ')
+        }
+        const { sendPaymentReceiptEmail } = await import('@/lib/email')
+        await sendPaymentReceiptEmail({
+          to: customerEmail,
+          ownerName: inv.customer_name ?? customerEmail.split('@')[0],
+          planName,
+          amountFormatted,
+          periodEnd,
+        }).catch(() => null)
+      }
+      break
+    }
+
     case 'invoice.payment_failed': {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const invoice = event.data.object as any

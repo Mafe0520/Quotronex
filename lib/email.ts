@@ -225,3 +225,61 @@ export async function sendInvoiceEmail({
     html: invoiceEmailHtml({ businessName, clientName, invoiceNumber, totalFormatted, invoiceUrl, dueDate: dueDateFormatted }),
   })
 }
+
+export async function sendPaymentReceiptEmail({
+  to,
+  ownerName,
+  planName,
+  amountFormatted,
+  periodEnd,
+}: {
+  to: string
+  ownerName: string
+  planName: string
+  amountFormatted: string
+  periodEnd: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: `Recibo de pago — ${amountFormatted} · Quotronex`,
+    html: `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Recibo de pago</title></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="min-height:100vh;background:#f3f4f6;">
+    <tr><td align="center" style="padding:40px 16px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.06);">
+        <tr><td style="background:#111827;padding:32px 36px;">
+          <div style="display:inline-flex;align-items:center;gap:8px;">
+            <div style="width:20px;height:20px;background:#34d399;border-radius:4px;"></div>
+            <span style="color:#ffffff;font-size:15px;font-weight:700;">Quotronex</span>
+          </div>
+          <p style="margin:16px 0 0;color:#ffffff;font-size:22px;font-weight:900;">Pago recibido ✓</p>
+        </td></tr>
+        <tr><td style="padding:32px 36px;">
+          <p style="margin:0 0 8px;color:#374151;font-size:15px;">Hola <strong>${ownerName}</strong>,</p>
+          <p style="margin:0 0 24px;color:#6b7280;font-size:14px;line-height:1.6;">
+            Tu pago de <strong style="color:#111827;">${amountFormatted}</strong> para el plan <strong style="color:#111827;">${planName}</strong>
+            fue procesado correctamente. Tu próxima factura vence el <strong style="color:#111827;">${periodEnd}</strong>.
+          </p>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td align="center" style="padding:8px 0 24px;">
+              <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://quotronex.com'}/app/settings"
+                 style="display:inline-block;background:#059669;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:12px;">
+                Ir a mi cuenta →
+              </a>
+            </td></tr>
+          </table>
+          <p style="margin:0;color:#9ca3af;font-size:12px;text-align:center;">Gracias por ser parte de Quotronex.</p>
+        </td></tr>
+        <tr><td style="background:#f9fafb;border-top:1px solid #f3f4f6;padding:20px 36px;text-align:center;">
+          <p style="margin:0;color:#d1d5db;font-size:11px;">Quotronex · quotronex.com</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
+  })
+}

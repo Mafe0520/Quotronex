@@ -14,18 +14,21 @@ export function PWAInit() {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Register service worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
 
-    // Capture install prompt
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      // Show banner after 10s on first visit
-      const dismissed = sessionStorage.getItem('pwa-dismissed');
-      if (!dismissed) setTimeout(() => setShowBanner(true), 10000);
+      const dismissed = localStorage.getItem('pwa-dismissed');
+      if (!dismissed) {
+        // Show on first-win event or after 30s fallback
+        const onWin = () => setShowBanner(true);
+        window.addEventListener('quotronex:first-win', onWin, { once: true });
+        const t = setTimeout(() => setShowBanner(true), 30000);
+        return () => { window.removeEventListener('quotronex:first-win', onWin); clearTimeout(t); };
+      }
     };
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
@@ -42,7 +45,7 @@ export function PWAInit() {
   }
 
   function dismiss() {
-    sessionStorage.setItem('pwa-dismissed', '1');
+    localStorage.setItem('pwa-dismissed', '1');
     setShowBanner(false);
   }
 

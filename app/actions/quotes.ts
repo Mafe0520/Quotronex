@@ -144,6 +144,14 @@ export async function archiveQuote(quoteId: string): Promise<{ error?: string }>
   return {}
 }
 
+export async function unarchiveQuote(quoteId: string): Promise<{ error?: string }> {
+  const { supabase } = await getBusinessId()
+  const { error } = await supabase.from('quotes').update({ archived_at: null }).eq('id', quoteId)
+  if (error) return { error: error.message }
+  revalidatePath('/app')
+  return {}
+}
+
 export async function updateQuoteMeta(quoteId: string, data: { notes?: string; expires_at?: string | null; deposit_cents?: number | null; deposit_pct?: number | null }): Promise<{ error?: string }> {
   const { supabase } = await getBusinessId()
   const { error } = await supabase.from('quotes').update({ ...data, updated_at: new Date().toISOString() }).eq('id', quoteId)
