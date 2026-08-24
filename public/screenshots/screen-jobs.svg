@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 814" width="375" height="814">
+  <rect width="375" height="814" fill="#0a0a14"/>
+  <!-- Status bar -->
+  <text x="20" y="24" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">9:41</text>
+  <rect x="290" y="14" width="46" height="14" rx="7" fill="#2a2a3e"/>
+  <rect x="291" y="15" width="38" height="12" rx="6" fill="#4ade80"/>
+
+  <!-- Header -->
+  <rect x="0" y="38" width="375" height="54" fill="#12121e"/>
+  <rect x="0" y="91" width="375" height="1" fill="#2a2a3e"/>
+  <text x="20" y="70" fill="#f0f0f8" font-size="18" font-weight="700" font-family="system-ui,sans-serif">Trabajos</text>
+  <rect x="315" y="52" width="44" height="28" rx="14" fill="#4ade80"/>
+  <text x="337" y="71" fill="#0a0a14" font-size="18" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">+</text>
+
+  <!-- Filter tabs -->
+  <rect x="16" y="102" width="343" height="34" rx="10" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <rect x="19" y="105" width="80" height="28" rx="8" fill="#4ade80"/>
+  <text x="59" y="124" fill="#0a0a14" font-size="11" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">Activos</text>
+  <text x="145" y="124" fill="#505068" font-size="11" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">En espera</text>
+  <text x="232" y="124" fill="#505068" font-size="11" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">Completados</text>
+  <text x="325" y="124" fill="#505068" font-size="11" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">Todos</text>
+
+  <!-- Job card 1 - In progress -->
+  <rect x="16" y="148" width="343" height="100" rx="14" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <rect x="16" y="148" width="4" height="100" rx="2" fill="#4ade80"/>
+  <text x="32" y="170" fill="#f0f0f8" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Pintura exterior casa</text>
+  <rect x="280" y="156" width="68" height="22" rx="11" fill="#1a3a20"/>
+  <text x="314" y="171" fill="#4ade80" font-size="10" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">En curso</text>
+  <text x="32" y="190" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">Carlos M. · 4821 Oak St</text>
+  <!-- Progress bar -->
+  <rect x="32" y="206" width="200" height="4" rx="2" fill="#2a2a3e"/>
+  <rect x="32" y="206" width="130" height="4" rx="2" fill="#4ade80"/>
+  <text x="240" y="211" fill="#4ade80" font-size="11" font-weight="600" font-family="system-ui,sans-serif">65%</text>
+  <text x="32" y="232" fill="#505068" font-size="11" font-family="system-ui,sans-serif">👷 Ramírez, López · Hoy 8am–5pm</text>
+
+  <!-- Job card 2 - Scheduled -->
+  <rect x="16" y="260" width="343" height="100" rx="14" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <rect x="16" y="260" width="4" height="100" rx="2" fill="#60a5fa"/>
+  <text x="32" y="282" fill="#f0f0f8" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Instalación panel eléctrico</text>
+  <rect x="270" y="268" width="78" height="22" rx="11" fill="#1a2040"/>
+  <text x="309" y="283" fill="#60a5fa" font-size="10" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">Programado</text>
+  <text x="32" y="302" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">Mike T. · 1340 NW 7th Ave</text>
+  <text x="32" y="322" fill="#505068" font-size="11" font-family="system-ui,sans-serif">📅 Mañana · $3,600</text>
+  <text x="32" y="342" fill="#505068" font-size="11" font-family="system-ui,sans-serif">👷 Torres — sin asignar</text>
+
+  <!-- Job card 3 -->
+  <rect x="16" y="372" width="343" height="100" rx="14" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <rect x="16" y="372" width="4" height="100" rx="2" fill="#f59e0b"/>
+  <text x="32" y="394" fill="#f0f0f8" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Cambio tubería principal</text>
+  <rect x="278" y="380" width="70" height="22" rx="11" fill="#2a2010"/>
+  <text x="313" y="395" fill="#f59e0b" font-size="10" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">En espera</text>
+  <text x="32" y="414" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">Ana R. · 992 Brickell Ave</text>
+  <text x="32" y="434" fill="#505068" font-size="11" font-family="system-ui,sans-serif">📅 Jue 28 · $1,420</text>
+  <text x="32" y="454" fill="#505068" font-size="11" font-family="system-ui,sans-serif">⏳ Esperando aprobación cliente</text>
+
+  <!-- Job card 4 - Completed -->
+  <rect x="16" y="484" width="343" height="88" rx="14" fill="#12121e" stroke="#2a2a3e" stroke-width="1" opacity="0.7"/>
+  <rect x="16" y="484" width="4" height="88" rx="2" fill="#505068"/>
+  <text x="32" y="506" fill="#a0a0b8" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Reparación AC unidad 2</text>
+  <rect x="276" y="492" width="72" height="22" rx="11" fill="#1a1a2e"/>
+  <text x="312" y="507" fill="#505068" font-size="10" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">Completado</text>
+  <text x="32" y="526" fill="#505068" font-size="12" font-family="system-ui,sans-serif">Diana V. · Ayer · $890</text>
+  <text x="32" y="556" fill="#4ade80" font-size="11" font-weight="600" font-family="system-ui,sans-serif">✓ Factura enviada</text>
+
+  <!-- Bottom nav -->
+  <rect x="0" y="750" width="375" height="64" fill="#12121e"/>
+  <rect x="0" y="750" width="375" height="1" fill="#2a2a3e"/>
+  <text x="47" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Inicio</text>
+  <text x="125" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Cotizar</text>
+  <text x="203" y="790" fill="#4ade80" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Trabajos</text>
+  <text x="281" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Clientes</text>
+  <text x="328" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Más</text>
+  <rect x="186" y="752" width="34" height="2" rx="1" fill="#4ade80"/>
+</svg>

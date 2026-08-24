@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 814" width="375" height="814">
+  <rect width="375" height="814" fill="#0a0a14"/>
+  <!-- Status bar -->
+  <text x="20" y="24" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">9:41</text>
+  <rect x="290" y="14" width="46" height="14" rx="7" fill="#2a2a3e"/>
+  <rect x="291" y="15" width="42" height="12" rx="6" fill="#4ade80"/>
+
+  <!-- Header -->
+  <rect x="0" y="38" width="375" height="54" fill="#12121e"/>
+  <rect x="0" y="91" width="375" height="1" fill="#2a2a3e"/>
+  <text x="20" y="62" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">← Trabajos</text>
+  <text x="20" y="82" fill="#f0f0f8" font-size="17" font-weight="700" font-family="system-ui,sans-serif">Factura #F-0089</text>
+  <rect x="278" y="56" width="80" height="26" rx="13" fill="#1a3a20"/>
+  <text x="318" y="74" fill="#4ade80" font-size="11" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">✓ Pagada</text>
+
+  <!-- Invoice card -->
+  <rect x="16" y="106" width="343" height="160" rx="14" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <!-- Logo area -->
+  <rect x="30" y="120" width="32" height="32" rx="8" fill="#4ade80"/>
+  <text x="46" y="141" fill="#0a0a14" font-size="14" font-weight="800" font-family="system-ui,sans-serif" text-anchor="middle">Q</text>
+  <text x="72" y="134" fill="#f0f0f8" font-size="13" font-weight="700" font-family="system-ui,sans-serif">Tu Empresa LLC</text>
+  <text x="72" y="150" fill="#505068" font-size="11" font-family="system-ui,sans-serif">Miami, FL 33101</text>
+  <rect x="30" y="162" width="303" height="1" fill="#2a2a3e"/>
+  <!-- Client -->
+  <text x="30" y="182" fill="#505068" font-size="11" font-family="system-ui,sans-serif">PARA</text>
+  <text x="200" y="182" fill="#505068" font-size="11" font-family="system-ui,sans-serif">FECHA</text>
+  <text x="30" y="198" fill="#f0f0f8" font-size="13" font-weight="600" font-family="system-ui,sans-serif">Carlos Mendoza</text>
+  <text x="200" y="198" fill="#f0f0f8" font-size="13" font-weight="600" font-family="system-ui,sans-serif">Ago 24, 2026</text>
+  <text x="30" y="214" fill="#505068" font-size="11" font-family="system-ui,sans-serif">4821 Oak St, Miami FL</text>
+  <text x="200" y="214" fill="#505068" font-size="11" font-family="system-ui,sans-serif">Vence: Sep 7, 2026</text>
+  <rect x="30" y="226" width="303" height="1" fill="#2a2a3e"/>
+  <text x="30" y="244" fill="#505068" font-size="11" font-family="system-ui,sans-serif">Cotización: Q-0142 · Pintura exterior casa</text>
+
+  <!-- Line items -->
+  <rect x="16" y="278" width="343" height="196" rx="12" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <rect x="16" y="278" width="343" height="30" rx="12" fill="#1a1a2e"/>
+  <rect x="16" y="294" width="343" height="14" fill="#1a1a2e"/>
+  <text x="30" y="298" fill="#505068" font-size="10" font-weight="600" font-family="system-ui,sans-serif" letter-spacing="0.05em">DESCRIPCIÓN</text>
+  <text x="350" y="298" fill="#505068" font-size="10" font-weight="600" font-family="system-ui,sans-serif" text-anchor="end" letter-spacing="0.05em">IMPORTE</text>
+  <rect x="16" y="308" width="343" height="1" fill="#2a2a3e"/>
+
+  <text x="30" y="328" fill="#f0f0f8" font-size="13" font-family="system-ui,sans-serif">Pintura interior — 3 cuartos</text>
+  <text x="350" y="328" fill="#f0f0f8" font-size="13" font-family="system-ui,sans-serif" text-anchor="end">$1,200</text>
+  <rect x="16" y="338" width="343" height="1" fill="#2a2a3e"/>
+
+  <text x="30" y="358" fill="#f0f0f8" font-size="13" font-family="system-ui,sans-serif">Mano de obra (8h × $65)</text>
+  <text x="350" y="358" fill="#f0f0f8" font-size="13" font-family="system-ui,sans-serif" text-anchor="end">$520</text>
+  <rect x="16" y="368" width="343" height="1" fill="#2a2a3e"/>
+
+  <text x="30" y="388" fill="#f0f0f8" font-size="13" font-family="system-ui,sans-serif">Materiales y pintura</text>
+  <text x="350" y="388" fill="#f0f0f8" font-size="13" font-family="system-ui,sans-serif" text-anchor="end">$380</text>
+  <rect x="16" y="398" width="343" height="1" fill="#2a2a3e"/>
+
+  <!-- Subtotals -->
+  <text x="220" y="420" fill="#505068" font-size="12" font-family="system-ui,sans-serif">Subtotal</text>
+  <text x="350" y="420" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif" text-anchor="end">$2,100</text>
+  <text x="220" y="440" fill="#505068" font-size="12" font-family="system-ui,sans-serif">Tax (0%)</text>
+  <text x="350" y="440" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif" text-anchor="end">$0</text>
+  <rect x="16" y="450" width="343" height="1" fill="#2a2a3e"/>
+  <text x="220" y="468" fill="#f0f0f8" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Total</text>
+  <text x="350" y="468" fill="#4ade80" font-size="18" font-weight="800" font-family="system-ui,sans-serif" text-anchor="end">$2,100</text>
+
+  <!-- Payment confirmation -->
+  <rect x="16" y="486" width="343" height="52" rx="12" fill="#1a3a20"/>
+  <text x="30" y="508" fill="#4ade80" font-size="13" font-weight="700" font-family="system-ui,sans-serif">✓ Pago recibido — $2,100</text>
+  <text x="30" y="526" fill="#4ade80" font-size="11" font-family="system-ui,sans-serif" opacity="0.7">Stripe · Visa ···4242 · Ago 24, 2026 · 3:22pm</text>
+
+  <!-- Action buttons -->
+  <rect x="16" y="550" width="166" height="46" rx="12" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1"/>
+  <text x="99" y="578" fill="#a0a0b8" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">Descargar PDF</text>
+  <rect x="193" y="550" width="166" height="46" rx="12" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1"/>
+  <text x="276" y="578" fill="#a0a0b8" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">Reenviar email</text>
+
+  <!-- Bottom nav -->
+  <rect x="0" y="750" width="375" height="64" fill="#12121e"/>
+  <rect x="0" y="750" width="375" height="1" fill="#2a2a3e"/>
+  <text x="47" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Inicio</text>
+  <text x="125" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Cotizar</text>
+  <text x="203" y="790" fill="#4ade80" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Trabajos</text>
+  <text x="281" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Clientes</text>
+  <text x="328" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Más</text>
+  <rect x="186" y="752" width="34" height="2" rx="1" fill="#4ade80"/>
+</svg>

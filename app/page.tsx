@@ -92,10 +92,10 @@ const COPY = {
       kicker: 'INSIDE THE APP',
       titulo: 'Everything you need, [acento]nothing you don\'t[/acento]',
       frames: [
-        { label: 'Your quote, ready before you walk away', nombrePantalla: 'Voice Quote' },
-        { label: 'All your jobs, in one place',            nombrePantalla: 'Jobs'        },
-        { label: 'Assign work to your crew',               nombrePantalla: 'Crew'        },
-        { label: 'One tap to invoice',                     nombrePantalla: 'Invoice'     },
+        { label: 'Your quote, ready before you walk away', src: '/screenshots/screen-quote.svg',   alt: 'Quote screen'   },
+        { label: 'All your jobs, in one place',            src: '/screenshots/screen-jobs.svg',    alt: 'Jobs screen'    },
+        { label: 'Assign work to your crew',               src: '/screenshots/screen-crew.svg',    alt: 'Crew screen'    },
+        { label: 'One tap to invoice',                     src: '/screenshots/screen-invoice.svg', alt: 'Invoice screen' },
       ],
     },
     oferta: {
@@ -299,10 +299,10 @@ const COPY = {
       kicker: 'DENTRO DE LA APP',
       titulo: 'Todo lo que necesitas, [acento]nada que no vas a usar[/acento]',
       frames: [
-        { label: 'Tu cotización, lista antes de que te vayas', nombrePantalla: 'Cotización'  },
-        { label: 'Todos tus trabajos, en un solo lugar',       nombrePantalla: 'Trabajos'    },
-        { label: 'Asigna trabajo a tu equipo',                 nombrePantalla: 'Equipo'      },
-        { label: 'Una sola pantalla para facturar',            nombrePantalla: 'Factura'     },
+        { label: 'Tu cotización, lista antes de que te vayas', src: '/screenshots/screen-quote.svg',   alt: 'Pantalla de cotización'  },
+        { label: 'Todos tus trabajos, en un solo lugar',       src: '/screenshots/screen-jobs.svg',    alt: 'Pantalla de trabajos'    },
+        { label: 'Asigna trabajo a tu equipo',                 src: '/screenshots/screen-crew.svg',    alt: 'Pantalla de equipo'      },
+        { label: 'Una sola pantalla para facturar',            src: '/screenshots/screen-invoice.svg', alt: 'Pantalla de factura'     },
       ],
     },
     oferta: {
