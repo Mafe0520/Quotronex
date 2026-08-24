@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { motion } from 'motion/react'
-import { Download, CheckCircle, AlertTriangle, Calendar, BadgeDollarSign, Plus, Minus } from 'lucide-react'
+import { motion, AnimatePresence } from 'motion/react'
+import { Download, CheckCircle, AlertTriangle, Calendar, BadgeDollarSign, Plus, Minus, ThumbsUp, ThumbsDown, X } from 'lucide-react'
 
 const STATUS_ES: Record<string, { label: string; color: string }> = {
   draft:     { label: 'Borrador',   color: 'bg-gray-100 text-gray-600' },
@@ -40,6 +40,42 @@ type Quote = {
 export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteItem[] }) {
   const [downloading, setDownloading] = useState(false)
   const [selectedOptionals, setSelectedOptionals] = useState<Set<string>>(new Set())
+  // Accept flow
+  const [acceptName, setAcceptName] = useState('')
+  const [accepting, setAccepting] = useState(false)
+  const [localStatus, setLocalStatus] = useState(quote.status)
+  const [localAcceptedName, setLocalAcceptedName] = useState(quote.accepted_name)
+  // Decline flow
+  const [showDecline, setShowDecline] = useState(false)
+  const [declineReason, setDeclineReason] = useState('')
+  const [declining, setDeclining] = useState(false)
+
+  async function handleAccept(e: React.FormEvent) {
+    e.preventDefault()
+    if (!acceptName.trim()) return
+    setAccepting(true)
+    await fetch(`/api/quotes/${quote.id}/accept`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: acceptName.trim() }),
+    })
+    setLocalStatus('accepted')
+    setLocalAcceptedName(acceptName.trim())
+    setAccepting(false)
+  }
+
+  async function handleDecline(e: React.FormEvent) {
+    e.preventDefault()
+    setDeclining(true)
+    await fetch(`/api/quotes/${quote.id}/accept`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ decline: true, reason: declineReason.trim() }),
+    })
+    setLocalStatus('declined')
+    setDeclining(false)
+    setShowDecline(false)
+  }
 
   // Mark as viewed on mount
   useEffect(() => {
@@ -248,7 +284,8 @@ export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteIt
     }
   }
 
-  const statusMeta = STATUS_ES[quote.status] ?? STATUS_ES.draft
+  const statusMeta = STATUS_ES[localStatus] ?? STATUS_ES.draft
+  const canAct = localStatus === 'sent' || localStatus === 'viewed'
 
   return (
     <>
@@ -271,10 +308,18 @@ export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteIt
         )}
 
         {/* Accepted banner */}
-        {quote.status === 'accepted' && (
+        {localStatus === 'accepted' && (
           <div className="no-print mx-auto mb-4 max-w-2xl flex items-center gap-3 rounded-xl bg-green-50 border border-green-100 px-4 py-3">
             <CheckCircle size={16} className="text-green-600 shrink-0" />
-            <p className="text-sm font-semibold text-green-700">Esta cotización fue aceptada{quote.accepted_name ? ` por ${quote.accepted_name}` : ''}</p>
+            <p className="text-sm font-semibold text-green-700">Esta cotización fue aceptada{localAcceptedName ? ` por ${localAcceptedName}` : ''}</p>
+          </div>
+        )}
+
+        {/* Declined banner */}
+        {localStatus === 'declined' && (
+          <div className="no-print mx-auto mb-4 max-w-2xl flex items-center gap-3 rounded-xl bg-red-50 border border-red-100 px-4 py-3">
+            <X size={16} className="text-red-500 shrink-0" />
+            <p className="text-sm font-semibold text-red-700">Cotización rechazada</p>
           </div>
         )}
 
@@ -469,6 +514,77 @@ export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteIt
             </div>
           </div>
         )}
+
+        {/* Accept / Decline CTA */}
+        <AnimatePresence>
+          {canAct && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="no-print mx-auto mt-6 max-w-2xl">
+
+              {/* Accept form */}
+              {!showDecline && (
+                <div className="rounded-2xl border-2 border-emerald-500 bg-white p-6 shadow-lg">
+                  <h2 className="text-base font-bold text-gray-900 mb-1">¿Listo para aprobar esta cotización?</h2>
+                  <p className="text-sm text-gray-500 mb-4">Escribe tu nombre para confirmar la aprobación. Tu nombre funciona como firma digital.</p>
+                  <form onSubmit={handleAccept} className="flex flex-col gap-3">
+                    <input
+                      type="text"
+                      placeholder="Tu nombre completo"
+                      value={acceptName}
+                      onChange={e => setAcceptName(e.target.value)}
+                      required
+                      className="h-12 w-full rounded-xl border border-gray-200 px-4 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                    />
+                    <div className="flex gap-2">
+                      <button type="submit" disabled={accepting || !acceptName.trim()}
+                        className="flex flex-1 h-12 items-center justify-center gap-2 rounded-xl bg-emerald-600 text-sm font-bold text-white disabled:opacity-60">
+                        {accepting
+                          ? <svg className="size-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity=".25"/><path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>
+                          : <><ThumbsUp size={15} /> Aprobar cotización</>}
+                      </button>
+                      <button type="button" onClick={() => setShowDecline(true)}
+                        className="flex h-12 items-center justify-center gap-1.5 rounded-xl border border-gray-200 px-4 text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <ThumbsDown size={14} /> Rechazar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* Decline form */}
+              {showDecline && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="rounded-2xl border-2 border-red-200 bg-white p-6 shadow-lg">
+                  <h2 className="text-base font-bold text-gray-900 mb-1">¿Rechazar esta cotización?</h2>
+                  <p className="text-sm text-gray-500 mb-4">Opcional: cuéntanos el motivo para que podamos mejorar.</p>
+                  <form onSubmit={handleDecline} className="flex flex-col gap-3">
+                    <textarea
+                      placeholder="Ej. El precio está fuera de mi presupuesto (opcional)"
+                      value={declineReason}
+                      onChange={e => setDeclineReason(e.target.value)}
+                      rows={3}
+                      className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-red-400 resize-none"
+                    />
+                    <div className="flex gap-2">
+                      <button type="submit" disabled={declining}
+                        className="flex flex-1 h-12 items-center justify-center gap-2 rounded-xl bg-red-500 text-sm font-bold text-white disabled:opacity-60">
+                        {declining
+                          ? <svg className="size-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity=".25"/><path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>
+                          : 'Confirmar rechazo'}
+                      </button>
+                      <button type="button" onClick={() => setShowDecline(false)}
+                        className="flex h-12 items-center justify-center rounded-xl border border-gray-200 px-4 text-sm text-gray-500 hover:bg-gray-50">
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
     </>

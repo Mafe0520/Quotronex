@@ -19,6 +19,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ ok: true })
   }
 
+  // Decline flow
+  if (body.decline) {
+    await db.from('quotes').update({
+      status: 'declined',
+      declined_at: new Date().toISOString(),
+      decline_reason: body.reason?.trim() || null,
+    }).eq('id', id).in('status', ['sent', 'viewed'])
+    return NextResponse.json({ ok: true })
+  }
+
   const { name } = body
   if (!name?.trim()) return NextResponse.json({ error: 'Name required' }, { status: 400 })
 
