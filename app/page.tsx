@@ -233,10 +233,9 @@ const COPY = {
     },
     footer: {
       enlaces: [
-        { label: 'Privacy Policy',   href: '/privacy'      },
-        { label: 'Terms of Service', href: '/terms'        },
-        { label: 'Refund Policy',    href: '/refunds'      },
-        { label: 'AI Disclosure',    href: '/ai-disclosure' },
+        { label: 'Privacy Policy',   href: '/legal/privacy'  },
+        { label: 'Terms of Service', href: '/legal/terms'    },
+        { label: 'Refund Policy',    href: '/legal/refunds'  },
       ],
     },
   },
@@ -440,9 +439,9 @@ const COPY = {
     },
     footer: {
       enlaces: [
-        { label: 'Política de privacidad', href: '/privacy'       },
-        { label: 'Términos de uso',         href: '/terms'         },
-        { label: 'Política de reembolso',   href: '/refunds'       },
+        { label: 'Política de privacidad', href: '/legal/privacy'  },
+        { label: 'Términos de uso',         href: '/legal/terms'   },
+        { label: 'Política de reembolso',   href: '/legal/refunds' },
         { label: 'Aviso de IA',             href: '/ai-disclosure' },
       ],
     },
