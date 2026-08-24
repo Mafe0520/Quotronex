@@ -15,6 +15,7 @@ import {
 import { addExpense, deleteExpense } from '@/app/actions/expenses';
 import { createClient } from '@supabase/supabase-js';
 import { JobNotes } from '@/components/app/jobs/JobNotes';
+import { JobAssignments } from '@/components/app/jobs/JobAssignments';
 
 const supabasePub = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -87,6 +88,8 @@ export function JobDetailClient({
   timeEntries: initialTimeEntries = [],
   jobNotes: initialNotes = [],
   canSeePrivate = false,
+  assignments = [],
+  allMembers = [],
 }: {
   job: Job;
   quoteItems: QuoteItem[];
@@ -96,6 +99,8 @@ export function JobDetailClient({
   timeEntries?: TimeEntry[];
   jobNotes?: { id: string; body: string; is_private: boolean; created_at: string; author_id: string | null }[];
   canSeePrivate?: boolean;
+  assignments?: { id: string; user_id: string; member: { name: string | null; email: string | null; role: string } | null }[];
+  allMembers?: { id: string; user_id: string; name: string | null; email: string | null; role: string }[];
 }) {
   const [job, setJob] = useState(initialJob);
   const [photos, setPhotos] = useState(initialPhotos);
@@ -457,6 +462,17 @@ export function JobDetailClient({
                   </span>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Team assignments */}
+          {allMembers && allMembers.length > 0 && (
+            <div className="rounded-2xl bg-[var(--surface)] p-4">
+              <JobAssignments
+                jobId={job.id}
+                initialAssignments={assignments ?? []}
+                allMembers={allMembers}
+              />
             </div>
           )}
 

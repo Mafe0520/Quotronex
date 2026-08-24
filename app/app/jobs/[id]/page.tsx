@@ -12,7 +12,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
   const { data: bizIds } = await supabase.rpc('get_my_business_ids');
   const businessId = bizIds?.[0] ?? null;
 
-  const [{ data: job }, { data: rawPhotos }, { data: changeOrders }, { data: expenses }, { data: timeEntries }, { data: jobNotes }, { data: callerMember }] = await Promise.all([
+  const [{ data: job }, { data: rawPhotos }, { data: changeOrders }, { data: expenses }, { data: timeEntries }, { data: jobNotes }, { data: callerMember }, { data: assignments }, { data: allMembers }] = await Promise.all([
     supabase
       .from('jobs')
       .select('id, title, status, notes, start_date, end_date, created_at, archived_at, quote_id, flags, completion_summary, warranty_notes, completed_at, quotes(id, total_cents, clients(id, name, phone, email))')
@@ -46,6 +46,10 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
     businessId
       ? supabase.from('business_members').select('role').eq('business_id', businessId).eq('user_id', user.id).single()
       : { data: null },
+    supabase.from('job_assignments').select('id, user_id, member:business_members!job_assignments_user_id_fkey(name, email, role)').eq('job_id', id),
+    businessId
+      ? supabase.from('business_members').select('id, user_id, name, email, role').eq('business_id', businessId).order('name')
+      : { data: [] },
   ]);
 
   if (!job) notFound();
@@ -71,6 +75,8 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
       timeEntries={timeEntries ?? []}
       jobNotes={(jobNotes ?? []) as { id: string; body: string; is_private: boolean; created_at: string; author_id: string | null }[]}
       canSeePrivate={canSeePrivate}
+      assignments={(assignments ?? []) as any[]}
+      allMembers={(allMembers ?? []) as { id: string; user_id: string; name: string | null; email: string | null; role: string }[]}
     />
   );
 }
