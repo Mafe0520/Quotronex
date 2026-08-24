@@ -20,7 +20,10 @@ export async function GET(request: Request) {
   const type = searchParams.get('type') as EmailOtpType | null;
   if (token_hash && type) {
     const { error } = await supabase.auth.verifyOtp({ token_hash, type });
-    if (!error) return NextResponse.redirect(`${origin}${next}`);
+    if (!error) {
+      const destination = type === 'recovery' ? '/reset-password' : next;
+      return NextResponse.redirect(`${origin}${destination}`);
+    }
   }
 
   // Falló — link inválido o expirado

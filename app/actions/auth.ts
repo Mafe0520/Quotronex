@@ -56,6 +56,21 @@ export async function signIn(email: string, password: string) {
   return { error: null, redirectTo };
 }
 
+export async function requestPasswordReset(email: string) {
+  const supabase = await createClient();
+  const redirectTo = `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=/reset-password`;
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+  if (error) return { error: 'No pudimos enviar el correo. Intenta de nuevo.' };
+  return { error: null };
+}
+
+export async function updatePassword(newPassword: string) {
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) return { error: 'No pudimos actualizar la contraseña. Intenta de nuevo.' };
+  return { error: null };
+}
+
 export async function resendConfirmation(email: string) {
   const supabase = await createClient();
   const { error } = await supabase.auth.resend({ type: 'signup', email });

@@ -58,7 +58,7 @@ export function Testimonios() {
   const t = TESTIMONIALS[lang];
 
   return (
-    <SectionShell elevacion="alt" ariaLabel={lang === 'es' ? 'Testimonios' : 'Testimonials'}>
+    <SectionShell elevacion="elevada" ariaLabel={lang === 'es' ? 'Testimonios' : 'Testimonials'}>
       <motion.div variants={contenedor} initial="hidden" whileInView="visible" viewport={VIEWPORT_ONCE}>
 
         <motion.div variants={item} className="text-center mb-8">
