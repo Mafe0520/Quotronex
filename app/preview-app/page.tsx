@@ -3,7 +3,7 @@ import { AppShell } from '@/components/app/AppShell';
 // TEMP preview route — remove before deploy
 export default function PreviewAppPage() {
   const mockUser = { id: 'preview', email: 'marco@example.com', firstName: 'Marco' };
-  const mockBusiness = { id: 'preview', name: 'Reyes Painting Co.', phone: null, logo_url: null };
+  const mockBusiness = { id: 'preview', name: 'Reyes Painting Co.', phone: null, email: null, logo_url: null };
   const mockQuotes = [
     {
       id: 'Q-1041',

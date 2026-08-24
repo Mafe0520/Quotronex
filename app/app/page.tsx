@@ -38,7 +38,7 @@ export default async function AppPage() {
 
   if (businessId) {
     const [bizRes, quotesRes, pbRes, invRes, jobsRes, clientsRes] = await Promise.all([
-      supabase.from('businesses').select('id, name, phone, logo_url').eq('id', businessId).single(),
+      supabase.from('businesses').select('id, name, phone, email, logo_url').eq('id', businessId).single(),
       supabase
         .from('quotes')
         .select('id, status, total_cents, created_at, clients(name), quote_items(name)')
@@ -94,7 +94,7 @@ export default async function AppPage() {
 }
 
 // Types inlined to keep page self-contained
-export type Business = { id: string; name: string; phone: string | null; logo_url: string | null };
+export type Business = { id: string; name: string; phone: string | null; email: string | null; logo_url: string | null };
 
 export type JobRow = {
   id: string;

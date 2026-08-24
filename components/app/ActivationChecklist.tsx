@@ -17,12 +17,16 @@ const STORAGE_KEY = 'quotly-checklist-dismissed';
 
 export function ActivationChecklist({
   hasBizPhone,
+  hasBizEmail,
+  hasLogo,
   priceBookCount,
   clientCount,
   sentQuoteCount,
   jobCount,
 }: {
   hasBizPhone: boolean;
+  hasBizEmail?: boolean;
+  hasLogo?: boolean;
   priceBookCount: number;
   clientCount: number;
   sentQuoteCount: number;
@@ -41,9 +45,11 @@ export function ActivationChecklist({
     {
       id: 'profile',
       label: 'Completa tu perfil',
-      sub: 'Agrega teléfono a tu negocio',
+      sub: hasBizPhone && hasBizEmail && hasLogo
+        ? 'Perfil completo ✓'
+        : [!hasLogo && 'logo', !hasBizPhone && 'teléfono', !hasBizEmail && 'correo'].filter(Boolean).join(', ') + ' pendiente',
       href: '/app/settings',
-      done: hasBizPhone,
+      done: !!hasBizPhone && !!hasBizEmail && !!hasLogo,
     },
     {
       id: 'pricebook',

@@ -143,6 +143,8 @@ function HomeTab({
       {/* Activation checklist — shown only to new users */}
       <ActivationChecklist
         hasBizPhone={!!business?.phone}
+        hasBizEmail={!!business?.email}
+        hasLogo={!!business?.logo_url}
         priceBookCount={priceBookItems.length}
         clientCount={clientCount}
         sentQuoteCount={quotes.filter(q => ['sent','viewed','accepted','converted'].includes(q.status)).length}
