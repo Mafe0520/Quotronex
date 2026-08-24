@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect } from 'react'
 import { motion } from 'motion/react'
 import { ChevronLeft, Send, Copy, CheckCircle2, Eye, ExternalLink, Mail, MessageSquare, FileCheck, Pencil, CopyPlus, Archive, Calendar, FileText, MoreHorizontal, Briefcase, AlertTriangle, Clock, BadgeDollarSign } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { updateQuoteStatus, duplicateQuote, archiveQuote, unarchiveQuote, sendQuote } from '@/app/actions/quotes'
+import { updateQuoteStatus, duplicateQuote, archiveQuote, unarchiveQuote, sendQuote, sendQuoteToSelf } from '@/app/actions/quotes'
 import { convertQuoteToInvoice } from '@/app/actions/invoices'
 import { convertQuoteToJob } from '@/app/actions/jobs'
 
@@ -57,6 +57,8 @@ export function QuoteDetail({ quote, items, autoSend }: { quote: Quote; items: Q
   const [sendError, setSendError] = useState<string | null>(null)
   const [undoArchiveVisible, setUndoArchiveVisible] = useState(false)
   const [undoTimer, setUndoTimer] = useState<ReturnType<typeof setTimeout> | null>(null)
+  const [sendingToSelf, startSendToSelf] = useTransition()
+  const [selfSentToast, setSelfSentToast] = useState(false)
 
   useEffect(() => { if (autoSend) setShowSendSheet(true) }, [autoSend])
 
@@ -369,6 +371,23 @@ export function QuoteDetail({ quote, items, autoSend }: { quote: Quote; items: Q
               </button>
             </div>
 
+            {/* Sanity warnings */}
+            {items.length === 0 && (
+              <div className="mb-3 flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-700">
+                <AlertTriangle size={13} className="shrink-0" /> Esta cotización no tiene ítems.
+              </div>
+            )}
+            {quote.total_cents === 0 && items.length > 0 && (
+              <div className="mb-3 flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-700">
+                <AlertTriangle size={13} className="shrink-0" /> El total es $0.00 — ¿revisaste los precios?
+              </div>
+            )}
+            {!quote.clients && (
+              <div className="mb-3 flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-700">
+                <AlertTriangle size={13} className="shrink-0" /> No hay cliente asignado.
+              </div>
+            )}
+
             {/* Send via email / SMS */}
             <div className="mb-4 flex flex-col gap-2">
               {sendError && (
@@ -421,7 +440,25 @@ export function QuoteDetail({ quote, items, autoSend }: { quote: Quote; items: Q
               className="flex h-13 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-base font-bold text-white [box-shadow:var(--shadow-cta)] disabled:opacity-50">
               {updating ? 'Guardando…' : '✓ Marcar como enviado'}
             </motion.button>
-            <button onClick={() => setShowSendSheet(false)} className="mt-3 w-full py-2 text-sm text-[var(--text-tertiary)]">Cancelar</button>
+
+            {/* Send to myself (test) */}
+            {selfSentToast ? (
+              <p className="mt-3 text-center text-xs font-semibold text-green-600">✓ Enviado a tu correo</p>
+            ) : (
+              <button
+                disabled={sendingToSelf}
+                onClick={() => startSendToSelf(async () => {
+                  await sendQuoteToSelf(quote.id)
+                  setSelfSentToast(true)
+                  setTimeout(() => setSelfSentToast(false), 4000)
+                })}
+                className="mt-3 w-full py-2 text-xs text-[var(--text-tertiary)] disabled:opacity-60"
+              >
+                {sendingToSelf ? 'Enviando…' : 'Enviarme una copia de prueba'}
+              </button>
+            )}
+
+            <button onClick={() => setShowSendSheet(false)} className="mt-1 w-full py-2 text-sm text-[var(--text-tertiary)]">Cancelar</button>
           </motion.div>
         </div>
       )}

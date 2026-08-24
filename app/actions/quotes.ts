@@ -228,6 +228,37 @@ export async function sendQuote(quoteId: string): Promise<{ ok?: boolean; error?
   return { ok: true }
 }
 
+export async function sendQuoteToSelf(quoteId: string): Promise<{ ok?: boolean; error?: string }> {
+  const { supabase } = await getBusinessId()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  const ownerEmail = user?.email
+  if (!ownerEmail) return { error: 'No se encontró tu correo.' }
+
+  const { data: quote } = await supabase
+    .from('quotes')
+    .select('id, total_cents, clients(name), businesses(name)')
+    .eq('id', quoteId)
+    .single()
+
+  if (!quote) return { error: 'Cotización no encontrada' }
+
+  const clientName = (quote.clients as { name: string } | null)?.name ?? 'Cliente'
+  const businessName = (quote.businesses as { name: string } | null)?.name ?? 'Mi Negocio'
+
+  const { sendQuoteEmail } = await import('@/lib/email')
+  const result = await sendQuoteEmail({
+    to: ownerEmail,
+    businessName,
+    clientName,
+    quoteId,
+    totalCents: quote.total_cents,
+  })
+
+  if (result.error) return { error: result.error.message }
+  return { ok: true }
+}
+
 export async function createClient_(name: string, email?: string, phone?: string, address?: string) {
   const { supabase, businessId } = await getBusinessId()
   const { data, error } = await supabase
