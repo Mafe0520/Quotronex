@@ -319,7 +319,7 @@ export function SettingsScreen({ user, business, members = [], invites = [], cal
   callerRole?: MemberRole;
 }) {
   const router = useRouter();
-  const [sheet, setSheet] = useState<'business' | 'password' | 'defaults' | null>(null);
+  const [sheet, setSheet] = useState<'business' | 'password' | 'defaults' | 'delete' | null>(null);
   const [signingOut, startSignOut] = useTransition();
 
   return (
@@ -397,6 +397,17 @@ export function SettingsScreen({ user, business, members = [], invites = [], cal
               <CreditCard size={13} /> Mejorar plan
             </motion.button>
           </div>
+          <motion.button whileTap={{ scale: 0.97 }}
+            onClick={async () => {
+              const res = await fetch('/api/stripe/portal', { method: 'POST' });
+              if (res.ok) {
+                const { url } = await res.json();
+                window.location.href = url;
+              }
+            }}
+            className="flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-[var(--border)] text-sm font-semibold text-[var(--text-secondary)]">
+            <CreditCard size={15} /> Administrar suscripción
+          </motion.button>
         </div>
 
         {/* More section */}
@@ -414,6 +425,34 @@ export function SettingsScreen({ user, business, members = [], invites = [], cal
 
         {/* App version */}
         <p className="text-center text-xs text-[var(--text-tertiary)]">Quotronex v0.1 · mafepa05@gmail.com</p>
+
+        {/* Delete account */}
+        {sheet !== 'delete' ? (
+          <motion.button whileTap={{ scale: 0.97 }}
+            onClick={() => setSheet('delete')}
+            className="flex h-11 w-full items-center justify-center gap-2 rounded-2xl text-sm font-semibold text-red-400">
+            Eliminar cuenta
+          </motion.button>
+        ) : (
+          <div className="rounded-2xl border border-red-200 bg-red-50 dark:bg-red-950/20 p-4 flex flex-col gap-3">
+            <p className="text-sm font-semibold text-red-700 dark:text-red-400">¿Eliminar tu cuenta permanentemente?</p>
+            <p className="text-xs text-red-500">Todos tus datos, cotizaciones, clientes y trabajos serán eliminados. Esta acción no se puede deshacer.</p>
+            <div className="flex gap-2">
+              <motion.button whileTap={{ scale: 0.97 }} onClick={() => setSheet(null)}
+                className="flex-1 h-10 rounded-xl border border-[var(--border)] text-sm font-semibold text-[var(--text-secondary)]">
+                Cancelar
+              </motion.button>
+              <motion.button whileTap={{ scale: 0.97 }}
+                onClick={async () => {
+                  await supabasePub.auth.signOut();
+                  window.location.href = '/login?deleted=1';
+                }}
+                className="flex-1 h-10 rounded-xl bg-red-600 text-sm font-bold text-white">
+                Sí, eliminar
+              </motion.button>
+            </div>
+          </div>
+        )}
 
         {/* Sign out */}
         <motion.button whileTap={{ scale: 0.97 }} disabled={signingOut}
