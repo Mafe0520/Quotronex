@@ -41,7 +41,7 @@ type Quote = {
   businesses: { name: string } | null
 }
 
-export function QuoteDetail({ quote, items, autoSend }: { quote: Quote; items: QuoteItem[]; autoSend?: boolean }) {
+export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId }: { quote: Quote; items: QuoteItem[]; autoSend?: boolean; linkedInvoiceId?: string | null }) {
   const router = useRouter()
   const [updating, startUpdate] = useTransition()
   const [converting, startConvert] = useTransition()
@@ -273,10 +273,16 @@ export function QuoteDetail({ quote, items, autoSend }: { quote: Quote; items: Q
           </div>
         )}
         {quote.status === 'converted' && (
-          <div className="mt-4 rounded-2xl bg-purple-50 p-4 flex items-center gap-2">
-            <FileCheck size={16} className="text-purple-600" />
-            <p className="text-sm font-bold text-purple-700">Factura creada</p>
-          </div>
+          <button
+            onClick={() => linkedInvoiceId ? router.push(`/app/invoices/${linkedInvoiceId}`) : undefined}
+            className={`mt-4 rounded-2xl bg-purple-50 p-4 flex items-center justify-between gap-2 w-full ${linkedInvoiceId ? 'hover:bg-purple-100' : ''}`}
+          >
+            <div className="flex items-center gap-2">
+              <FileCheck size={16} className="text-purple-600" />
+              <p className="text-sm font-bold text-purple-700">Factura creada</p>
+            </div>
+            {linkedInvoiceId && <span className="text-xs font-semibold text-purple-500">Ver →</span>}
+          </button>
         )}
       </div>
 

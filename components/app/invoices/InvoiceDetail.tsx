@@ -146,6 +146,14 @@ export function InvoiceDetail({ invoice }: { invoice: Invoice }) {
 
       <div className="flex-1 overflow-y-auto px-5 pb-40 pt-5 flex flex-col gap-5">
 
+        {/* Document chain — back to source quote */}
+        {quotesData?.id && (
+          <button onClick={() => router.push(`/app/quotes/${quotesData.id}`)}
+            className="flex items-center gap-2 text-xs text-[var(--text-tertiary)] hover:text-[var(--accent)] w-fit">
+            <FileText size={12} /> Ver cotización original
+          </button>
+        )}
+
         {/* Client + amount */}
         <div className="flex items-start justify-between gap-3">
           <div>
