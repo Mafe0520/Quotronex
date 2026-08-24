@@ -91,7 +91,7 @@ export function Oferta({
   const es = lang === 'es';
 
   const [billing, setBilling] = useState<'annual' | 'monthly'>('annual');
-  const [selected, setSelected] = useState<PlanId>('crew');
+  const [selected, setSelected] = useState<PlanId>('solo');
 
   const plan = PLAN_LIST.find(p => p.id === selected)!;
   const monthlyEquiv = billing === 'annual'
@@ -119,16 +119,16 @@ export function Oferta({
           <div className="rounded-[var(--radius-card)] border border-[var(--border-subtle)] bg-[var(--surface)] divide-y divide-[var(--border-subtle)] overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3.5">
               <span className="text-sm text-[var(--text-tertiary)]">
-                {es ? 'Otras apps de servicio de campo' : 'Other field service apps'}
+                Jobber
               </span>
               <span className="text-sm font-semibold text-[var(--text-secondary)] tabular-nums">
-                {es ? '$69–$149/mes · cobran por función' : '$69–$149/mo · charge per feature'}
+                {es ? '$149/mes · 3 usuarios · cobran por función' : '$149/mo · 3 users · charge per feature'}
               </span>
             </div>
             <div className="flex items-center justify-between px-5 py-3.5 bg-[color-mix(in_oklab,var(--accent)_5%,transparent)]">
-              <span className="text-sm font-bold text-[var(--text-primary)]">Quotronex</span>
+              <span className="text-sm font-bold text-[var(--text-primary)]">Quotronex Crew</span>
               <span className="text-sm font-bold text-[var(--accent)] tabular-nums">
-                {es ? 'Desde $29/mes · todo incluido' : 'From $29/mo · everything included'}
+                {es ? '$39/mes · 3 usuarios · todo incluido' : '$39/mo · 3 users · everything included'}
               </span>
             </div>
           </div>

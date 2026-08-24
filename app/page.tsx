@@ -26,6 +26,7 @@ import { CtaFinal } from '@/components/landing/CtaFinal';
 import { FooterLegal } from '@/components/landing/FooterLegal';
 import { StickyCtaMobile } from '@/components/landing/ui';
 import { Comparacion } from '@/components/landing/Comparacion';
+import { Testimonios } from '@/components/landing/Testimonios';
 import { RoiCalculator } from '@/components/landing/RoiCalculator';
 import { TimelineFlow, type TimelineStep } from '@/components/landing/TimelineFlow';
 import { FileText, Send, PenLine, CreditCard } from 'lucide-react';
@@ -46,7 +47,7 @@ const COPY = {
     ],
     hero: {
       h1:          '[acento]Quote in 30 seconds.[/acento] Land the job.',
-      subtitle:    "Describe the job. Quotronex builds the quote using your own prices — ready to send.",
+      subtitle:    "Your prices. Your voice. A professional quote in 30 seconds — before they call the next guy.",
       secondary:   'See how it works',
       socialProof: '14-day free trial · No charge until day 15 · Cancel anytime',
     },
@@ -99,7 +100,7 @@ const COPY = {
       ],
     },
     oferta: {
-      titulo: 'One fixed price. [acento]No surprises. Ever.[/acento]',
+      titulo: 'Half of Jobber\'s price. [acento]Twice the speed.[/acento]',
       badge:  'BEST VALUE',
       stack: {
         lineas: [
@@ -252,7 +253,7 @@ const COPY = {
     ],
     hero: {
       h1:          '[acento]Cotiza en 30 segundos.[/acento] Gana el trabajo.',
-      subtitle:    'Describe el trabajo. Quotronex genera la cotización con tus precios — lista para enviar.',
+      subtitle:    'Tus precios. Tu voz. Una cotización profesional en 30 segundos — antes de que llamen al siguiente.',
       secondary:   'Ver cómo funciona',
       socialProof: 'Prueba gratis 14 días · No se cobra hasta el día 15 · Cancela cuando quieras',
     },
@@ -305,7 +306,7 @@ const COPY = {
       ],
     },
     oferta: {
-      titulo: 'Un precio fijo. [acento]Sin sorpresas. Nunca.[/acento]',
+      titulo: 'La mitad del precio de Jobber. [acento]El doble de velocidad.[/acento]',
       badge:  'MEJOR VALOR',
       stack: {
         lineas: [
@@ -504,6 +505,9 @@ export default function LandingQuotronex() {
           textoMarked: p.textoMarked,
         }))}
       />
+
+      {/* 2b. TESTIMONIOS */}
+      <Testimonios />
 
       {/* 3. AGITACIÓN */}
       <Agitacion
