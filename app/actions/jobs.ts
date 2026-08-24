@@ -142,3 +142,16 @@ export async function deleteJobPhoto(photoId: string, jobId: string): Promise<{ 
   revalidatePath(`/app/jobs/${jobId}`);
   return {};
 }
+
+export async function createStandaloneJob(clientId: string, clientName: string): Promise<{ jobId?: string; error?: string }> {
+  const { supabase, businessId } = await getBusinessId();
+  const { data: job, error } = await supabase.from('jobs').insert({
+    business_id: businessId,
+    title: clientName,
+    status: 'scheduled',
+  }).select('id').single();
+  if (error) return { error: error.message };
+  revalidatePath('/app');
+  revalidatePath('/app/jobs');
+  redirect(`/app/jobs/${job.id}`);
+}

@@ -8,6 +8,8 @@ import {
   FolderOpen, Plus, MapPin, Receipt, Tag, MessageCircle, ArchiveRestore,
 } from 'lucide-react';
 import { archiveCustomer, reactivateCustomer } from '@/app/actions/clients';
+import { createStandaloneJob } from '@/app/actions/jobs';
+import { useTransition } from 'react';
 import { useT } from '@/lib/i18n';
 
 type Customer = { id: string; name: string; email: string | null; phone: string | null; address: string | null; notes: string | null; tags?: string[]; contact_pref?: string | null; archived_at?: string | null };
@@ -46,6 +48,7 @@ const fmtMoney = (c: number) => `$${(c / 100).toLocaleString('en-US', { minimumF
 
 export function CustomerDetail({ customer, projects, quotes = [], invoices = [] }: Props) {
   const router = useRouter();
+  const [creatingJob, startCreatingJob] = useTransition();
   const tr = useT();
   const initials = customer.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
 
@@ -227,14 +230,22 @@ export function CustomerDetail({ customer, projects, quotes = [], invoices = [] 
           )}
         </motion.div>
 
-        {/* Nueva cotización */}
-        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ ...t, delay: 0.15 }}>
+        {/* Actions */}
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ ...t, delay: 0.15 }}
+          className="flex gap-2">
           <Link
             href={`/app/quotes/new?clientId=${customer.id}`}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-sm font-bold text-white [box-shadow:var(--shadow-cta)]"
+            className="flex flex-1 h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-sm font-bold text-white [box-shadow:var(--shadow-cta)]"
           >
-            <Plus size={16} /> Nueva cotización para {customer.name.split(' ')[0]}
+            <Plus size={16} /> Nueva cotización
           </Link>
+          <button
+            onClick={() => startCreatingJob(async () => { await createStandaloneJob(customer.id, customer.name); })}
+            disabled={creatingJob}
+            className="flex flex-1 h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--surface)] border border-[color-mix(in_oklab,var(--text-tertiary)_25%,transparent)] text-sm font-bold text-[var(--text-primary)] disabled:opacity-50"
+          >
+            <Plus size={16} /> Nuevo trabajo
+          </button>
         </motion.div>
 
         {/* Cotizaciones */}
