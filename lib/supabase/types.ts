@@ -1040,6 +1040,36 @@ export type Database = {
           },
         ]
       }
+      quote_revisions: {
+        Row: {
+          id: string
+          quote_id: string
+          business_id: string
+          version_number: number
+          snapshot: Json
+          created_at: string
+          created_by: string | null
+        }
+        Insert: {
+          id?: string
+          quote_id: string
+          business_id: string
+          version_number?: number
+          snapshot: Json
+          created_at?: string
+          created_by?: string | null
+        }
+        Update: {
+          id?: string
+          quote_id?: string
+          business_id?: string
+          version_number?: number
+          snapshot?: Json
+          created_at?: string
+          created_by?: string | null
+        }
+        Relationships: []
+      }
       quotes: {
         Row: {
           accepted_at: string | null

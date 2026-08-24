@@ -192,6 +192,18 @@ export async function updateQuoteItems(quoteId: string, items: QuoteItemDraft[])
   }
 
   await supabase.from('quotes').update({ total_cents, updated_at: new Date().toISOString() }).eq('id', quoteId)
+
+  // Save revision snapshot (fire-and-forget; non-blocking)
+  supabase.from('quote_revisions').select('version_number').eq('quote_id', quoteId).order('version_number', { ascending: false }).limit(1).maybeSingle().then(({ data: last }) => {
+    const nextVersion = (last?.version_number ?? 0) + 1
+    supabase.from('quote_revisions').insert({
+      quote_id: quoteId,
+      business_id: businessId,
+      version_number: nextVersion,
+      snapshot: { total_cents, items } as unknown as import('@/lib/supabase/types').Database['public']['Tables']['quote_revisions']['Insert']['snapshot'],
+    }).then(() => {})
+  })
+
   revalidatePath(`/app/quotes/${quoteId}`)
   revalidatePath('/app')
   return {}

@@ -41,7 +41,7 @@ type Quote = {
   businesses: { name: string } | null
 }
 
-export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeRequest }: { quote: Quote; items: QuoteItem[]; autoSend?: boolean; linkedInvoiceId?: string | null; changeRequest?: { message: string; created_at: string } | null }) {
+export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeRequest, revisions = [] }: { quote: Quote; items: QuoteItem[]; autoSend?: boolean; linkedInvoiceId?: string | null; changeRequest?: { message: string; created_at: string } | null; revisions?: { id: string; version_number: number; created_at: string; snapshot: unknown }[] }) {
   const router = useRouter()
   const [updating, startUpdate] = useTransition()
   const [converting, startConvert] = useTransition()
@@ -53,6 +53,7 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
   const [copied, setCopied] = useState(false)
   const [showSendSheet, setShowSendSheet] = useState(autoSend ?? false)
   const [showMore, setShowMore] = useState(false)
+  const [showHistory, setShowHistory] = useState(false)
   const [sentToast, setSentToast] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
   const [undoArchiveVisible, setUndoArchiveVisible] = useState(false)
@@ -342,6 +343,12 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
               }} className="flex h-13 items-center gap-3 rounded-2xl bg-[var(--surface)] px-4 text-sm font-semibold text-[var(--text-primary)] disabled:opacity-60">
                 <CopyPlus size={16} color="var(--accent)" /> {duping ? 'Duplicando...' : 'Duplicar cotización'}
               </button>
+              {revisions.length > 0 && (
+                <button onClick={() => { setShowMore(false); setShowHistory(true) }}
+                  className="flex h-13 items-center gap-3 rounded-2xl bg-[var(--surface)] px-4 text-sm font-semibold text-[var(--text-primary)]">
+                  <Clock size={16} color="var(--accent)" /> Historial de versiones ({revisions.length})
+                </button>
+              )}
               {['sent', 'viewed'].includes(quote.status) && (
                 <button disabled={sending} onClick={() => {
                   setShowMore(false)
@@ -364,6 +371,35 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
               }} className="flex h-13 items-center gap-3 rounded-2xl bg-[var(--surface)] px-4 text-sm font-semibold text-red-500 disabled:opacity-60">
                 <Archive size={16} /> {archiving ? 'Archivando...' : 'Archivar cotización'}
               </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Version history sheet */}
+      {showHistory && (
+        <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={() => setShowHistory(false)}>
+          <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} transition={{ type: 'spring', stiffness: 400, damping: 40 }}
+            onClick={e => e.stopPropagation()}
+            className="w-full max-h-[70dvh] overflow-y-auto rounded-t-3xl bg-[var(--bg)] p-5 pb-8">
+            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[color-mix(in_oklab,var(--text-tertiary)_25%,transparent)]" />
+            <h2 className="text-base font-black [font-family:var(--font-display)] text-[var(--text-primary)] mb-4">Historial de versiones</h2>
+            <div className="flex flex-col gap-2">
+              {revisions.map((rev) => {
+                const snap = rev.snapshot as { total_cents?: number; items?: { name: string }[] } | null
+                const total = snap?.total_cents ?? 0
+                const firstItem = snap?.items?.[0]?.name
+                return (
+                  <div key={rev.id} className="rounded-2xl bg-[var(--surface)] p-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[var(--accent)]">v{rev.version_number}</span>
+                      <span className="text-xs text-[var(--text-tertiary)]">{new Date(rev.created_at).toLocaleDateString('es-MX', { dateStyle: 'medium' })} {new Date(rev.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                    <p className="mt-1 text-sm font-semibold text-[var(--text-primary)]">${(total / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                    {firstItem && <p className="text-xs text-[var(--text-tertiary)] truncate">{firstItem}{(snap?.items?.length ?? 0) > 1 ? ` +${(snap?.items?.length ?? 1) - 1} más` : ''}</p>}
+                  </div>
+                )
+              })}
             </div>
           </motion.div>
         </div>
