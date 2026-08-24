@@ -311,12 +311,18 @@ function Row({ Icon, label, sub, iconBg, iconColor, onClick, danger = false }: {
 }
 
 /* ── Main component ─────────────────────────────────────────────── */
-export function SettingsScreen({ user, business, members = [], invites = [], callerRole = 'owner' }: {
+type Subscription = {
+  plan_id: string; billing: string; status: string;
+  trial_ends_at: string | null; next_billing_at: string | null; is_founder: boolean;
+} | null
+
+export function SettingsScreen({ user, business, members = [], invites = [], callerRole = 'owner', subscription = null }: {
   user: { email: string; id: string };
   business: Business;
   members?: any[];
   invites?: any[];
   callerRole?: MemberRole;
+  subscription?: Subscription;
 }) {
   const router = useRouter();
   const [sheet, setSheet] = useState<'business' | 'password' | 'defaults' | 'delete' | null>(null);
@@ -385,17 +391,43 @@ export function SettingsScreen({ user, business, members = [], invites = [], cal
         <div className="flex flex-col gap-2">
           <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-tertiary)] px-1">Plan</p>
           <div className="rounded-2xl bg-[color-mix(in_oklab,var(--accent)_6%,transparent)] border border-[color-mix(in_oklab,var(--accent)_20%,transparent)] p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-bold text-[var(--text-primary)]">Plan Gratuito</p>
-                <p className="text-xs text-[var(--text-tertiary)]">Hasta 10 cotizaciones al mes</p>
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                {subscription ? (
+                  <>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-sm font-bold text-[var(--text-primary)] capitalize">
+                        Plan {subscription.plan_id.replace('_', ' ')} · {subscription.billing === 'annual' ? 'anual' : 'mensual'}
+                      </p>
+                      {subscription.is_founder && (
+                        <span className="rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-black text-amber-900 tracking-wide uppercase">Founding</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
+                      {subscription.status === 'trialing' && subscription.trial_ends_at
+                        ? `Prueba hasta ${new Date(subscription.trial_ends_at).toLocaleDateString('es-US', { month: 'long', day: 'numeric' })}`
+                        : subscription.next_billing_at
+                        ? `Próxima factura: ${new Date(subscription.next_billing_at).toLocaleDateString('es-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
+                        : subscription.status}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm font-bold text-[var(--text-primary)]">Plan Gratuito</p>
+                    <p className="text-xs text-[var(--text-tertiary)]">Hasta 10 cotizaciones al mes</p>
+                  </>
+                )}
               </div>
-              <span className="rounded-full bg-[var(--accent)] px-3 py-1 text-xs font-bold text-white">Free</span>
+              {!subscription && (
+                <span className="rounded-full bg-[var(--accent)] px-3 py-1 text-xs font-bold text-white shrink-0">Free</span>
+              )}
             </div>
-            <motion.button whileTap={{ scale: 0.97 }}
-              className="mt-3 flex h-9 w-full items-center justify-center gap-2 rounded-xl bg-[var(--accent)] text-xs font-bold text-white [box-shadow:var(--shadow-cta)]">
-              <CreditCard size={13} /> Mejorar plan
-            </motion.button>
+            {!subscription && (
+              <motion.button whileTap={{ scale: 0.97 }}
+                className="mt-3 flex h-9 w-full items-center justify-center gap-2 rounded-xl bg-[var(--accent)] text-xs font-bold text-white [box-shadow:var(--shadow-cta)]">
+                <CreditCard size={13} /> Mejorar plan
+              </motion.button>
+            )}
           </div>
           <motion.button whileTap={{ scale: 0.97 }}
             onClick={async () => {
