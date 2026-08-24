@@ -195,8 +195,8 @@ const COPY = {
       descFactura:    'Extra billing from winning 15% more jobs by quoting faster',
     },
     garantia: {
-      nombre:    'The 30-Day Money-Back Guarantee',
-      condicion: "Try Quotronex free for 14 days. If you pay and it doesn't work for you in the first [b]30 days[/b], email us and we refund every cent — no questions asked.",
+      nombre:    '14-Day Free Trial',
+      condicion: "Try Quotronex free for [b]14 days[/b]. No credit card required to start. Cancel before day 15 and you won't be charged anything.",
       pisoLegal: 'Processed securely by Stripe',
     },
     faq: {
@@ -221,7 +221,7 @@ const COPY = {
         },
         {
           pregunta:       'Can I cancel anytime?',
-          respuestaMarked: 'Yes. Monthly plans cancel before the next billing cycle. Annual plans come with our [b]30-day money-back guarantee[/b].',
+          respuestaMarked: 'Yes. Monthly plans cancel before the next billing cycle. Annual plans cancel before the next renewal date — [b]no penalty[/b].',
         },
       ],
     },
@@ -402,8 +402,8 @@ const COPY = {
       descFactura:    'Facturación extra al ganar 15% más trabajos cotizando más rápido',
     },
     garantia: {
-      nombre:    'Garantía de 7 días',
-      condicion: "Si pagas y no funciona para ti en los primeros [b]7 días[/b], escríbenos y te devolvemos cada centavo — sin preguntas.",
+      nombre:    'Prueba gratis 14 días',
+      condicion: "Prueba Quotronex gratis por [b]14 días[/b]. No necesitas tarjeta para empezar. Cancela antes del día 15 y no se te cobra nada.",
       pisoLegal: 'Procesado de forma segura por Stripe',
     },
     faq: {
@@ -428,7 +428,7 @@ const COPY = {
         },
         {
           pregunta:       '¿Puedo cancelar cuando quiera?',
-          respuestaMarked: 'Sí. Los planes mensuales se cancelan antes del próximo ciclo. Los planes anuales incluyen nuestra [b]garantía de 7 días[/b].',
+          respuestaMarked: 'Sí. Los planes mensuales se cancelan antes del próximo ciclo. Los planes anuales se cancelan antes de la próxima renovación — [b]sin penalización[/b].',
         },
       ],
     },
