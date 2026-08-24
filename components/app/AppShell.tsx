@@ -242,11 +242,11 @@ function HomeTab({
         </div>
       )}
 
-      {/* Recent quotes */}
+      {/* Recent quotes — "continue where you left off" */}
       {recentQuotes.length > 0 && (
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--text-tertiary)]">Cotizaciones recientes</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--text-tertiary)]">Continúa donde lo dejaste</h2>
             <button onClick={() => onTab('quotes')} className="text-xs font-semibold text-[var(--accent)]">Ver todas</button>
           </div>
           <div className="flex flex-col gap-2">
@@ -268,7 +268,7 @@ function HomeTab({
                       </span>
                     </div>
                     <div className="mt-0.5 flex items-center gap-2">
-                      <span className="text-xs text-[var(--text-tertiary)]">{relDate(qt.created_at)}</span>
+                      <span className="text-xs text-[var(--text-tertiary)]">{relDate((qt as any).updated_at ?? qt.created_at)}</span>
                       <span className="text-xs font-bold tabular-nums text-[var(--text-primary)]">{fmt(qt.total_cents)}</span>
                     </div>
                   </div>

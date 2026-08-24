@@ -827,6 +827,23 @@ export function JobDetailClient({
                 <p className="text-base font-bold text-[var(--text-primary)]">Completar trabajo</p>
                 <button onClick={() => setShowCompleteSheet(false)}><X size={20} color="var(--text-tertiary)" /></button>
               </div>
+              {/* Close checklist */}
+              <div className="flex flex-col gap-2">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">Antes de cerrar, verifica:</p>
+                {[
+                  { id: 'photos', label: `Fotos tomadas${photos.length > 0 ? ` (${photos.length})` : ''}`, done: photos.length > 0 },
+                  { id: 'invoice', label: job.quotes?.id ? 'Cotización asociada ✓' : 'Sin cotización ligada', done: !!job.quotes?.id },
+                  { id: 'summary', label: 'Resumen completado', done: completeSummary.trim().length > 0 },
+                ].map(item => (
+                  <div key={item.id} className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm ${item.done ? 'bg-green-50 text-green-700' : 'bg-[var(--surface)] text-[var(--text-tertiary)]'}`}>
+                    {item.done
+                      ? <CheckCircle2 size={15} className="shrink-0 text-green-600" />
+                      : <div className="size-3.5 shrink-0 rounded-full border-2 border-[color-mix(in_oklab,var(--text-tertiary)_40%,transparent)]" />}
+                    {item.label}
+                  </div>
+                ))}
+              </div>
+
               <div>
                 <label className="mb-1.5 block text-xs font-semibold text-[var(--text-tertiary)]">Resumen de lo que se hizo</label>
                 <textarea

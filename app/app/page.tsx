@@ -41,10 +41,10 @@ export default async function AppPage() {
       supabase.from('businesses').select('id, name, phone, email, logo_url').eq('id', businessId).single(),
       supabase
         .from('quotes')
-        .select('id, status, total_cents, created_at, clients(name), quote_items(name)')
+        .select('id, status, total_cents, created_at, updated_at, clients(name), quote_items(name)')
         .eq('business_id', businessId)
         .is('archived_at', null)
-        .order('created_at', { ascending: false })
+        .order('updated_at', { ascending: false })
         .limit(20),
       supabase
         .from('price_book_items')
