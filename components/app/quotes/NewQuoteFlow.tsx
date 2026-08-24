@@ -552,6 +552,10 @@ function StepReview({
   saving: boolean
 }) {
   const total = items.reduce((s, i) => s + i.qty * i.unit_price_cents, 0)
+  const warnings: string[] = []
+  if (items.length === 0) warnings.push('La cotización no tiene ítems.')
+  if (items.length > 0 && total === 0) warnings.push('El total es $0.00 — verifica los precios.')
+  if (!client) warnings.push('Sin cliente asignado — no podrás enviarla.')
 
   return (
     <div className="flex flex-1 flex-col">
@@ -598,16 +602,22 @@ function StepReview({
         </div>
       </div>
 
+      {warnings.length > 0 && (
+        <div className="mx-5 mb-1 rounded-2xl bg-[color-mix(in_oklab,#f59e0b_10%,transparent)] border border-[color-mix(in_oklab,#f59e0b_30%,transparent)] p-3 flex flex-col gap-1">
+          {warnings.map((w, i) => (
+            <p key={i} className="text-xs font-semibold text-amber-700 dark:text-amber-400">⚠ {w}</p>
+          ))}
+        </div>
+      )}
       <div className="mt-auto border-t border-[color-mix(in_oklab,var(--text-tertiary)_10%,transparent)] p-5 flex flex-col gap-3">
         <motion.button whileTap={{ scale: 0.97 }} onClick={() => onSave(false)} disabled={saving}
           className="flex h-13 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] text-base font-bold text-[var(--text-primary)] disabled:opacity-40">
           {saving ? 'Guardando…' : 'Guardar como borrador'}
         </motion.button>
-        <motion.button whileTap={{ scale: 0.97 }} onClick={() => onSave(true)} disabled={saving || !client}
+        <motion.button whileTap={{ scale: 0.97 }} onClick={() => onSave(true)} disabled={saving || !client || items.length === 0}
           className="flex h-13 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-base font-bold text-white [box-shadow:var(--shadow-cta)] disabled:opacity-40">
           {saving ? 'Guardando…' : 'Guardar y enviar'}
         </motion.button>
-        {!client && <p className="text-center text-xs text-[var(--text-tertiary)]">Asigna un cliente para poder enviar</p>}
       </div>
     </div>
   )
@@ -626,11 +636,52 @@ export function NewQuoteFlow({
   businessId: string
 }) {
   const router = useRouter()
+  const DRAFT_KEY = `quotly_draft_${businessId}`
+
   const [step, setStep] = useState<1 | 2 | 3 | 4>(preselectedClient ? 2 : 1)
   const [clients, setClients] = useState<Client[]>(initialClients)
-  const [selectedClient, setSelectedClient] = useState<Client | null>(preselectedClient ?? null)
-  const [items, setItems] = useState<QuoteItemDraft[]>([])
   const [saving, startSaving] = useTransition()
+  const [draftRestored, setDraftRestored] = useState(false)
+
+  const [selectedClient, setSelectedClient] = useState<Client | null>(() => {
+    if (preselectedClient) return preselectedClient
+    if (typeof window === 'undefined') return null
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY)
+      if (!raw) return null
+      const d = JSON.parse(raw)
+      return d.client ?? null
+    } catch { return null }
+  })
+
+  const [items, setItems] = useState<QuoteItemDraft[]>(() => {
+    if (typeof window === 'undefined') return []
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY)
+      if (!raw) return []
+      const d = JSON.parse(raw)
+      return d.items ?? []
+    } catch { return [] }
+  })
+
+  // Show "draft restored" banner once if there's something from localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY)
+      if (!raw) return
+      const d = JSON.parse(raw)
+      if ((d.items?.length ?? 0) > 0 || d.client) setDraftRestored(true)
+    } catch { /* ignore */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Persist draft to localStorage whenever client or items change
+  useEffect(() => {
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ client: selectedClient, items }))
+    } catch { /* ignore */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedClient, items])
 
   function handleClientCreated(client: Client) {
     setClients(prev => [...prev, client])
@@ -666,6 +717,7 @@ export function NewQuoteFlow({
     startSaving(async () => {
       const res = await createQuote(selectedClient?.id ?? null, items)
       if (res.error) { alert(res.error); return }
+      try { localStorage.removeItem(DRAFT_KEY) } catch { /* ignore */ }
       router.push(`/app/quotes/${res.quoteId}${send ? '?action=send' : ''}`)
     })
   }
@@ -690,6 +742,18 @@ export function NewQuoteFlow({
           ))}
         </div>
       </header>
+
+      {draftRestored && (
+        <div className="flex items-center justify-between gap-3 bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] px-5 py-2">
+          <p className="text-xs font-semibold text-[var(--accent)]">Borrador recuperado</p>
+          <button onClick={() => {
+            setSelectedClient(preselectedClient ?? null)
+            setItems([])
+            try { localStorage.removeItem(DRAFT_KEY) } catch { /* ignore */ }
+            setDraftRestored(false)
+          }} className="text-xs text-[var(--text-tertiary)] underline">Descartar</button>
+        </div>
+      )}
 
       <AnimatePresence mode="wait">
         <motion.div key={step} className="flex flex-1 flex-col overflow-hidden"
