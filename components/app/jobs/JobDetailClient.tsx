@@ -14,6 +14,7 @@ import {
 } from '@/app/actions/jobs';
 import { addExpense, deleteExpense } from '@/app/actions/expenses';
 import { createClient } from '@supabase/supabase-js';
+import { JobNotes } from '@/components/app/jobs/JobNotes';
 
 const supabasePub = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -84,6 +85,8 @@ export function JobDetailClient({
   changeOrders: initialChangeOrders,
   expenses: initialExpenses = [],
   timeEntries: initialTimeEntries = [],
+  jobNotes: initialNotes = [],
+  canSeePrivate = false,
 }: {
   job: Job;
   quoteItems: QuoteItem[];
@@ -91,13 +94,15 @@ export function JobDetailClient({
   changeOrders: ChangeOrder[];
   expenses?: Expense[];
   timeEntries?: TimeEntry[];
+  jobNotes?: { id: string; body: string; is_private: boolean; created_at: string; author_id: string | null }[];
+  canSeePrivate?: boolean;
 }) {
   const [job, setJob] = useState(initialJob);
   const [photos, setPhotos] = useState(initialPhotos);
   const [changeOrders, setChangeOrders] = useState(initialChangeOrders);
   const [expenses, setExpenses] = useState(initialExpenses);
   const [timeEntries] = useState(initialTimeEntries);
-  const [tab, setTab] = useState<'overview' | 'photos' | 'orders' | 'expenses' | 'time'>('overview');
+  const [tab, setTab] = useState<'overview' | 'photos' | 'orders' | 'expenses' | 'time' | 'notes'>('overview');
   const [showMore, setShowMore] = useState(false);
   const [showCompleteSheet, setShowCompleteSheet] = useState(false);
   const [showNewCO, setShowNewCO] = useState(false);
@@ -316,14 +321,15 @@ export function JobDetailClient({
 
       {/* Tabs */}
       <div className="flex border-b border-[color-mix(in_oklab,var(--text-tertiary)_10%,transparent)] px-5">
-        {(['overview', 'photos', 'orders', 'expenses', 'time'] as const).map(t => (
+        {(['overview', 'photos', 'orders', 'expenses', 'time', 'notes'] as const).map(t => (
           <button key={t} onClick={() => setTab(t)}
             className={`mr-5 pb-2.5 pt-3 text-sm font-semibold border-b-2 transition-colors ${tab === t ? 'border-[var(--accent)] text-[var(--accent)]' : 'border-transparent text-[var(--text-tertiary)]'}`}>
             {t === 'overview' ? 'Resumen'
               : t === 'photos' ? `Fotos${photos.length > 0 ? ` (${photos.length})` : ''}`
               : t === 'orders' ? `Cambios${changeOrders.length > 0 ? ` (${changeOrders.length})` : ''}`
               : t === 'expenses' ? `Gastos${expenses.length > 0 ? ` (${expenses.length})` : ''}`
-              : `Horas${timeEntries.length > 0 ? ` (${timeEntries.length})` : ''}`}
+              : t === 'time' ? `Horas${timeEntries.length > 0 ? ` (${timeEntries.length})` : ''}`
+              : `Notas${initialNotes.length > 0 ? ` (${initialNotes.length})` : ''}`}
           </button>
         ))}
       </div>
@@ -752,6 +758,11 @@ export function JobDetailClient({
             </div>
           )}
         </>)}
+
+        {/* ── NOTES TAB ─────────────────────────────────────── */}
+        {tab === 'notes' && (
+          <JobNotes jobId={job.id} initialNotes={initialNotes} canSeePrivate={canSeePrivate} />
+        )}
       </div>
 
       {/* ── SHEETS ──────────────────────────────────────────── */}

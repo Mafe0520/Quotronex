@@ -748,6 +748,12 @@ export type Database = {
           },
         ]
       }
+      job_notes: {
+        Row: { id: string; job_id: string; business_id: string; author_id: string | null; body: string; is_private: boolean; created_at: string }
+        Insert: { id?: string; job_id: string; business_id: string; author_id?: string | null; body: string; is_private?: boolean; created_at?: string }
+        Update: { body?: string; is_private?: boolean }
+        Relationships: []
+      }
       message_templates: {
         Row: { id: string; business_id: string; name: string; body: string; created_at: string }
         Insert: { id?: string; business_id: string; name: string; body: string; created_at?: string }
