@@ -11,6 +11,7 @@ import {
 import { updateBusinessProfile, updateBusinessDefaults, changePassword } from '@/app/actions/business';
 import { signOut } from '@/app/actions/auth';
 import { TeamSection } from '@/components/app/TeamSection';
+import { MessageTemplates } from '@/components/app/MessageTemplates';
 import type { MemberRole } from '@/lib/permissions';
 import { useLang } from '@/app/lang-context';
 import { createClient } from '@supabase/supabase-js';
@@ -336,13 +337,14 @@ type Subscription = {
   trial_ends_at: string | null; next_billing_at: string | null; is_founder: boolean;
 } | null
 
-export function SettingsScreen({ user, business, members = [], invites = [], callerRole = 'owner', subscription = null }: {
+export function SettingsScreen({ user, business, members = [], invites = [], callerRole = 'owner', subscription = null, messageTemplates = [] }: {
   user: { email: string; id: string };
   business: Business;
   members?: any[];
   invites?: any[];
   callerRole?: MemberRole;
   subscription?: Subscription;
+  messageTemplates?: { id: string; name: string; body: string }[];
 }) {
   const router = useRouter();
   const [sheet, setSheet] = useState<'business' | 'password' | 'defaults' | 'delete' | null>(null);
@@ -406,6 +408,14 @@ export function SettingsScreen({ user, business, members = [], invites = [], cal
 
         {/* Team section */}
         <TeamSection members={members} invites={invites} callerRole={callerRole} />
+
+        {/* Message templates section */}
+        <div className="flex flex-col gap-2">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-tertiary)] px-1">Mensajes</p>
+          <div className="rounded-2xl bg-[var(--surface)] p-4">
+            <MessageTemplates initialTemplates={messageTemplates} />
+          </div>
+        </div>
 
         {/* Plan section */}
         <div className="flex flex-col gap-2">

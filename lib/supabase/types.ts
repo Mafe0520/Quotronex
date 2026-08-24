@@ -748,6 +748,12 @@ export type Database = {
           },
         ]
       }
+      message_templates: {
+        Row: { id: string; business_id: string; name: string; body: string; created_at: string }
+        Insert: { id?: string; business_id: string; name: string; body: string; created_at?: string }
+        Update: { id?: string; business_id?: string; name?: string; body?: string; created_at?: string }
+        Relationships: []
+      }
       price_book_items: {
         Row: {
           active: boolean

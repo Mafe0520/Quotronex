@@ -22,13 +22,36 @@ export async function createCustomer(prevState: string | null, formData: FormDat
   const rawTags = (formData.get('tags') as string ?? '').trim();
   const tags = rawTags ? rawTags.split(',').map(t => t.trim()).filter(Boolean) : [];
 
+  const email = (formData.get('email') as string ?? '').trim() || null;
+  const phone = (formData.get('phone') as string ?? '').trim() || null;
+
+  const forceDuplicate = formData.get('force_duplicate') === '1';
+
+  // Duplicate check — warn before inserting if email/phone matches existing client
+  if (!forceDuplicate && (email || phone)) {
+    const orClauses: string[] = [];
+    if (email) orClauses.push(`email.eq.${email}`);
+    if (phone) orClauses.push(`phone.eq.${phone}`);
+    const { data: existing } = await supabase
+      .from('clients')
+      .select('id, name')
+      .eq('business_id', businessId)
+      .is('archived_at', null)
+      .or(orClauses.join(','))
+      .limit(1)
+      .maybeSingle();
+    if (existing) {
+      return `DUPLICATE:${existing.id}:${existing.name}`;
+    }
+  }
+
   const { data, error } = await supabase
     .from('clients')
     .insert({
       business_id: businessId,
       name,
-      email: (formData.get('email') as string ?? '').trim() || null,
-      phone: (formData.get('phone') as string ?? '').trim() || null,
+      email,
+      phone,
       address: (formData.get('address') as string ?? '').trim() || null,
       notes: (formData.get('notes') as string ?? '').trim() || null,
       tags,

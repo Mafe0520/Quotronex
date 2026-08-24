@@ -3,7 +3,8 @@
 import { useActionState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { ChevronLeft, User, Phone, Mail, FileText, MapPin, Tag, MessageCircle } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronLeft, User, Phone, Mail, FileText, MapPin, Tag, MessageCircle, AlertTriangle } from 'lucide-react';
 import { createCustomer, updateCustomer } from '@/app/actions/clients';
 import { useT } from '@/lib/i18n';
 
@@ -51,6 +52,9 @@ export function CustomerForm(props: Props | EditProps) {
 
       <main className="flex-1 px-5 pt-2 pb-12">
         <form action={formAction} className="flex flex-col gap-4">
+          {error?.startsWith('DUPLICATE:') && (
+            <input type="hidden" name="force_duplicate" value="1" />
+          )}
           {/* Name */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">
@@ -163,12 +167,26 @@ export function CustomerForm(props: Props | EditProps) {
             </div>
           </div>
 
-          {/* Error */}
-          {error && (
-            <p role="alert" className="rounded-[var(--radius-button)] bg-red-50 px-3 py-2 text-xs text-red-600">
-              {error}
-            </p>
-          )}
+          {/* Error / Duplicate warning */}
+          {error && (() => {
+            if (error.startsWith('DUPLICATE:')) {
+              const [, dupId, dupName] = error.split(':');
+              return (
+                <div role="alert" className="flex items-start gap-2.5 rounded-[var(--radius-button)] border border-amber-200 bg-amber-50 px-3 py-2.5">
+                  <AlertTriangle size={15} className="mt-0.5 shrink-0 text-amber-500" />
+                  <div className="text-xs text-amber-800">
+                    <p className="font-semibold">Ya existe un cliente con ese email o teléfono.</p>
+                    <p className="mt-0.5">¿Es <Link href={`/app/customers/${dupId}`} className="font-bold underline">{dupName}</Link>? Puedes ir a ese cliente o guardar de todas formas (presiona "Guardar" de nuevo).</p>
+                  </div>
+                </div>
+              );
+            }
+            return (
+              <p role="alert" className="rounded-[var(--radius-button)] bg-red-50 px-3 py-2 text-xs text-red-600">
+                {error}
+              </p>
+            );
+          })()}
 
           {/* Save */}
           <motion.button

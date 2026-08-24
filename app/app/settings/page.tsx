@@ -13,7 +13,7 @@ export default async function SettingsPage() {
   const { data: bizIds } = await supabase.rpc('get_my_business_ids');
   const businessId = bizIds?.[0] ?? null;
 
-  const [businessRes, membersRes, invitesRes, callerRes, subRes] = await Promise.all([
+  const [businessRes, membersRes, invitesRes, callerRes, subRes, templatesRes] = await Promise.all([
     businessId
       ? supabase.from('businesses').select('id, name, phone, email, address, website, tagline, logo_url, zelle_tag, cashapp_tag, venmo_tag, default_tax_pct, default_deposit_pct, default_payment_terms, lang').eq('id', businessId).single()
       : { data: null },
@@ -29,6 +29,9 @@ export default async function SettingsPage() {
     businessId
       ? supabase.from('subscriptions').select('plan_id, billing, status, trial_ends_at, next_billing_at, is_founder').eq('business_id', businessId).maybeSingle()
       : { data: null },
+    businessId
+      ? supabase.from('message_templates').select('id, name, body').eq('business_id', businessId).order('created_at')
+      : { data: [] },
   ]);
 
   return (
@@ -39,6 +42,7 @@ export default async function SettingsPage() {
       invites={(invitesRes.data ?? []) as any[]}
       callerRole={(callerRes.data?.role ?? 'field_worker') as MemberRole}
       subscription={subRes.data ?? null}
+      messageTemplates={(templatesRes.data ?? []) as { id: string; name: string; body: string }[]}
     />
   );
 }
