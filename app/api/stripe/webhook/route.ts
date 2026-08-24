@@ -137,6 +137,19 @@ export async function POST(req: NextRequest) {
         .eq('stripe_sub_id', sub.id)
       break
     }
+
+    case 'invoice.payment_failed': {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const invoice = event.data.object as any
+      const subId = invoice.subscription as string | null
+      if (subId) {
+        await supabase
+          .from('subscriptions')
+          .update({ status: 'past_due' })
+          .eq('stripe_sub_id', subId)
+      }
+      break
+    }
   }
 
   return NextResponse.json({ received: true })
