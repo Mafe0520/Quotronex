@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 814" width="375" height="814">
+  <rect width="375" height="814" fill="#0a0a14"/>
+  <text x="20" y="24" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">9:41</text>
+  <rect x="290" y="14" width="46" height="14" rx="7" fill="#2a2a3e"/>
+  <rect x="291" y="15" width="34" height="12" rx="6" fill="#4ade80"/>
+  <rect x="0" y="38" width="375" height="54" fill="#12121e"/>
+  <rect x="0" y="91" width="375" height="1" fill="#2a2a3e"/>
+  <text x="20" y="70" fill="#f0f0f8" font-size="18" font-weight="700" font-family="system-ui,sans-serif">My Crew</text>
+  <rect x="315" y="52" width="44" height="28" rx="14" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1"/>
+  <text x="337" y="70" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif" text-anchor="middle">Inv.</text>
+  <text x="20" y="114" fill="#505068" font-size="11" font-weight="600" font-family="system-ui,sans-serif" letter-spacing="0.05em">TODAY — MON 24</text>
+  <!-- Worker 1 -->
+  <rect x="16" y="122" width="343" height="110" rx="14" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <circle cx="50" cy="160" r="22" fill="#1a3a20"/>
+  <text x="50" y="165" fill="#4ade80" font-size="16" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">JR</text>
+  <text x="84" y="148" fill="#f0f0f8" font-size="14" font-weight="700" font-family="system-ui,sans-serif">José Ramirez</text>
+  <rect x="84" y="154" width="52" height="18" rx="9" fill="#1a3a20"/>
+  <text x="110" y="167" fill="#4ade80" font-size="10" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">Active</text>
+  <text x="84" y="184" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">Exterior house painting</text>
+  <text x="84" y="200" fill="#505068" font-size="11" font-family="system-ui,sans-serif">8:00am – 5:00pm · 8h assigned</text>
+  <rect x="16" y="218" width="343" height="1" fill="#2a2a3e"/>
+  <text x="84" y="222" fill="#505068" font-size="11" font-family="system-ui,sans-serif">🕐 Clocked in 2h 14min ago</text>
+  <!-- Worker 2 -->
+  <rect x="16" y="244" width="343" height="110" rx="14" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <circle cx="50" cy="282" r="22" fill="#1a2040"/>
+  <text x="50" y="287" fill="#60a5fa" font-size="16" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">ML</text>
+  <text x="84" y="270" fill="#f0f0f8" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Miguel Lopez</text>
+  <rect x="84" y="276" width="52" height="18" rx="9" fill="#1a3a20"/>
+  <text x="110" y="289" fill="#4ade80" font-size="10" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">Active</text>
+  <text x="84" y="306" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">Exterior house painting</text>
+  <text x="84" y="322" fill="#505068" font-size="11" font-family="system-ui,sans-serif">8:00am – 5:00pm · 8h assigned</text>
+  <text x="84" y="344" fill="#505068" font-size="11" font-family="system-ui,sans-serif">🕐 Clocked in 1h 58min ago</text>
+  <!-- Worker 3 -->
+  <rect x="16" y="366" width="343" height="96" rx="14" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <circle cx="50" cy="402" r="22" fill="#2a1a10"/>
+  <text x="50" y="407" fill="#f59e0b" font-size="16" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">AT</text>
+  <text x="84" y="390" fill="#f0f0f8" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Andres Torres</text>
+  <rect x="84" y="396" width="74" height="18" rx="9" fill="#2a1a10"/>
+  <text x="121" y="409" fill="#f59e0b" font-size="10" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">Unassigned</text>
+  <text x="84" y="426" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">Available tomorrow</text>
+  <text x="84" y="446" fill="#505068" font-size="11" font-family="system-ui,sans-serif">Electrical panel — pending</text>
+  <rect x="248" y="430" width="100" height="28" rx="12" fill="#4ade80"/>
+  <text x="298" y="449" fill="#0a0a14" font-size="11" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">Assign job</text>
+  <!-- Summary -->
+  <rect x="16" y="474" width="343" height="74" rx="14" fill="#1a1a2e"/>
+  <text x="30" y="496" fill="#a0a0b8" font-size="11" font-weight="600" font-family="system-ui,sans-serif" letter-spacing="0.04em">TODAY'S SUMMARY</text>
+  <text x="30" y="522" fill="#f0f0f8" font-size="22" font-weight="800" font-family="system-ui,sans-serif">2 <tspan font-size="13" fill="#a0a0b8" font-weight="400">active</tspan></text>
+  <text x="130" y="522" fill="#f0f0f8" font-size="22" font-weight="800" font-family="system-ui,sans-serif">16h <tspan font-size="13" fill="#a0a0b8" font-weight="400">assigned</tspan></text>
+  <text x="290" y="522" fill="#4ade80" font-size="22" font-weight="800" font-family="system-ui,sans-serif">$960</text>
+  <!-- Bottom nav -->
+  <rect x="0" y="750" width="375" height="64" fill="#12121e"/>
+  <rect x="0" y="750" width="375" height="1" fill="#2a2a3e"/>
+  <text x="47" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Home</text>
+  <text x="125" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Quote</text>
+  <text x="203" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Jobs</text>
+  <text x="281" y="790" fill="#4ade80" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Crew</text>
+  <text x="328" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">More</text>
+  <rect x="264" y="752" width="34" height="2" rx="1" fill="#4ade80"/>
+</svg>

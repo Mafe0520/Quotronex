@@ -92,10 +92,10 @@ const COPY = {
       kicker: 'INSIDE THE APP',
       titulo: 'Everything you need, [acento]nothing you don\'t[/acento]',
       frames: [
-        { label: 'Your quote, ready before you walk away', src: '/screenshots/screen-quote.svg',   alt: 'Quote screen'   },
-        { label: 'All your jobs, in one place',            src: '/screenshots/screen-jobs.svg',    alt: 'Jobs screen'    },
-        { label: 'Assign work to your crew',               src: '/screenshots/screen-crew.svg',    alt: 'Crew screen'    },
-        { label: 'One tap to invoice',                     src: '/screenshots/screen-invoice.svg', alt: 'Invoice screen' },
+        { label: 'Your quote, ready before you walk away', src: '/screenshots/screen-quote-en.svg',   alt: 'Quote screen'   },
+        { label: 'All your jobs, in one place',            src: '/screenshots/screen-jobs-en.svg',    alt: 'Jobs screen'    },
+        { label: 'Assign work to your crew',               src: '/screenshots/screen-crew-en.svg',    alt: 'Crew screen'    },
+        { label: 'One tap to invoice',                     src: '/screenshots/screen-invoice-en.svg', alt: 'Invoice screen' },
       ],
     },
     oferta: {

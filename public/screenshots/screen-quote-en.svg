@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 814" width="375" height="814">
+  <rect width="375" height="814" fill="#0a0a14"/>
+  <text x="20" y="24" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">9:41</text>
+  <rect x="290" y="14" width="46" height="14" rx="7" fill="#2a2a3e"/>
+  <rect x="291" y="15" width="30" height="12" rx="6" fill="#4ade80"/>
+  <rect x="0" y="38" width="375" height="54" fill="#12121e"/>
+  <rect x="0" y="91" width="375" height="1" fill="#2a2a3e"/>
+  <text x="20" y="70" fill="#f0f0f8" font-size="18" font-weight="700" font-family="system-ui,sans-serif">New Quote</text>
+  <rect x="315" y="52" width="44" height="28" rx="14" fill="#4ade80"/>
+  <text x="337" y="71" fill="#0a0a14" font-size="11" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">PDF</text>
+  <!-- Mic recording area -->
+  <rect x="16" y="106" width="343" height="82" rx="14" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <circle cx="48" cy="147" r="18" fill="#1a3a20"/>
+  <rect x="44" y="138" width="8" height="12" rx="4" fill="#4ade80"/>
+  <path d="M40 150 Q48 158 56 150" stroke="#4ade80" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <rect x="47" y="158" width="2" height="4" fill="#4ade80"/>
+  <text x="76" y="140" fill="#4ade80" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Recording...</text>
+  <text x="76" y="158" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">Interior paint three bedrooms,</text>
+  <text x="76" y="174" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">8 hours labor...</text>
+  <rect x="304" y="166" width="2" height="14" rx="1" fill="#4ade80" opacity="0.8"/>
+  <!-- Client -->
+  <rect x="16" y="202" width="343" height="40" rx="10" fill="#1a2a1a"/>
+  <circle cx="36" cy="222" r="8" fill="#4ade80" opacity="0.2"/>
+  <text x="36" y="226" fill="#4ade80" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">✓</text>
+  <text x="54" y="226" fill="#a0a0b8" font-size="12" font-family="system-ui,sans-serif">Carlos M. — 4821 Oak St, Miami FL</text>
+  <!-- Table -->
+  <rect x="16" y="256" width="343" height="224" rx="12" fill="#12121e" stroke="#2a2a3e" stroke-width="1"/>
+  <rect x="16" y="256" width="343" height="36" rx="12" fill="#1a1a2e"/>
+  <rect x="16" y="274" width="343" height="18" fill="#1a1a2e"/>
+  <text x="30" y="279" fill="#505068" font-size="10" font-weight="600" font-family="system-ui,sans-serif" letter-spacing="0.05em">SERVICE</text>
+  <text x="340" y="279" fill="#505068" font-size="10" font-weight="600" font-family="system-ui,sans-serif" text-anchor="end" letter-spacing="0.05em">TOTAL</text>
+  <rect x="16" y="292" width="343" height="1" fill="#2a2a3e"/>
+  <text x="30" y="315" fill="#f0f0f8" font-size="13" font-family="system-ui,sans-serif">Interior paint — 3 bedrooms</text>
+  <text x="30" y="330" fill="#505068" font-size="11" font-family="system-ui,sans-serif">× 1 job</text>
+  <text x="350" y="322" fill="#4ade80" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="end">$1,200</text>
+  <rect x="16" y="342" width="343" height="1" fill="#2a2a3e"/>
+  <text x="30" y="364" fill="#f0f0f8" font-size="13" font-family="system-ui,sans-serif">Labor (8h × $65)</text>
+  <text x="30" y="379" fill="#505068" font-size="11" font-family="system-ui,sans-serif">× 8 h</text>
+  <text x="350" y="371" fill="#4ade80" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="end">$520</text>
+  <rect x="16" y="391" width="343" height="1" fill="#2a2a3e"/>
+  <text x="30" y="413" fill="#f0f0f8" font-size="13" font-family="system-ui,sans-serif">Materials &amp; paint</text>
+  <text x="30" y="428" fill="#505068" font-size="11" font-family="system-ui,sans-serif">× 1 kit</text>
+  <text x="350" y="420" fill="#4ade80" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="end">$380</text>
+  <rect x="16" y="440" width="343" height="1" fill="#2a2a3e"/>
+  <rect x="16" y="441" width="343" height="39" rx="0" fill="#1a1a2e"/>
+  <rect x="16" y="461" width="343" height="19" rx="0" fill="#1a1a2e"/>
+  <rect x="16" y="466" width="343" height="12" rx="12" fill="#1a1a2e"/>
+  <text x="30" y="466" fill="#f0f0f8" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Total</text>
+  <text x="350" y="466" fill="#4ade80" font-size="20" font-weight="800" font-family="system-ui,sans-serif" text-anchor="end">$2,100</text>
+  <!-- Buttons -->
+  <rect x="16" y="498" width="214" height="48" rx="14" fill="#4ade80"/>
+  <text x="123" y="527" fill="#0a0a14" font-size="14" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">Send by email</text>
+  <rect x="240" y="498" width="119" height="48" rx="14" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1"/>
+  <text x="299" y="527" fill="#a0a0b8" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">Signature</text>
+  <!-- Bottom nav -->
+  <rect x="0" y="750" width="375" height="64" fill="#12121e"/>
+  <rect x="0" y="750" width="375" height="1" fill="#2a2a3e"/>
+  <text x="47" y="790" fill="#4ade80" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Home</text>
+  <text x="125" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Quote</text>
+  <text x="203" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Jobs</text>
+  <text x="281" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">Clients</text>
+  <text x="328" y="790" fill="#505068" font-size="10" font-family="system-ui,sans-serif" text-anchor="middle">More</text>
+  <rect x="30" y="752" width="34" height="2" rx="1" fill="#4ade80"/>
+</svg>
