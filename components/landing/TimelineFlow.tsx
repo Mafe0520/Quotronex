@@ -7,6 +7,7 @@ import {
   CheckCircle2, Clock, Smartphone, Banknote,
 } from 'lucide-react';
 import { SectionShell, Kicker, useReveal, VIEWPORT_ONCE } from './ui';
+import { MarkedCopy } from './MarkedCopy';
 
 interface Step {
   id:        string;
@@ -58,7 +59,7 @@ export function TimelineFlow({ kicker, titulo, subtitulo, steps }: TimelineFlowP
           className="text-3xl font-black tracking-tight text-[var(--text-primary)] leading-[1.08] max-w-2xl"
           style={{ textWrap: 'balance' } as React.CSSProperties}
         >
-          {titulo}
+          <MarkedCopy text={titulo} />
         </motion.h2>
         <motion.p variants={item} className="text-[var(--text-secondary)] max-w-xl text-base leading-relaxed">
           {subtitulo}
