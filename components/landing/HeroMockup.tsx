@@ -9,7 +9,7 @@ type Phase = 'dictating' | 'ready';
 
 interface LineItem { desc: string; qty: number; unit: string; price: number }
 
-const QUOTES: Record<QuoteTab, { client: string; items: LineItem[] }> = {
+const QUOTES_ES: Record<QuoteTab, { client: string; items: LineItem[] }> = {
   painting: {
     client: 'Carlos M. — 4821 Oak St, Miami FL',
     items: [
@@ -36,16 +36,55 @@ const QUOTES: Record<QuoteTab, { client: string; items: LineItem[] }> = {
   },
 };
 
-const DICTATION: Record<QuoteTab, string> = {
+const QUOTES_EN: Record<QuoteTab, { client: string; items: LineItem[] }> = {
+  painting: {
+    client: 'Carlos M. — 4821 Oak St, Miami FL',
+    items: [
+      { desc: 'Interior painting — 3 rooms', qty: 1, unit: 'job', price: 1200 },
+      { desc: 'Labor (8h × $65)',            qty: 8, unit: 'h',   price:  520 },
+      { desc: 'Paint & materials',           qty: 1, unit: 'kit', price:  380 },
+    ],
+  },
+  plumbing: {
+    client: 'Ana R. — 992 Brickell Ave, Miami FL',
+    items: [
+      { desc: 'Main pipe replacement', qty: 1, unit: 'job', price: 850 },
+      { desc: 'Labor (5h × $75)',      qty: 5, unit: 'h',   price: 375 },
+      { desc: 'PVC fittings & parts',  qty: 1, unit: 'kit', price: 195 },
+    ],
+  },
+  electric: {
+    client: 'Mike T. — 1340 NW 7th Ave, Miami FL',
+    items: [
+      { desc: '200A electrical panel',       qty: 1,  unit: 'unit', price: 2100 },
+      { desc: 'Installation (12h × $90)',    qty: 12, unit: 'h',    price: 1080 },
+      { desc: 'Wire + breakers + boxes',     qty: 1,  unit: 'kit',  price:  420 },
+    ],
+  },
+};
+
+const DICTATION_ES: Record<QuoteTab, string> = {
   painting: 'Pintura interior tres cuartos, mano de obra ocho horas, materiales y pintura...',
   plumbing: 'Cambio tubería principal, cinco horas mano de obra setenta y cinco, materiales PVC...',
   electric: 'Panel eléctrico doscientos amperios, instalación doce horas noventa, cable y breakers...',
 };
 
-const TABS: { id: QuoteTab; label: string; icon: React.ElementType }[] = [
-  { id: 'painting', label: 'Pintura',  icon: Paintbrush },
-  { id: 'plumbing', label: 'Plomería', icon: Wrench     },
-  { id: 'electric', label: 'Eléctrico',icon: Zap        },
+const DICTATION_EN: Record<QuoteTab, string> = {
+  painting: 'Interior painting three rooms, labor eight hours sixty-five per hour, paint and materials...',
+  plumbing: 'Main pipe replacement, five hours labor seventy-five per hour, PVC fittings...',
+  electric: 'Two hundred amp panel, installation twelve hours ninety per hour, wire and breakers...',
+};
+
+const TABS_ES: { id: QuoteTab; label: string; icon: React.ElementType }[] = [
+  { id: 'painting', label: 'Pintura',   icon: Paintbrush },
+  { id: 'plumbing', label: 'Plomería',  icon: Wrench     },
+  { id: 'electric', label: 'Eléctrico', icon: Zap        },
+];
+
+const TABS_EN: { id: QuoteTab; label: string; icon: React.ElementType }[] = [
+  { id: 'painting', label: 'Painting',  icon: Paintbrush },
+  { id: 'plumbing', label: 'Plumbing',  icon: Wrench     },
+  { id: 'electric', label: 'Electric',  icon: Zap        },
 ];
 
 const T = { duration: 0.22, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] };
@@ -75,10 +114,14 @@ function AnimatedAmount({ target }: { target: number }) {
   );
 }
 
-export function HeroMockup() {
+export function HeroMockup({ lang = 'es' }: { lang?: 'en' | 'es' }) {
   const [active, setActive] = useState<QuoteTab>('painting');
   const [phase,  setPhase]  = useState<Phase>('dictating');
   const [typed,  setTyped]  = useState('');
+
+  const QUOTES    = lang === 'en' ? QUOTES_EN    : QUOTES_ES;
+  const DICTATION = lang === 'en' ? DICTATION_EN : DICTATION_ES;
+  const TABS      = lang === 'en' ? TABS_EN      : TABS_ES;
 
   const quote = QUOTES[active];
   const total = quote.items.reduce((s, i) => s + i.price, 0);
@@ -118,11 +161,11 @@ export function HeroMockup() {
         <span className="size-3 rounded-full bg-[color-mix(in_oklab,#FFBD2E_85%,transparent)]" />
         <span className="size-3 rounded-full bg-[color-mix(in_oklab,#28CA41_85%,transparent)]" />
         <span className="ml-3 text-xs font-medium text-[var(--text-tertiary)]">
-          Quotronex · Cotización #Q-0142
+          Quotronex · {lang === 'en' ? 'Quote #Q-0142' : 'Cotización #Q-0142'}
         </span>
         <span className="ml-auto inline-flex items-center gap-1 rounded-lg bg-[color-mix(in_oklab,var(--accent)_15%,transparent)] px-2.5 py-1 text-xs font-bold text-[var(--accent)]">
           <CheckCircle2 className="size-3" strokeWidth={2.5} />
-          Lista para enviar
+          {lang === 'en' ? 'Ready to send' : 'Lista para enviar'}
         </span>
       </div>
 
@@ -262,14 +305,14 @@ export function HeroMockup() {
                       className="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] py-2.5 text-sm font-bold text-[var(--bg)] [box-shadow:var(--shadow-cta)] [touch-action:manipulation]"
                     >
                       <Send className="size-4" strokeWidth={2.5} />
-                      Enviar por email
+                      {lang === 'en' ? 'Send by email' : 'Enviar por email'}
                     </motion.button>
                     <motion.button
                       whileTap={{ scale: 0.97 }}
                       className="flex items-center justify-center gap-1.5 rounded-[var(--radius-button)] border border-[var(--border-subtle)] bg-[var(--surface-2)] px-4 py-2.5 text-sm font-semibold text-[var(--text-secondary)] [touch-action:manipulation]"
                     >
                       <Link className="size-4" strokeWidth={2} />
-                      Copiar enlace
+                      {lang === 'en' ? 'Copy link' : 'Copiar enlace'}
                     </motion.button>
                   </div>
                 </motion.div>

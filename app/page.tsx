@@ -504,7 +504,7 @@ export default function LandingQuotronex() {
         secondaryCtaLabel={c.hero.secondary}
         secondaryCtaHref="#solucion"
         socialProof={<span>{c.hero.socialProof}</span>}
-        visual={<HeroMockup />}
+        visual={<HeroMockup lang={lang} />}
       />
 
       <StickyCtaMobile
