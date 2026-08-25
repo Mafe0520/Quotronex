@@ -13,7 +13,7 @@ const TESTIMONIALS = {
       title: 'Roofing contractor · Houston, TX',
     },
     {
-      quote: "Jobber wanted $149/month and I still had to build quotes manually. Quotronex does it for me with my own prices. No comparison.",
+      quote: "Other apps wanted $149/month and I still had to build quotes manually. Quotronex does it for me with my own prices. No comparison.",
       name: 'Miguel R.',
       title: 'General contractor · Dallas, TX',
     },
@@ -30,7 +30,7 @@ const TESTIMONIALS = {
       title: 'Contratista de techos · Houston, TX',
     },
     {
-      quote: "Jobber me pedía $149 al mes y yo seguía armando cotizaciones a mano. Quotronex lo hace por mí con mis propios precios. No hay comparación.",
+      quote: "Otras apps me pedían $149 al mes y yo seguía armando cotizaciones a mano. Quotronex lo hace por mí con mis propios precios. No hay comparación.",
       name: 'Miguel R.',
       title: 'Contratista general · Dallas, TX',
     },

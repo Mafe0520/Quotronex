@@ -119,7 +119,7 @@ export function Oferta({
           <div className="rounded-[var(--radius-card)] border border-[var(--border-subtle)] bg-[var(--surface)] divide-y divide-[var(--border-subtle)] overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3.5">
               <span className="text-sm text-[var(--text-tertiary)]">
-                Jobber
+                {es ? 'Plataformas grandes' : 'Other platforms'}
               </span>
               <span className="text-sm font-semibold text-[var(--text-secondary)] tabular-nums">
                 {es ? '$149/mes · 3 usuarios · cobran por función' : '$149/mo · 3 users · charge per feature'}
