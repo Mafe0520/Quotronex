@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, MailCheck } from 'lucide-react';
 import Image from 'next/image';
 import { signIn, resendConfirmation } from '@/app/actions/auth';
+import { createClient } from '@/lib/supabase/browser';
 import { useT } from '@/lib/i18n';
 
 const transition = { duration: 0.22, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] };
@@ -24,6 +25,16 @@ function LoginForm() {
   const [pendingConfirmation, setPendingConfirmation] = useState(false);
   const [resending, setResending] = useState(false);
   const [resendDone, setResendDone] = useState(false);
+
+  async function handleGoogle() {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback?next=/app`,
+      },
+    });
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -115,6 +126,7 @@ function LoginForm() {
         <motion.button
           type="button"
           whileTap={{ scale: 0.97 }}
+          onClick={handleGoogle}
           className="mt-8 flex h-13 w-full items-center justify-center gap-3 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-white text-sm font-semibold text-gray-900 shadow-sm [touch-action:manipulation]"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
