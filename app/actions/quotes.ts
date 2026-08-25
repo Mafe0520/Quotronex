@@ -306,3 +306,19 @@ export async function requestQuoteChanges(quoteId: string, message: string): Pro
   if (error) return { error: error.message }
   return {}
 }
+
+export async function logShareInitiated(
+  quoteId: string,
+  channel: 'email' | 'sms' | 'whatsapp' | 'copy_message' | 'copy_link',
+  customerId?: string | null,
+) {
+  const { supabase, user, businessId } = await getBusinessId()
+  await supabase.from('estimate_events').insert({
+    quote_id: quoteId,
+    business_id: businessId,
+    actor_id: user.id,
+    event_type: 'share_initiated',
+    meta: { channel, ...(customerId ? { customer_id: customerId } : {}) },
+  })
+}
+

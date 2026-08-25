@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+import { useState, useTransition, useEffect, useCallback } from 'react'
 import { motion } from 'motion/react'
-import { ChevronLeft, Send, Copy, CheckCircle2, Eye, ExternalLink, Mail, MessageSquare, FileCheck, Pencil, CopyPlus, Archive, Calendar, FileText, MoreHorizontal, Briefcase, AlertTriangle, Clock, BadgeDollarSign } from 'lucide-react'
+import { ChevronLeft, Send, Copy, CheckCircle2, Eye, ExternalLink, Mail, FileCheck, Pencil, CopyPlus, Archive, Calendar, FileText, MoreHorizontal, Briefcase, AlertTriangle, Clock, BadgeDollarSign, MessageSquare, ClipboardList, Link2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { updateQuoteStatus, duplicateQuote, archiveQuote, unarchiveQuote, sendQuote, sendQuoteToSelf } from '@/app/actions/quotes'
+import { useLang } from '@/app/lang-context'
+import { updateQuoteStatus, duplicateQuote, archiveQuote, unarchiveQuote, sendQuote, sendQuoteToSelf, logShareInitiated } from '@/app/actions/quotes'
 import { convertQuoteToInvoice } from '@/app/actions/invoices'
 import { convertQuoteToJob } from '@/app/actions/jobs'
 
@@ -43,6 +44,7 @@ type Quote = {
 
 export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeRequest, revisions = [] }: { quote: Quote; items: QuoteItem[]; autoSend?: boolean; linkedInvoiceId?: string | null; changeRequest?: { message: string; created_at: string } | null; revisions?: { id: string; version_number: number; created_at: string; snapshot: unknown }[] }) {
   const router = useRouter()
+  const { lang } = useLang()
   const [updating, startUpdate] = useTransition()
   const [converting, startConvert] = useTransition()
   const [convertingJob, startConvertJob] = useTransition()
@@ -51,6 +53,7 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
   const [unarchiving, startUnarchive] = useTransition()
   const [sending, startSend] = useTransition()
   const [copied, setCopied] = useState(false)
+  const [copiedMsg, setCopiedMsg] = useState(false)
   const [showSendSheet, setShowSendSheet] = useState(autoSend ?? false)
   const [showMore, setShowMore] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
@@ -58,6 +61,7 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
   const [sendError, setSendError] = useState<string | null>(null)
   const [undoArchiveVisible, setUndoArchiveVisible] = useState(false)
   const [undoTimer, setUndoTimer] = useState<ReturnType<typeof setTimeout> | null>(null)
+  const [shareMessage, setShareMessage] = useState('')
   const [sendingToSelf, startSendToSelf] = useTransition()
   const [selfSentToast, setSelfSentToast] = useState(false)
 
@@ -82,6 +86,7 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
     navigator.clipboard.writeText(publicUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+    logShareInitiated(quote.id, 'copy_link', quote.clients?.id ?? null)
   }
 
   function markSent() {
@@ -91,6 +96,45 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
       setSentToast(true)
       setTimeout(() => setSentToast(false), 3000)
     })
+  }
+
+  const buildDefaultMessage = useCallback((url: string) => {
+    const clientName = quote.clients?.name ?? 'there'
+    const businessName = quote.businesses?.name ?? 'us'
+    if (lang === 'es') {
+      return `Hola ${clientName}, aquí está tu estimado de ${businessName}. Revísalo cuando puedas y déjame saber si tienes alguna pregunta:\n${url}`
+    }
+    return `Hi ${clientName}, here's your estimate from ${businessName}. Please review it when you have a chance and let me know if you have any questions:\n${url}`
+  }, [quote.clients?.name, quote.businesses?.name, lang])
+
+  useEffect(() => {
+    if (showSendSheet && publicUrl) {
+      setShareMessage(buildDefaultMessage(publicUrl))
+    }
+  }, [showSendSheet, publicUrl, buildDefaultMessage])
+
+  function cleanPhoneForWA(phone: string) {
+    const digits = phone.replace(/\D/g, '')
+    return digits.length === 10 ? `1${digits}` : digits
+  }
+
+  function openSMS() {
+    const phone = quote.clients?.phone ?? ''
+    logShareInitiated(quote.id, 'sms', quote.clients?.id ?? null)
+    window.location.href = `sms:${phone}?body=${encodeURIComponent(shareMessage)}`
+  }
+
+  function openWhatsApp() {
+    const phone = cleanPhoneForWA(quote.clients?.phone ?? '')
+    logShareInitiated(quote.id, 'whatsapp', quote.clients?.id ?? null)
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(shareMessage)}`, '_blank')
+  }
+
+  function copyMessage() {
+    navigator.clipboard.writeText(shareMessage)
+    setCopiedMsg(true)
+    setTimeout(() => setCopiedMsg(false), 2000)
+    logShareInitiated(quote.id, 'copy_message', quote.clients?.id ?? null)
   }
 
   return (
@@ -411,50 +455,65 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
           <motion.div
             initial={{ y: '100%' }} animate={{ y: 0 }} transition={{ type: 'spring', stiffness: 400, damping: 40 }}
             onClick={e => e.stopPropagation()}
-            className="w-full rounded-t-3xl bg-[var(--bg)] p-6"
+            className="w-full max-h-[92dvh] overflow-y-auto rounded-t-3xl bg-[var(--bg)] p-6 pb-10"
           >
             <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)]" />
-            <p className="mb-1 text-lg font-black [font-family:var(--font-display)] text-[var(--text-primary)]">Enviar cotización</p>
-            <p className="mb-5 text-sm text-[var(--text-tertiary)]">
-              {quote.clients ? `Comparte el link con ${quote.clients.name}` : 'Copia el link y compártelo con tu cliente'}
+            <p className="mb-1 text-lg font-black [font-family:var(--font-display)] text-[var(--text-primary)]">
+              {lang === 'es' ? 'Compartir estimado' : 'Share estimate'}
             </p>
-
-            {/* Link */}
-            <div className="mb-4 flex items-center gap-2 rounded-2xl bg-[var(--surface)] p-3">
-              <p className="flex-1 truncate font-mono text-xs text-[var(--text-tertiary)]">{publicUrl}</p>
-              <button onClick={copyLink} className="flex size-8 items-center justify-center rounded-lg bg-[color-mix(in_oklab,var(--accent)_10%,transparent)]">
-                {copied ? <CheckCircle2 size={14} color="var(--accent)" /> : <Copy size={14} color="var(--accent)" />}
-              </button>
-            </div>
+            <p className="mb-4 text-sm text-[var(--text-tertiary)]">
+              {quote.clients
+                ? (lang === 'es' ? `Para ${quote.clients.name}` : `For ${quote.clients.name}`)
+                : (lang === 'es' ? 'Copia el link y compártelo con tu cliente' : 'Copy the link and share it with your client')}
+            </p>
 
             {/* Sanity warnings */}
             {items.length === 0 && (
               <div className="mb-3 flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-700">
-                <AlertTriangle size={13} className="shrink-0" /> Esta cotización no tiene ítems.
+                <AlertTriangle size={13} className="shrink-0" />
+                {lang === 'es' ? 'Esta cotización no tiene ítems.' : 'This estimate has no items.'}
               </div>
             )}
             {quote.total_cents === 0 && items.length > 0 && (
               <div className="mb-3 flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-700">
-                <AlertTriangle size={13} className="shrink-0" /> El total es $0.00 — ¿revisaste los precios?
+                <AlertTriangle size={13} className="shrink-0" />
+                {lang === 'es' ? 'El total es $0.00 — ¿revisaste los precios?' : 'Total is $0.00 — did you check the prices?'}
               </div>
             )}
             {!quote.clients && (
               <div className="mb-3 flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-700">
-                <AlertTriangle size={13} className="shrink-0" /> No hay cliente asignado.
+                <AlertTriangle size={13} className="shrink-0" />
+                {lang === 'es' ? 'No hay cliente asignado.' : 'No client assigned.'}
               </div>
             )}
 
-            {/* Send via email / SMS */}
+            {/* Editable message */}
+            <div className="mb-4">
+              <p className="mb-1.5 text-xs font-semibold uppercase tracking-widest text-[var(--text-tertiary)]">
+                {lang === 'es' ? 'Mensaje' : 'Message'}
+              </p>
+              <textarea
+                value={shareMessage}
+                onChange={e => setShareMessage(e.target.value)}
+                rows={5}
+                className="w-full rounded-2xl border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_12%,transparent)] resize-none"
+              />
+            </div>
+
+            {/* Share options */}
+            {sendError && (
+              <p className="mb-2 rounded-xl bg-red-50 px-3 py-2 text-xs text-red-600">{sendError}</p>
+            )}
+
             <div className="mb-4 flex flex-col gap-2">
-              {sendError && (
-                <p className="rounded-xl bg-red-50 px-3 py-2 text-xs text-red-600">{sendError}</p>
-              )}
-              {quote.clients?.email && (
+              {/* Email — server-side send */}
+              {quote.clients?.email ? (
                 <button
                   disabled={sending}
                   onClick={() => {
                     setSendError(null)
                     startSend(async () => {
+                      logShareInitiated(quote.id, 'email', quote.clients?.id ?? null)
                       const res = await sendQuote(quote.id)
                       if (res.error) { setSendError(res.error); return }
                       setShowSendSheet(false)
@@ -463,43 +522,101 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
                       window.dispatchEvent(new Event('quotronex:first-win'))
                     })
                   }}
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-blue-600 text-sm font-bold text-white disabled:opacity-60"
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-sm font-bold text-white disabled:opacity-60"
                 >
-                  <Mail size={16} /> {sending ? 'Enviando…' : `Enviar a ${quote.clients.email}`}
+                  <Mail size={16} />
+                  {sending ? (lang === 'es' ? 'Enviando…' : 'Sending…') : `Email — ${quote.clients.email}`}
                 </button>
+              ) : (
+                <div className="flex h-12 w-full items-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] px-4 text-sm text-[var(--text-tertiary)] opacity-50 cursor-not-allowed">
+                  <Mail size={16} />
+                  {lang === 'es' ? 'Email — sin correo guardado' : 'Email — no email on file'}
+                </div>
               )}
-              {quote.clients?.phone && (
+
+              {/* SMS — sms: deep link */}
+              {quote.clients?.phone ? (
                 <button
-                  onClick={() => {
-                    markSent()
-                    window.open(`sms:${quote.clients!.phone}?body=${encodeURIComponent(`Hola ${quote.clients!.name}, aquí está tu cotización: ${publicUrl}`)}`)
-                  }}
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-green-600 text-sm font-bold text-white"
+                  onClick={openSMS}
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[color-mix(in_oklab,var(--text-primary)_8%,transparent)] border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] text-sm font-semibold text-[var(--text-primary)]"
                 >
-                  <MessageSquare size={16} /> Enviar por SMS
+                  <MessageSquare size={16} />
+                  SMS — {quote.clients.phone}
                 </button>
+              ) : (
+                <div className="flex h-12 w-full items-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] px-4 text-sm text-[var(--text-tertiary)] opacity-50 cursor-not-allowed">
+                  <MessageSquare size={16} />
+                  SMS
+                </div>
               )}
-              {!quote.clients?.email && !quote.clients?.phone && (
-                <p className="text-center text-xs text-[var(--text-tertiary)]">El cliente no tiene correo ni teléfono guardado.</p>
+
+              {/* WhatsApp — wa.me deep link */}
+              {quote.clients?.phone ? (
+                <button
+                  onClick={openWhatsApp}
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[#25D366] text-sm font-bold text-white"
+                >
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  WhatsApp
+                </button>
+              ) : (
+                <div className="flex h-12 w-full items-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] px-4 text-sm text-[var(--text-tertiary)] opacity-50 cursor-not-allowed">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  WhatsApp
+                </div>
               )}
+
+              {!quote.clients?.phone && (
+                <p className="text-center text-xs text-[var(--text-tertiary)]">
+                  {lang === 'es'
+                    ? 'Agrega un teléfono al cliente para compartir por SMS o WhatsApp.'
+                    : 'Add a customer phone number to share by SMS or WhatsApp.'}
+                </p>
+              )}
+
+              {/* Copy message & Copy link */}
+              <div className="flex gap-2 mt-1">
+                <button
+                  onClick={copyMessage}
+                  className="flex h-11 flex-1 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] text-sm font-semibold text-[var(--text-primary)]"
+                >
+                  {copiedMsg
+                    ? <><CheckCircle2 size={15} color="var(--accent)" /> {lang === 'es' ? 'Copiado' : 'Copied'}</>
+                    : <><ClipboardList size={15} /> {lang === 'es' ? 'Copiar mensaje' : 'Copy message'}</>}
+                </button>
+                <button
+                  onClick={copyLink}
+                  className="flex h-11 flex-1 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] text-sm font-semibold text-[var(--text-primary)]"
+                >
+                  {copied
+                    ? <><CheckCircle2 size={15} color="var(--accent)" /> {lang === 'es' ? 'Copiado' : 'Copied'}</>
+                    : <><Link2 size={15} /> {lang === 'es' ? 'Copiar link' : 'Copy link'}</>}
+                </button>
+              </div>
             </div>
 
-            {/* Preview PDF */}
+            {/* Preview as client */}
             <button
               onClick={() => window.open(`/q/${quote.id}`, '_blank')}
               className="mb-4 flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] text-sm font-semibold text-[var(--text-primary)]"
             >
-              <Eye size={15} /> Ver como cliente <ExternalLink size={13} className="text-[var(--text-tertiary)]" />
+              <Eye size={15} />
+              {lang === 'es' ? 'Ver como cliente' : 'Preview as client'}
+              <ExternalLink size={13} className="text-[var(--text-tertiary)]" />
             </button>
 
             <motion.button whileTap={{ scale: 0.97 }} onClick={markSent} disabled={updating}
-              className="flex h-13 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-base font-bold text-white [box-shadow:var(--shadow-cta)] disabled:opacity-50">
-              {updating ? 'Guardando…' : '✓ Marcar como enviado'}
+              className="flex h-13 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[color-mix(in_oklab,var(--text-tertiary)_12%,transparent)] text-sm font-semibold text-[var(--text-secondary)] disabled:opacity-50">
+              {updating
+                ? (lang === 'es' ? 'Guardando…' : 'Saving…')
+                : (lang === 'es' ? '✓ Marcar como enviado' : '✓ Mark as sent')}
             </motion.button>
 
             {/* Send to myself (test) */}
             {selfSentToast ? (
-              <p className="mt-3 text-center text-xs font-semibold text-green-600">✓ Enviado a tu correo</p>
+              <p className="mt-3 text-center text-xs font-semibold text-green-600">
+                {lang === 'es' ? '✓ Enviado a tu correo' : '✓ Sent to your email'}
+              </p>
             ) : (
               <button
                 disabled={sendingToSelf}
@@ -508,13 +625,17 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
                   setSelfSentToast(true)
                   setTimeout(() => setSelfSentToast(false), 4000)
                 })}
-                className="mt-3 w-full py-2 text-xs text-[var(--text-tertiary)] disabled:opacity-60"
+                className="mt-2 w-full py-2 text-xs text-[var(--text-tertiary)] disabled:opacity-60"
               >
-                {sendingToSelf ? 'Enviando…' : 'Enviarme una copia de prueba'}
+                {sendingToSelf
+                  ? (lang === 'es' ? 'Enviando…' : 'Sending…')
+                  : (lang === 'es' ? 'Enviarme una copia de prueba' : 'Send myself a test copy')}
               </button>
             )}
 
-            <button onClick={() => setShowSendSheet(false)} className="mt-1 w-full py-2 text-sm text-[var(--text-tertiary)]">Cancelar</button>
+            <button onClick={() => setShowSendSheet(false)} className="mt-1 w-full py-2 text-sm text-[var(--text-tertiary)]">
+              {lang === 'es' ? 'Cancelar' : 'Cancel'}
+            </button>
           </motion.div>
         </div>
       )}

@@ -1406,6 +1406,7 @@ export type Database = {
         | "expired"
         | "archived"
         | "change_requested"
+        | "share_initiated"
       invoice_status:
         | "draft"
         | "sent"
@@ -1582,6 +1583,7 @@ export const Constants = {
         "expired",
         "archived",
         "change_requested",
+        "share_initiated",
       ],
       invoice_status: [
         "draft",
