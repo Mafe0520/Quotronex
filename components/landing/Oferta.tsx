@@ -20,13 +20,19 @@ function FounderCounter() {
     sessionStorage.setItem('qx-spots', String(n));
   }, []);
   return (
-    <div className="flex items-center justify-center gap-2 rounded-full bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] border border-[color-mix(in_oklab,var(--accent)_25%,transparent)] px-4 py-2">
-      <Sparkles className="size-4 text-[var(--accent)]" strokeWidth={2} />
-      <span className="text-sm font-bold text-[var(--accent)]">
+    <div className="mx-auto max-w-xl rounded-2xl border-2 border-[color-mix(in_oklab,var(--accent)_40%,transparent)] bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] px-6 py-4 text-center shadow-[0_0_32px_color-mix(in_oklab,var(--accent)_18%,transparent)]">
+      <div className="flex items-center justify-center gap-2 mb-1">
+        <Sparkles className="size-5 text-[var(--accent)]" strokeWidth={2} />
+        <span className="text-base font-black text-[var(--accent)] tracking-tight">
+          {lang === 'es' ? 'Precio de Fundador' : 'Founding Member Price'}
+        </span>
+        <Sparkles className="size-5 text-[var(--accent)]" strokeWidth={2} />
+      </div>
+      <p className="text-2xl font-black text-[var(--text-primary)] tabular-nums [font-family:var(--font-display)]">
         {lang === 'es'
-          ? `Solo quedan ${spots} lugares al precio de fundadores`
-          : `Only ${spots} founding spots remaining`}
-      </span>
+          ? <><span className="text-[var(--accent)]">{spots} lugares</span> disponibles — el precio sube cuando se acaben</>
+          : <><span className="text-[var(--accent)]">{spots} spots</span> left — price increases when they&rsquo;re gone</>}
+      </p>
     </div>
   );
 }
