@@ -57,7 +57,7 @@ const COPY = {
         { textoMarked: 'A client calls for a price and you say [b]"I\'ll send something later"[/b] — and lose the job.' },
         { textoMarked: 'Your quotes look [b]less professional than your work[/b] — and clients notice.'              },
         { textoMarked: 'You lose jobs because [b]someone else quoted faster[/b] — not because they work better.'     },
-        { textoMarked: 'Jobber or Housecall Pro costs [b]more every month[/b] for features you barely use.'          },
+        { textoMarked: 'Big field-service platforms cost [b]more every month[/b] for features you barely use.'          },
       ],
     },
     agitacion: {
@@ -100,7 +100,8 @@ const COPY = {
       ],
     },
     oferta: {
-      titulo: 'Half of Jobber\'s price. [acento]Twice the speed.[/acento]',
+      kicker: 'PRICING',
+      titulo: 'Half the price of the big guys. [acento]Twice the speed.[/acento]',
       badge:  'BEST VALUE',
       stack: {
         lineas: [
@@ -112,7 +113,7 @@ const COPY = {
         nota: 'Today: $32/mo (billed $390/year)',
       },
       anual: {
-        nombre:          'Annual',
+        nombre:          'Starter',
         precioMes:       '$32',
         totalAnual:      'Billed $390/year',
         ahorro:          '2 months free',
@@ -127,7 +128,7 @@ const COPY = {
         ],
       },
       mensual: {
-        nombre:   'Monthly',
+        nombre:   'Starter',
         precioMes: '$39',
         ctaLabel: 'Start monthly trial',
         features: [
@@ -205,8 +206,8 @@ const COPY = {
       titulo: "What you're probably wondering",
       items: [
         {
-          pregunta:       'How is this different from Jobber or Housecall Pro?',
-          respuestaMarked: 'Quotronex is built for 1–15 person shops that need to quote fast. [b]One fixed price, no add-ons, no price increases[/b] — ever. Jobber and Housecall Pro are built for larger companies and charge more every time you grow.',
+          pregunta:       'How is this different from other field-service apps?',
+          respuestaMarked: 'Quotronex is built for 1–15 person shops that need to quote fast. [b]One fixed price, no add-ons, no price increases[/b] — ever. Most field-service platforms are built for larger companies and charge more every time you grow.',
         },
         {
           pregunta:       'Does it really use my own prices?',
@@ -271,7 +272,7 @@ const COPY = {
         { textoMarked: 'Un cliente pide precio y dices [b]"te mando algo después"[/b] — y pierdes el trabajo.'          },
         { textoMarked: 'Tus cotizaciones se ven [b]menos profesionales que tu trabajo[/b] — y los clientes lo notan.'   },
         { textoMarked: 'Pierdes trabajos porque [b]alguien más cotizó más rápido[/b] — no porque trabaje mejor.'        },
-        { textoMarked: 'Jobber o Housecall Pro cuesta [b]más cada mes[/b] por funciones que casi no usas.'              },
+        { textoMarked: 'Las plataformas grandes cuestan [b]más cada mes[/b] por funciones que casi no usas.'              },
       ],
     },
     agitacion: {
@@ -314,7 +315,8 @@ const COPY = {
       ],
     },
     oferta: {
-      titulo: 'La mitad del precio de Jobber. [acento]El doble de velocidad.[/acento]',
+      kicker: 'LA OFERTA',
+      titulo: 'La mitad del precio de las grandes. [acento]El doble de velocidad.[/acento]',
       badge:  'MEJOR VALOR',
       stack: {
         lineas: [
@@ -326,7 +328,7 @@ const COPY = {
         nota: 'Hoy: $32/mes (cobrado $390/año)',
       },
       anual: {
-        nombre:          'Anual',
+        nombre:          'Starter',
         precioMes:       '$32',
         totalAnual:      'Cobrado $390/año',
         ahorro:          '2 meses gratis',
@@ -341,7 +343,7 @@ const COPY = {
         ],
       },
       mensual: {
-        nombre:    'Mensual',
+        nombre:    'Starter',
         precioMes: '$39',
         ctaLabel:  'Empezar prueba mensual',
         features: [
@@ -419,8 +421,8 @@ const COPY = {
       titulo: 'Lo que probablemente te estás preguntando',
       items: [
         {
-          pregunta:       '¿En qué se diferencia de Jobber o Housecall Pro?',
-          respuestaMarked: 'Quotronex está hecho para negocios de 1–15 personas que necesitan cotizar rápido. [b]Un precio fijo, sin extras, sin aumentos[/b] — nunca. Jobber y Housecall Pro son para empresas más grandes y cobran más cada vez que creces.',
+          pregunta:       '¿En qué se diferencia de otras apps de campo?',
+          respuestaMarked: 'Quotronex está hecho para negocios de 1–15 personas que necesitan cotizar rápido. [b]Un precio fijo, sin extras, sin aumentos[/b] — nunca. La mayoría de las plataformas grandes están hechas para empresas más grandes y cobran más cada vez que creces.',
         },
         {
           pregunta:       '¿De verdad usa mis propios precios?',
@@ -587,6 +589,7 @@ export default function LandingQuotronex() {
 
       {/* 7. OFERTA */}
       <Oferta
+        kicker={c.oferta.kicker}
         tituloMarked={c.oferta.titulo}
         trialDias={14}
         stack={{ ...c.oferta.stack, lineas: [...c.oferta.stack.lineas] }}
