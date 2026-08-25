@@ -41,7 +41,7 @@ const FEATURES: Record<PlanId, { es: string; en: string }[]> = {
   ],
   crew: [
     { es: 'Hasta 3 usuarios', en: 'Up to 3 users' },
-    { es: 'Todo lo del plan Solo', en: 'Everything in Solo' },
+    { es: 'Todo lo del plan Starter', en: 'Everything in Starter' },
     { es: 'Trabajos y asignación de cuadrilla', en: 'Jobs & crew assignment' },
     { es: 'Registro de horas', en: 'Time tracking' },
     { es: 'Gastos y recibos con IA', en: 'AI receipt scanning' },
@@ -63,7 +63,7 @@ const FEATURES: Record<PlanId, { es: string; en: string }[]> = {
 };
 
 const PLAN_NAMES: Record<PlanId, { es: string; en: string }> = {
-  solo:     { es: 'Solo',     en: 'Solo'     },
+  solo:     { es: 'Starter',  en: 'Starter'  },
   crew:     { es: 'Crew',     en: 'Crew'     },
   business: { es: 'Business', en: 'Business' },
   pro_team: { es: 'Pro Team', en: 'Pro Team' },
