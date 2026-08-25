@@ -100,6 +100,12 @@ export function Oferta({
   const annualTotal = plan.annualPriceCents / 100;
   const savings = (plan.monthlyPriceCents * 12 - plan.annualPriceCents) / 100;
 
+  const founderMonthlyEquiv = billing === 'annual'
+    ? Math.round(plan.founderAnnualPriceCents / 12 / 100)
+    : plan.founderMonthlyPriceCents / 100;
+  const founderAnnualTotal = plan.founderAnnualPriceCents / 100;
+  const founderSavings = (plan.monthlyPriceCents * 12 - plan.founderAnnualPriceCents) / 100;
+
   const ctaHref = `/signup?plan=${selected}&billing=${billing}`;
 
   return (
@@ -208,6 +214,7 @@ export function Oferta({
               transition={{ duration: 0.18 }}
               className="rounded-2xl border-2 border-[var(--accent)] bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] p-6 shadow-[0_8px_32px_color-mix(in_oklab,var(--accent)_14%,transparent)]">
 
+              {/* Plan name + trial badge */}
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-[var(--text-primary)]">
                   {PLAN_NAMES[selected][es ? 'es' : 'en']}
@@ -217,27 +224,40 @@ export function Oferta({
                 </span>
               </div>
 
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-5xl font-black tabular-nums [font-family:var(--font-display)] text-[var(--text-primary)]">
-                  ${monthlyEquiv}
-                </span>
-                <span className="text-base text-[var(--text-secondary)]">{es ? '/mes' : '/mo'}</span>
-              </div>
-
-              {billing === 'annual' ? (
-                <div className="mb-4">
-                  <p className="text-xs text-[var(--text-secondary)]">
-                    {es ? `Facturado a $${annualTotal}/año` : `Billed $${annualTotal}/year`}
-                  </p>
-                  <p className="text-sm font-bold text-[var(--accent)] mt-1">
-                    {es ? `Ahorras $${savings} al año` : `Save $${savings}/year`}
-                  </p>
+              {/* Founding Member price block */}
+              <div className="rounded-xl border border-[color-mix(in_oklab,var(--accent)_35%,transparent)] bg-[color-mix(in_oklab,var(--accent)_8%,transparent)] px-4 py-3 mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="size-3.5 text-[var(--accent)]" strokeWidth={2} />
+                  <span className="text-xs font-black tracking-wide text-[var(--accent)] uppercase">
+                    {es ? 'Precio de fundador' : 'Founding Member price'}
+                  </span>
                 </div>
-              ) : (
-                <p className="text-xs text-[var(--text-secondary)] mb-4">
-                  {es ? 'Cancela cuando quieras' : 'Cancel anytime'}
+                <div className="flex items-baseline gap-2 mb-1">
+                  <span className="text-5xl font-black tabular-nums [font-family:var(--font-display)] text-[var(--accent)]">
+                    ${founderMonthlyEquiv}
+                  </span>
+                  <span className="text-base text-[var(--text-secondary)]">{es ? '/mes' : '/mo'}</span>
+                  <span className="text-lg text-[var(--text-tertiary)] line-through tabular-nums ml-1">
+                    ${monthlyEquiv}
+                  </span>
+                </div>
+                {billing === 'annual' ? (
+                  <p className="text-xs text-[var(--text-secondary)]">
+                    {es
+                      ? `Facturado a $${founderAnnualTotal}/año · ahorras $${founderSavings}`
+                      : `Billed $${founderAnnualTotal}/year · you save $${founderSavings}`}
+                  </p>
+                ) : (
+                  <p className="text-xs text-[var(--text-secondary)]">
+                    {es ? 'Cancela cuando quieras' : 'Cancel anytime'}
+                  </p>
+                )}
+                <p className="text-[11px] text-[var(--text-tertiary)] mt-1.5">
+                  {es
+                    ? 'Bloqueado de por vida · el precio sube cuando se acaben los lugares'
+                    : 'Locked for life · price goes up when spots are gone'}
                 </p>
-              )}
+              </div>
 
               <ul className="flex flex-col gap-2.5 mb-5">
                 {FEATURES[selected].map((f, i) => (
