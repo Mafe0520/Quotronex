@@ -26,7 +26,7 @@ export interface Plan {
 export const PLANS: Record<PlanId, Plan> = {
   solo: {
     id:                       'solo',
-    name:                     'Solo',
+    name:                     'Starter',
     monthlyPriceCents:        2900,
     annualPriceCents:         29000,
     founderMonthlyPriceCents: 2400,
