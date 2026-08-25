@@ -35,10 +35,10 @@ export const PLANS: Record<PlanId, Plan> = {
     allowsExtraSeats:         false,  // para más usuarios → upgrade a Crew
     extraSeatMonthlyCents:    500,
     extraSeatAnnualCents:     5000,
-    stripePriceIdMonthly:         'price_1U82HQPzvUxvdSWnbezUBKkp',
-    stripePriceIdAnnual:          'price_1U82HQPzvUxvdSWnnM1sdNht',
-    stripePriceIdFounderMonthly:  'price_1U82HQPzvUxvdSWnDdrNcDdu',
-    stripePriceIdFounderAnnual:   'price_1U82HRPzvUxvdSWnNx56P4HO',
+    stripePriceIdMonthly:         'price_1U83hILBW0msgxNitZ3lQinO',
+    stripePriceIdAnnual:          'price_1U83hILBW0msgxNifMZ6nRj8',
+    stripePriceIdFounderMonthly:  'price_1U83hHLBW0msgxNimxg9He47',
+    stripePriceIdFounderAnnual:   'price_1U83hGLBW0msgxNitaJEYlXg',
   },
   crew: {
     id:                       'crew',
@@ -51,10 +51,10 @@ export const PLANS: Record<PlanId, Plan> = {
     allowsExtraSeats:         true,
     extraSeatMonthlyCents:    500,
     extraSeatAnnualCents:     5000,
-    stripePriceIdMonthly:         'price_1U82HRPzvUxvdSWn36gGWAGj',
-    stripePriceIdAnnual:          'price_1U82HRPzvUxvdSWntyCn9OFT',
-    stripePriceIdFounderMonthly:  'price_1U82HRPzvUxvdSWnalCGEZ2b',
-    stripePriceIdFounderAnnual:   'price_1U82HSPzvUxvdSWnmR7EFPH4',
+    stripePriceIdMonthly:         'price_1U83hHLBW0msgxNiy5argHGB',
+    stripePriceIdAnnual:          'price_1U83hHLBW0msgxNiWnNReV7q',
+    stripePriceIdFounderMonthly:  'price_1U83hHLBW0msgxNiMRa2J0Op',
+    stripePriceIdFounderAnnual:   'price_1U83hGLBW0msgxNiJIbh1rmx',
   },
   business: {
     id:                       'business',
@@ -67,10 +67,10 @@ export const PLANS: Record<PlanId, Plan> = {
     allowsExtraSeats:         true,
     extraSeatMonthlyCents:    500,
     extraSeatAnnualCents:     5000,
-    stripePriceIdMonthly:         'price_1U82HSPzvUxvdSWnjJpvdvBr',
-    stripePriceIdAnnual:          'price_1U82HSPzvUxvdSWnLAjArhTy',
-    stripePriceIdFounderMonthly:  'price_1U82HSPzvUxvdSWnZobtYbLT',
-    stripePriceIdFounderAnnual:   'price_1U82HTPzvUxvdSWnJ9bR1dpH',
+    stripePriceIdMonthly:         'price_1U83hKLBW0msgxNiewqt1h9P',
+    stripePriceIdAnnual:          'price_1U83hKLBW0msgxNiSTCjb3jy',
+    stripePriceIdFounderMonthly:  'price_1U83hJLBW0msgxNi8fCBE9Z2',
+    stripePriceIdFounderAnnual:   'price_1U83hJLBW0msgxNi5ogAo8Sg',
   },
   pro_team: {
     id:                       'pro_team',
@@ -83,10 +83,10 @@ export const PLANS: Record<PlanId, Plan> = {
     allowsExtraSeats:         true,
     extraSeatMonthlyCents:    500,
     extraSeatAnnualCents:     5000,
-    stripePriceIdMonthly:         'price_1U82HTPzvUxvdSWnfdynBn7L',
-    stripePriceIdAnnual:          'price_1U82HTPzvUxvdSWnGdSBLqZI',
-    stripePriceIdFounderMonthly:  'price_1U82HUPzvUxvdSWncgMSzECa',
-    stripePriceIdFounderAnnual:   'price_1U82HUPzvUxvdSWnoLtK6Mli',
+    stripePriceIdMonthly:         'price_1U83hILBW0msgxNiDqldpsed',
+    stripePriceIdAnnual:          'price_1U83hILBW0msgxNirHUzd5rT',
+    stripePriceIdFounderMonthly:  'price_1U83hHLBW0msgxNiTgAcKH3x',
+    stripePriceIdFounderAnnual:   'price_1U83hGLBW0msgxNikOfueUw6',
   },
 }
 
@@ -96,8 +96,8 @@ export const PLAN_LIST = Object.values(PLANS)
 export const EXTRA_SEAT = {
   monthlyCents:          500,
   annualCents:          5000,
-  stripePriceIdMonthly: 'price_1U82K0PzvUxvdSWnk4gTTYet',
-  stripePriceIdAnnual:  'price_1U82K0PzvUxvdSWnEp5UCAXa',
+  stripePriceIdMonthly: 'price_1U83hHLBW0msgxNiImqXMteI',
+  stripePriceIdAnnual:  'price_1U83hGLBW0msgxNij3raKRlv',
 } as const
 
 export const FOUNDING_MAX_BUSINESSES = 100
