@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, animate, AnimatePresence } from 'motion/react';
-import { Paintbrush, Wrench, Zap, CheckCircle2, Send, FileSignature, Mic } from 'lucide-react';
+import { Paintbrush, Wrench, Zap, CheckCircle2, Send, Link, Mic } from 'lucide-react';
 
 type QuoteTab = 'painting' | 'plumbing' | 'electric';
 type Phase = 'dictating' | 'ready';
@@ -268,8 +268,8 @@ export function HeroMockup() {
                       whileTap={{ scale: 0.97 }}
                       className="flex items-center justify-center gap-1.5 rounded-[var(--radius-button)] border border-[var(--border-subtle)] bg-[var(--surface-2)] px-4 py-2.5 text-sm font-semibold text-[var(--text-secondary)] [touch-action:manipulation]"
                     >
-                      <FileSignature className="size-4" strokeWidth={2} />
-                      Ver firma
+                      <Link className="size-4" strokeWidth={2} />
+                      Copiar enlace
                     </motion.button>
                   </div>
                 </motion.div>

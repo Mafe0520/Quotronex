@@ -7,9 +7,9 @@ export const metadata = { title: 'Checkout — Quotronex', robots: { index: fals
 export default async function CheckoutPage({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string; billing?: string; email?: string; name?: string; founder?: string }>
+  searchParams: Promise<{ plan?: string; billing?: string; email?: string; name?: string; founder?: string; lang?: string }>
 }) {
-  const { plan = 'crew', billing = 'monthly', email = '', name = '', founder = '' } = await searchParams
+  const { plan = 'crew', billing = 'monthly', email = '', name = '', founder = '', lang = 'en' } = await searchParams
 
   const planId = (Object.keys(PLANS).includes(plan) ? plan : 'crew') as PlanId
   const billingMode = billing === 'annual' ? 'annual' : 'monthly'
@@ -32,7 +32,7 @@ export default async function CheckoutPage({
     success_url: `${origin}/app?checkout=success`,
     cancel_url: `${origin}/paywall`,
     allow_promotion_codes: true,
-    locale: 'es',
+    locale: lang === 'es' ? 'es' : 'en',
   })
 
   if (!session.url) redirect('/paywall')

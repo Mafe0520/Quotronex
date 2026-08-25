@@ -577,7 +577,7 @@ export function QuotePublicView({ quote, items }: { quote: Quote; items: QuoteIt
               {!showDecline && !showChangeRequest && (
                 <div className="rounded-2xl border-2 border-emerald-500 bg-white p-6 shadow-lg">
                   <h2 className="text-base font-bold text-gray-900 mb-1">¿Listo para aprobar esta cotización?</h2>
-                  <p className="text-sm text-gray-500 mb-4">Escribe tu nombre para confirmar la aprobación. Tu nombre funciona como firma digital.</p>
+                  <p className="text-sm text-gray-500 mb-4">Escribe tu nombre para confirmar la aprobación. Escribe tu nombre para confirmar la aprobación.</p>
                   <form onSubmit={handleAccept} className="flex flex-col gap-3">
                     <input
                       type="text"

@@ -49,7 +49,7 @@ const COPY = {
       h1:          '[acento]Quote in 30 seconds.[/acento] Land the job.',
       subtitle:    "Your prices. Your voice. A professional quote in 30 seconds — before they call the next guy.",
       secondary:   'See how it works',
-      socialProof: '14-day free trial · No charge until day 15 · Cancel anytime',
+      socialProof: '14-day free trial · Card required · $0 today · Cancel anytime',
     },
     problema: {
       titulo: 'Does this sound familiar?',
@@ -109,19 +109,19 @@ const COPY = {
           { resultado: 'Job tracking + crew assignment',                  valor: '$49'  },
         ],
         totalTachado: '$326',
-        nota: 'Today: $32/mo (billed $384/year)',
+        nota: 'Today: $32/mo (billed $390/year)',
       },
       anual: {
         nombre:          'Annual',
         precioMes:       '$32',
-        totalAnual:      'Billed $384/year',
+        totalAnual:      'Billed $390/year',
         ahorro:          '2 months free',
         descomposicionDia: 'less than $1.10/day',
         ctaLabel:        'Start my free 14-day trial',
         features: [
           'Voice Price Book — unlimited quotes',
           'English + Spanish, built in',
-          'Send, sign, and invoice — all in one app',
+          'Send, approve, and invoice — all in one app',
           'Assign jobs to up to 5 crew members',
           'Fixed price. No add-ons. No surprises.',
         ],
@@ -133,7 +133,7 @@ const COPY = {
         features: [
           'Voice Price Book — unlimited quotes',
           'English + Spanish, built in',
-          'Send, sign, and invoice — all in one app',
+          'Send, approve, and invoice — all in one app',
           'Assign jobs to up to 5 crew members',
           'Cancel anytime.',
         ],
@@ -173,11 +173,11 @@ const COPY = {
         },
         {
           id: 'sent', label: 'Sent', badge: 'Delivered',
-          card: { titulo: 'Client gets it instantly', detalle: 'One tap sends the quote by email, SMS, or link. The client sees it before you start the drive home.', meta: '✓ Read receipts built in', },
+          card: { titulo: 'Client gets it instantly', detalle: 'One tap sends the quote by email or link. The client sees it before you start the drive home.', meta: '✓ Read receipts built in', },
         },
         {
-          id: 'signed', label: 'Signed', badge: 'Approved',
-          card: { titulo: 'Digital signature in seconds', detalle: 'Client taps Approve on their phone. No printing, no scanning, no waiting days for a callback.', meta: '📱 Works on any phone, no app needed', },
+          id: 'approved', label: 'Approved', badge: 'Approved',
+          card: { titulo: 'Client approves in seconds', detalle: 'Client taps Approve on their phone. No printing, no scanning, no waiting days for a callback.', meta: '📱 Works on any phone, no app needed', },
         },
         {
           id: 'paid', label: 'Paid', badge: 'Deposited',
@@ -197,7 +197,7 @@ const COPY = {
     },
     garantia: {
       nombre:    '14-Day Free Trial',
-      condicion: "Try Quotronex free for [b]14 days[/b]. No credit card required to start. Cancel before day 15 and you won't be charged anything.",
+      condicion: "Try Quotronex free for [b]14 days[/b]. Card required · $0 today. Cancel before day 15 and you won't be charged anything.",
       pisoLegal: 'Processed securely by Stripe',
     },
     faq: {
@@ -217,19 +217,27 @@ const COPY = {
           respuestaMarked: 'The whole app works in English and Spanish. [b]Switch any time[/b] — no separate account, no extra setup.',
         },
         {
+          pregunta:       'Do I need a credit card for the trial?',
+          respuestaMarked: 'Yes. A card is required to start — but [b]you are charged $0 today[/b]. The trial is 14 days. Cancel before day 15 and nothing is billed.',
+        },
+        {
           pregunta:       'What happens after the 14-day trial?',
-          respuestaMarked: "You choose a plan and enter your card. If you don't, your account pauses — [b]no charge, no penalty[/b].",
+          respuestaMarked: "Your card is billed automatically on day 15. Cancel any time before that and [b]no charge[/b].",
         },
         {
           pregunta:       'Can I cancel anytime?',
           respuestaMarked: 'Yes. Monthly plans cancel before the next billing cycle. Annual plans cancel before the next renewal date — [b]no penalty[/b].',
+        },
+        {
+          pregunta:       'Does the AI set my prices?',
+          respuestaMarked: 'No. You set your prices in the Price Book. The AI uses [b]your numbers[/b] to build quotes — it never guesses or uses market rates.',
         },
       ],
     },
     ctaFinal: {
       h2:            'Stop losing jobs to [acento]faster quotes[/acento]',
       futurePacing:  "In two weeks, every client gets a professional quote in 30 seconds. In a month, you've won jobs you used to lose.",
-      recap:         '14-day free trial · No charge until day 15 · Cancel anytime',
+      recap:         '14-day free trial · Card required · $0 today · Cancel anytime',
       ps:            'P.S. — [b]The Voice Price Book uses your real rates, not generic estimates.[/b] Set it up once. Quote faster than anyone else — every time.',
     },
     footer: {
@@ -255,7 +263,7 @@ const COPY = {
       h1:          '[acento]Cotiza en 30 segundos.[/acento] Gana el trabajo.',
       subtitle:    'Tus precios. Tu voz. Una cotización profesional en 30 segundos — antes de que llamen al siguiente.',
       secondary:   'Ver cómo funciona',
-      socialProof: 'Prueba gratis 14 días · No se cobra hasta el día 15 · Cancela cuando quieras',
+      socialProof: 'Prueba gratis 14 días · Tarjeta requerida · $0 hoy · Cancela cuando quieras',
     },
     problema: {
       titulo: '¿Te suena familiar?',
@@ -286,7 +294,7 @@ const COPY = {
       pasos: [
         { titulo: 'Describe el trabajo',     detalle: 'Cuenta lo que vas a hacer con tus propias palabras — en inglés o español.'       },
         { titulo: 'La IA aplica tus precios', detalle: 'El Voice Price Book arma la cotización con tus tarifas reales, no estimados.'   },
-        { titulo: 'Envía. Firma.',            detalle: 'El cliente recibe una cotización profesional en segundos. Un toque para firmar.' },
+        { titulo: 'Envía. El cliente aprueba.', detalle: 'El cliente recibe una cotización profesional en segundos. Un toque para aprobar.' },
       ],
       antesDespues: {
         labelAntes:   'Antes',
@@ -315,19 +323,19 @@ const COPY = {
           { resultado: 'Seguimiento de trabajos + asignación de equipo',        valor: '$49'  },
         ],
         totalTachado: '$326',
-        nota: 'Hoy: $32/mes (cobrado $384/año)',
+        nota: 'Hoy: $32/mes (cobrado $390/año)',
       },
       anual: {
         nombre:          'Anual',
         precioMes:       '$32',
-        totalAnual:      'Cobrado $384/año',
+        totalAnual:      'Cobrado $390/año',
         ahorro:          '2 meses gratis',
         descomposicionDia: 'menos de $1.10/día',
         ctaLabel:        'Empezar prueba gratis 14 días',
         features: [
           'Voice Price Book — cotizaciones ilimitadas',
           'Inglés + español incluidos',
-          'Envía, firma y factura — todo en una app',
+          'Envía, aprueba y factura — todo en una app',
           'Asigna trabajos a hasta 5 empleados',
           'Precio fijo. Sin extras. Sin sorpresas.',
         ],
@@ -339,7 +347,7 @@ const COPY = {
         features: [
           'Voice Price Book — cotizaciones ilimitadas',
           'Inglés + español incluidos',
-          'Envía, firma y factura — todo en una app',
+          'Envía, aprueba y factura — todo en una app',
           'Asigna trabajos a hasta 5 empleados',
           'Cancela cuando quieras.',
         ],
@@ -379,11 +387,11 @@ const COPY = {
         },
         {
           id: 'enviado', label: 'Enviado', badge: 'Entregado',
-          card: { titulo: 'El cliente lo recibe al instante', detalle: 'Un toque envía la cotización por correo, SMS o enlace. El cliente la ve antes de que salgas.', meta: '✓ Confirmación de lectura incluida', },
+          card: { titulo: 'El cliente lo recibe al instante', detalle: 'Un toque envía la cotización por correo o enlace. El cliente la ve antes de que salgas.', meta: '✓ Confirmación de lectura incluida', },
         },
         {
-          id: 'firmado', label: 'Firmado', badge: 'Aprobado',
-          card: { titulo: 'Firma digital en segundos', detalle: 'El cliente toca Aceptar desde su celular. Sin imprimir, sin escáner, sin esperar días por respuesta.', meta: '📱 Funciona en cualquier celular, sin instalar nada', },
+          id: 'aprobado', label: 'Aprobado', badge: 'Aprobado',
+          card: { titulo: 'El cliente aprueba en segundos', detalle: 'El cliente toca Aceptar desde su celular. Sin imprimir, sin escáner, sin esperar días por respuesta.', meta: '📱 Funciona en cualquier celular, sin instalar nada', },
         },
         {
           id: 'pagado', label: 'Pagado', badge: 'Depositado',
@@ -403,7 +411,7 @@ const COPY = {
     },
     garantia: {
       nombre:    'Prueba gratis 14 días',
-      condicion: "Prueba Quotronex gratis por [b]14 días[/b]. No necesitas tarjeta para empezar. Cancela antes del día 15 y no se te cobra nada.",
+      condicion: "Prueba Quotronex gratis por [b]14 días[/b]. Tarjeta requerida · $0 hoy. Cancela antes del día 15 y no se te cobra nada.",
       pisoLegal: 'Procesado de forma segura por Stripe',
     },
     faq: {
@@ -423,19 +431,27 @@ const COPY = {
           respuestaMarked: 'Toda la app funciona en inglés y español. [b]Cambia cuando quieras[/b] — sin cuenta separada, sin configuración extra.',
         },
         {
+          pregunta:       '¿Necesito tarjeta para la prueba?',
+          respuestaMarked: 'Sí. Se requiere tarjeta para empezar — pero [b]hoy se cobra $0[/b]. La prueba es de 14 días. Cancela antes del día 15 y no se te cobra nada.',
+        },
+        {
           pregunta:       '¿Qué pasa después de los 14 días de prueba?',
-          respuestaMarked: 'Eliges un plan e ingresas tu tarjeta. Si no lo haces, tu cuenta se pausa — [b]sin cobro, sin penalización[/b].',
+          respuestaMarked: 'Tu tarjeta se cobra automáticamente el día 15. Cancela antes de esa fecha y [b]no hay cobro[/b].',
         },
         {
           pregunta:       '¿Puedo cancelar cuando quiera?',
           respuestaMarked: 'Sí. Los planes mensuales se cancelan antes del próximo ciclo. Los planes anuales se cancelan antes de la próxima renovación — [b]sin penalización[/b].',
+        },
+        {
+          pregunta:       '¿La IA pone mis precios?',
+          respuestaMarked: 'No. Tú configuras tus precios en el Price Book. La IA usa [b]tus números[/b] para armar las cotizaciones — nunca adivina ni usa precios del mercado.',
         },
       ],
     },
     ctaFinal: {
       h2:           'Deja de perder trabajos por [acento]cotizaciones lentas[/acento]',
       futurePacing: 'En dos semanas, cada cliente recibe una cotización profesional en 30 segundos. En un mes, ya ganaste trabajos que antes perdías.',
-      recap:        'Prueba gratis 14 días · No se cobra hasta el día 15 · Cancela cuando quieras',
+      recap:        'Prueba gratis 14 días · Tarjeta requerida · $0 hoy · Cancela cuando quieras',
       ps:           'P.D. — [b]El Voice Price Book usa tus tarifas reales, no estimados genéricos.[/b] Configúralo una vez. Cotiza más rápido que cualquiera — siempre.',
     },
     footer: {
@@ -615,7 +631,7 @@ export default function LandingQuotronex() {
       {/* 10. FOOTER LEGAL */}
       <FooterLegal
         appName="Quotronex"
-        soporteEmail="hello@quotly.app"
+        soporteEmail="hello@quotronex.com"
         enlaces={[...c.footer.enlaces]}
       />
 

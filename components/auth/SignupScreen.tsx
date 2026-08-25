@@ -2,6 +2,7 @@
 
 import { useState, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useLang } from '@/app/lang-context';
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import { User, Mail, ArrowRight, ChevronLeft } from 'lucide-react';
@@ -12,6 +13,7 @@ function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const plan = searchParams.get('plan') ?? 'crew';
+  const { lang } = useLang();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -31,7 +33,7 @@ function SignupForm() {
     if (!name.trim()) { setError('Ingresa tu nombre.'); return; }
     if (!email.trim() || !email.includes('@')) { setError('Ingresa un correo válido.'); return; }
     setLoading(true);
-    router.push(`/checkout?plan=${plan}&email=${encodeURIComponent(email.trim())}&name=${encodeURIComponent(name.trim())}`);
+    router.push(`/checkout?plan=${plan}&lang=${lang}&email=${encodeURIComponent(email.trim())}&name=${encodeURIComponent(name.trim())}`);
   }
 
   return (

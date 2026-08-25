@@ -51,7 +51,7 @@
   <rect x="16" y="498" width="214" height="48" rx="14" fill="#4ade80"/>
   <text x="123" y="527" fill="#0a0a14" font-size="14" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle">Send by email</text>
   <rect x="240" y="498" width="119" height="48" rx="14" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1"/>
-  <text x="299" y="527" fill="#a0a0b8" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">Signature</text>
+  <text x="299" y="527" fill="#a0a0b8" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle">Copy link</text>
   <!-- Bottom nav -->
   <rect x="0" y="750" width="375" height="64" fill="#12121e"/>
   <rect x="0" y="750" width="375" height="1" fill="#2a2a3e"/>

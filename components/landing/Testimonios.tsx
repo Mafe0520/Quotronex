@@ -18,7 +18,7 @@ const TESTIMONIALS = {
       title: 'General contractor · Dallas, TX',
     },
     {
-      quote: "A client called on a Saturday. I sent a professional quote in 2 minutes from my phone. He signed the same day. That's never happened before.",
+      quote: "A client called on a Saturday. I sent a professional quote in 2 minutes from my phone. He approved it the same day. That's never happened before.",
       name: 'José A.',
       title: 'Painting & drywall · Newark, NJ',
     },
@@ -35,7 +35,7 @@ const TESTIMONIALS = {
       title: 'Contratista general · Dallas, TX',
     },
     {
-      quote: "Un cliente llamó un sábado. Le mandé una cotización profesional en 2 minutos desde el celular. Firmó el mismo día. Nunca me había pasado antes.",
+      quote: "Un cliente llamó un sábado. Le mandé una cotización profesional en 2 minutos desde el celular. La aprobó el mismo día. Nunca me había pasado antes.",
       name: 'José A.',
       title: 'Pintura y drywall · Newark, NJ',
     },
