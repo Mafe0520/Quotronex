@@ -9,7 +9,7 @@ export default function PrivacyPage() {
       <section className="space-y-8">
         <div>
           <h2 className="text-base font-semibold text-white mb-2">1. Who controls your data</h2>
-          <p>Quotronex is operated by Maria Fernanda Pareja, New Jersey, United States. Contact: <a href="mailto:hello@quotronex.com" className="text-green-400 underline">hello@quotronex.com</a>.</p>
+          <p>Quotronex is operated by Quotronex LLC, New Jersey, United States. Contact: <a href="mailto:hello@quotronex.com" className="text-green-400 underline">hello@quotronex.com</a>.</p>
         </div>
 
         <div>

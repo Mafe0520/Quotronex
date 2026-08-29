@@ -9,7 +9,7 @@ export default function TermsPage() {
       <section className="space-y-8">
         <div>
           <h2 className="text-base font-semibold text-white mb-2">1. Who we are</h2>
-          <p>Quotronex is a software-as-a-service platform operated by Maria Fernanda Pareja, an individual based in New Jersey, United States (&ldquo;Quotronex,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;). By creating an account or using the service you agree to these Terms.</p>
+          <p>Quotronex is a software-as-a-service platform operated by Quotronex LLC, based in New Jersey, United States (&ldquo;Quotronex,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;). By creating an account or using the service you agree to these Terms.</p>
         </div>
 
         <div>
