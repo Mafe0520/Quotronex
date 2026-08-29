@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, DollarSign, CreditCard, Building2,
   Users, MessageSquare, Zap, BarChart2, TrendingUp,
-  Activity, ScrollText, Settings, ChevronRight, Target,
+  Activity, ScrollText, Settings, ChevronRight, Target, Smile,
 } from 'lucide-react'
 import type { AdminRole } from '@/lib/admin/require-admin'
 
@@ -26,6 +26,7 @@ const NAV: NavItem[] = [
   { label: 'Support',        href: '/admin/support',        icon: MessageSquare },
   { label: 'AI Usage',       href: '/admin/ai-usage',       icon: Zap,  superadminOnly: true },
   { label: 'Product Usage',  href: '/admin/product',        icon: BarChart2    },
+  { label: 'Satisfacción',   href: '/admin/satisfaction',   icon: Smile        },
   { label: 'Acquisition',    href: '/admin/acquisition',    icon: TrendingUp   },
   { label: 'System Health',  href: '/admin/health',         icon: Activity     },
   { label: 'Prospecting',    href: '/admin/prospecting/leads', icon: Target, superadminOnly: true },

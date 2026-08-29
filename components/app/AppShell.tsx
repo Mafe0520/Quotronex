@@ -16,7 +16,8 @@ import { ActivationChecklist } from '@/components/app/ActivationChecklist';
 import type { Quote, PriceBookItem, InvoiceRow, JobRow, Business } from '@/app/app/page';
 import { useT } from '@/lib/i18n'
 import { PushButton } from '@/components/app/PushButton'
-import { CelebrationProvider, useCelebration } from '@/components/app/CelebrationToast';
+import { CelebrationProvider, useCelebration } from '@/components/app/CelebrationToast'
+import { SatisfactionSurvey } from '@/components/app/SatisfactionSurvey';
 
 interface AppUser { id: string; email: string; firstName: string }
 interface Props {
@@ -1125,6 +1126,7 @@ function AppShellInner({ user, business, quotes, priceBookItems, invoices, jobs,
           </div>
         </div>
       </nav>
+      <SatisfactionSurvey businessId={business?.id ?? null} />
     </div>
   );
 }
