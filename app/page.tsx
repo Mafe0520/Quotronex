@@ -16,11 +16,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useLang } from './lang-context';
 import { Hero } from '@/components/landing/Hero';
 import { Problema } from '@/components/landing/Problema';
-import { Agitacion } from '@/components/landing/Agitacion';
 import { Solucion } from '@/components/landing/Solucion';
-import { AppPorDentro } from '@/components/landing/AppPorDentro';
-import { Oferta } from '@/components/landing/Oferta';
-import { Garantia } from '@/components/landing/Garantia';
 import { Faq } from '@/components/landing/Faq';
 import { CtaFinal } from '@/components/landing/CtaFinal';
 import { FooterLegal } from '@/components/landing/FooterLegal';
@@ -49,7 +45,7 @@ const COPY = {
       h1:          '[acento]Quote in 30 seconds.[/acento] Land the job.',
       subtitle:    "Your prices. Your voice. A professional quote in 30 seconds — before they call the next guy.",
       secondary:   'See how it works',
-      socialProof: '14-day free trial · Card required · $0 today · Cancel anytime',
+      socialProof: '7-day free trial · Card required · $0 today · Cancel anytime',
     },
     problema: {
       titulo: 'Does this sound familiar?',
@@ -59,19 +55,6 @@ const COPY = {
         { textoMarked: 'You lose jobs because [b]someone else quoted faster[/b] — not because they work better.'     },
         { textoMarked: 'Big field-service platforms cost [b]more every month[/b] for features you barely use.'          },
       ],
-    },
-    agitacion: {
-      frases: [
-        'Every slow quote is a job you handed to the next guy on the list.',
-        'At [acento]1–3 lost jobs a month[/acento], that\'s $6,000–$36,000 a year walking out the door.',
-        'A fancier app won\'t fix it. [b]Speed and your own prices will.[/b]',
-      ],
-      contraste: {
-        labelHoy:     'Today',
-        hoy:          'Quoting by hand takes 30 minutes, looks amateur, and costs you jobs.',
-        labelFuturo:  'In 6 months if nothing changes',
-        futuro:       'Same jobs lost — plus $1,800+ paid to software that didn\'t help.',
-      },
     },
     solucion: {
       kicker:       'THE MECHANISM',
@@ -87,57 +70,6 @@ const COPY = {
         antes:        'Quoting by hand, losing jobs to faster competitors.',
         labelDespues: 'After',
         despues:      'Professional quote in 30 seconds. Job confirmed.',
-      },
-    },
-    appPorDentro: {
-      kicker: 'INSIDE THE APP',
-      titulo: 'Everything you need, [acento]nothing you don\'t[/acento]',
-      frames: [
-        { label: 'Your quote, ready before you walk away', src: '/screenshots/screen-quote-en.svg',   alt: 'Quote screen'   },
-        { label: 'All your jobs, in one place',            src: '/screenshots/screen-jobs-en.svg',    alt: 'Jobs screen'    },
-        { label: 'Assign work to your crew',               src: '/screenshots/screen-crew-en.svg',    alt: 'Crew screen'    },
-        { label: 'One tap to invoice',                     src: '/screenshots/screen-invoice-en.svg', alt: 'Invoice screen' },
-      ],
-    },
-    oferta: {
-      kicker: 'PRICING',
-      titulo: 'Half the price of the big guys. [acento]Twice the speed.[/acento]',
-      badge:  'BEST VALUE',
-      stack: {
-        lineas: [
-          { resultado: 'Voice Price Book — unlimited quotes (12 months)', valor: '$228' },
-          { resultado: 'Bilingual English + Spanish, built in',           valor: '$49'  },
-          { resultado: 'Job tracking + crew assignment',                  valor: '$49'  },
-        ],
-        totalTachado: '$326',
-        nota: 'Today: $32/mo (billed $390/year)',
-      },
-      anual: {
-        nombre:          'Starter',
-        precioMes:       '$32',
-        totalAnual:      'Billed $390/year',
-        ahorro:          '2 months free',
-        descomposicionDia: 'less than $1.10/day',
-        ctaLabel:        'Start my free 14-day trial',
-        features: [
-          'Voice Price Book — unlimited quotes',
-          'English + Spanish, built in',
-          'Send, approve, and invoice — all in one app',
-          'Assign jobs to up to 5 crew members',
-          'Fixed price. No add-ons. No surprises.',
-        ],
-      },
-      mensual: {
-        nombre:   'Starter',
-        precioMes: '$39',
-        ctaLabel: 'Start monthly trial',
-        features: [
-          'Voice Price Book — unlimited quotes',
-          'English + Spanish, built in',
-          'Send, approve, and invoice — all in one app',
-          'Assign jobs to up to 5 crew members',
-          'Cancel anytime.',
-        ],
       },
     },
     comparacion: {
@@ -196,11 +128,6 @@ const COPY = {
       descHoras:      'Time saved by quoting in seconds instead of hours',
       descFactura:    'Extra billing from winning 15% more jobs by quoting faster',
     },
-    garantia: {
-      nombre:    '14-Day Free Trial',
-      condicion: "Try Quotronex free for [b]14 days[/b]. Card required · $0 today. Cancel before day 15 and you won't be charged anything.",
-      pisoLegal: 'Processed securely by Stripe',
-    },
     faq: {
       kicker: 'FAQ',
       titulo: "What you're probably wondering",
@@ -219,11 +146,11 @@ const COPY = {
         },
         {
           pregunta:       'Do I need a credit card for the trial?',
-          respuestaMarked: 'Yes. A card is required to start — but [b]you are charged $0 today[/b]. The trial is 14 days. Cancel before day 15 and nothing is billed.',
+          respuestaMarked: 'Yes. A card is required to start — but [b]you are charged $0 today[/b]. The trial is 7 days. Cancel before day 8 and nothing is billed.',
         },
         {
-          pregunta:       'What happens after the 14-day trial?',
-          respuestaMarked: "Your card is billed automatically on day 15. Cancel any time before that and [b]no charge[/b].",
+          pregunta:       'What happens after the 7-day trial?',
+          respuestaMarked: "Your card is billed automatically on day 8. Cancel any time before that and [b]no charge[/b].",
         },
         {
           pregunta:       'Can I cancel anytime?',
@@ -238,7 +165,7 @@ const COPY = {
     ctaFinal: {
       h2:            'Stop losing jobs to [acento]faster quotes[/acento]',
       futurePacing:  "In two weeks, every client gets a professional quote in 30 seconds. In a month, you've won jobs you used to lose.",
-      recap:         '14-day free trial · Card required · $0 today · Cancel anytime',
+      recap:         '7-day free trial · Card required · $0 today · Cancel anytime',
       ps:            'P.S. — [b]The Voice Price Book uses your real rates, not generic estimates.[/b] Set it up once. Quote faster than anyone else — every time.',
     },
     footer: {
@@ -264,7 +191,7 @@ const COPY = {
       h1:          '[acento]Cotiza en 30 segundos.[/acento] Gana el trabajo.',
       subtitle:    'Tus precios. Tu voz. Una cotización profesional en 30 segundos — antes de que llamen al siguiente.',
       secondary:   'Ver cómo funciona',
-      socialProof: 'Prueba gratis 14 días · Tarjeta requerida · $0 hoy · Cancela cuando quieras',
+      socialProof: 'Prueba gratis 7 días · Tarjeta requerida · $0 hoy · Cancela cuando quieras',
     },
     problema: {
       titulo: '¿Te suena familiar?',
@@ -274,19 +201,6 @@ const COPY = {
         { textoMarked: 'Pierdes trabajos porque [b]alguien más cotizó más rápido[/b] — no porque trabaje mejor.'        },
         { textoMarked: 'Las plataformas grandes cuestan [b]más cada mes[/b] por funciones que casi no usas.'              },
       ],
-    },
-    agitacion: {
-      frases: [
-        'Cada cotización lenta es un trabajo que le regalas al siguiente de la lista.',
-        'Con [acento]1–3 trabajos perdidos al mes[/acento], son $6,000–$36,000 al año que se van.',
-        'Una app más complicada no lo va a arreglar. [b]La velocidad y tus propios precios sí.[/b]',
-      ],
-      contraste: {
-        labelHoy:     'Hoy',
-        hoy:          'Cotizar a mano tarda 30 minutos, se ve amateur y te cuesta trabajos.',
-        labelFuturo:  'En 6 meses si no cambias nada',
-        futuro:       'Los mismos trabajos perdidos — más $1,800+ pagados a software que no ayudó.',
-      },
     },
     solucion: {
       kicker:  'EL MECANISMO',
@@ -302,57 +216,6 @@ const COPY = {
         antes:        'Cotizando a mano, perdiendo trabajos frente a competidores más rápidos.',
         labelDespues: 'Después',
         despues:      'Cotización profesional en 30 segundos. Trabajo confirmado.',
-      },
-    },
-    appPorDentro: {
-      kicker: 'DENTRO DE LA APP',
-      titulo: 'Todo lo que necesitas, [acento]nada que no vas a usar[/acento]',
-      frames: [
-        { label: 'Tu cotización, lista antes de que te vayas', src: '/screenshots/screen-quote.svg',   alt: 'Pantalla de cotización'  },
-        { label: 'Todos tus trabajos, en un solo lugar',       src: '/screenshots/screen-jobs.svg',    alt: 'Pantalla de trabajos'    },
-        { label: 'Asigna trabajo a tu equipo',                 src: '/screenshots/screen-crew.svg',    alt: 'Pantalla de equipo'      },
-        { label: 'Una sola pantalla para facturar',            src: '/screenshots/screen-invoice.svg', alt: 'Pantalla de factura'     },
-      ],
-    },
-    oferta: {
-      kicker: 'LA OFERTA',
-      titulo: 'La mitad del precio de las grandes. [acento]El doble de velocidad.[/acento]',
-      badge:  'MEJOR VALOR',
-      stack: {
-        lineas: [
-          { resultado: 'Voice Price Book — cotizaciones ilimitadas (12 meses)', valor: '$228' },
-          { resultado: 'Inglés + español incluidos',                            valor: '$49'  },
-          { resultado: 'Seguimiento de trabajos + asignación de equipo',        valor: '$49'  },
-        ],
-        totalTachado: '$326',
-        nota: 'Hoy: $32/mes (cobrado $390/año)',
-      },
-      anual: {
-        nombre:          'Starter',
-        precioMes:       '$32',
-        totalAnual:      'Cobrado $390/año',
-        ahorro:          '2 meses gratis',
-        descomposicionDia: 'menos de $1.10/día',
-        ctaLabel:        'Empezar prueba gratis 14 días',
-        features: [
-          'Voice Price Book — cotizaciones ilimitadas',
-          'Inglés + español incluidos',
-          'Envía, aprueba y factura — todo en una app',
-          'Asigna trabajos a hasta 5 empleados',
-          'Precio fijo. Sin extras. Sin sorpresas.',
-        ],
-      },
-      mensual: {
-        nombre:    'Starter',
-        precioMes: '$39',
-        ctaLabel:  'Empezar prueba mensual',
-        features: [
-          'Voice Price Book — cotizaciones ilimitadas',
-          'Inglés + español incluidos',
-          'Envía, aprueba y factura — todo en una app',
-          'Asigna trabajos a hasta 5 empleados',
-          'Cancela cuando quieras.',
-        ],
       },
     },
     comparacion: {
@@ -411,11 +274,6 @@ const COPY = {
       descHoras:      'Tiempo ahorrado al cotizar en segundos en vez de horas',
       descFactura:    'Facturación extra al ganar 15% más trabajos cotizando más rápido',
     },
-    garantia: {
-      nombre:    'Prueba gratis 14 días',
-      condicion: "Prueba Quotronex gratis por [b]14 días[/b]. Tarjeta requerida · $0 hoy. Cancela antes del día 15 y no se te cobra nada.",
-      pisoLegal: 'Procesado de forma segura por Stripe',
-    },
     faq: {
       kicker: 'PREGUNTAS',
       titulo: 'Lo que probablemente te estás preguntando',
@@ -434,11 +292,11 @@ const COPY = {
         },
         {
           pregunta:       '¿Necesito tarjeta para la prueba?',
-          respuestaMarked: 'Sí. Se requiere tarjeta para empezar — pero [b]hoy se cobra $0[/b]. La prueba es de 14 días. Cancela antes del día 15 y no se te cobra nada.',
+          respuestaMarked: 'Sí. Se requiere tarjeta para empezar — pero [b]hoy se cobra $0[/b]. La prueba es de 7 días. Cancela antes del día 8 y no se te cobra nada.',
         },
         {
-          pregunta:       '¿Qué pasa después de los 14 días de prueba?',
-          respuestaMarked: 'Tu tarjeta se cobra automáticamente el día 15. Cancela antes de esa fecha y [b]no hay cobro[/b].',
+          pregunta:       '¿Qué pasa después de los 7 días de prueba?',
+          respuestaMarked: 'Tu tarjeta se cobra automáticamente el día 8. Cancela antes de esa fecha y [b]no hay cobro[/b].',
         },
         {
           pregunta:       '¿Puedo cancelar cuando quiera?',
@@ -453,7 +311,7 @@ const COPY = {
     ctaFinal: {
       h2:           'Deja de perder trabajos por [acento]cotizaciones lentas[/acento]',
       futurePacing: 'En dos semanas, cada cliente recibe una cotización profesional en 30 segundos. En un mes, ya ganaste trabajos que antes perdías.',
-      recap:        'Prueba gratis 14 días · Tarjeta requerida · $0 hoy · Cancela cuando quieras',
+      recap:        'Prueba gratis 7 días · Tarjeta requerida · $0 hoy · Cancela cuando quieras',
       ps:           'P.D. — [b]El Voice Price Book usa tus tarifas reales, no estimados genéricos.[/b] Configúralo una vez. Cotiza más rápido que cualquiera — siempre.',
     },
     footer: {
@@ -496,6 +354,15 @@ export default function LandingQuotronex() {
       {/* 1. HERO */}
       <Hero
         appName="Quotronex"
+        logo={
+          <img
+            src="/logo.png"
+            alt="Quotronex"
+            width={32}
+            height={32}
+            className="size-8 rounded-lg object-contain"
+          />
+        }
         navLinks={[...c.nav]}
         loginHref="/login"
         loginLabel={c.loginLabel}
@@ -527,13 +394,7 @@ export default function LandingQuotronex() {
       {/* 2b. TESTIMONIOS */}
       <Testimonios />
 
-      {/* 3. AGITACIÓN */}
-      <Agitacion
-        frases={[...c.agitacion.frases]}
-        contraste={c.agitacion.contraste}
-      />
-
-      {/* 4. COMPARACIÓN */}
+      {/* 3. COMPARACIÓN */}
       <Comparacion
         kicker={c.comparacion.kicker}
         titulo={c.comparacion.titulo}
@@ -551,15 +412,6 @@ export default function LandingQuotronex() {
         bigIdeaMarked={c.solucion.bigIdea}
         pasos={[...c.solucion.pasos]}
         antesDespues={c.solucion.antesDespues}
-      />
-
-      {/* 5. APP POR DENTRO */}
-      <AppPorDentro
-        kicker={c.appPorDentro.kicker}
-        tituloMarked={c.appPorDentro.titulo}
-        frames={[...c.appPorDentro.frames]}
-        ctaLabel={c.cta}
-        ctaHref={c.ctaHref}
       />
 
       {/* 6. TIMELINE FLOW */}
@@ -587,33 +439,7 @@ export default function LandingQuotronex() {
         descFactura={c.roi.descFactura}
       />
 
-      {/* 7. OFERTA */}
-      <Oferta
-        kicker={c.oferta.kicker}
-        tituloMarked={c.oferta.titulo}
-        trialDias={14}
-        stack={{ ...c.oferta.stack, lineas: [...c.oferta.stack.lineas] }}
-        anual={{
-          ...c.oferta.anual,
-          features: [...c.oferta.anual.features],
-          badge: c.oferta.badge,
-          ctaHref: c.ctaHref,
-        }}
-        mensual={{
-          ...c.oferta.mensual,
-          features: [...c.oferta.mensual.features],
-          ctaHref: c.ctaHref,
-        }}
-      />
-
-      {/* 7. GARANTÍA */}
-      <Garantia
-        nombre={c.garantia.nombre}
-        condicionMarked={c.garantia.condicion}
-        pisoLegal={c.garantia.pisoLegal}
-      />
-
-      {/* 8. FAQ */}
+      {/* 7. FAQ */}
       <Faq
         id="faq"
         kicker={c.faq.kicker}

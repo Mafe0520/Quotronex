@@ -16,13 +16,14 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const tr = useT();
 
-  const urlError = searchParams.get('error');
-  const [email, setEmail] = useState('');
+  const urlError   = searchParams.get('error');
+  const urlConfirm = searchParams.get('confirm');
+  const [email, setEmail] = useState(urlConfirm ?? '');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(urlError ?? '');
-  const [pendingConfirmation, setPendingConfirmation] = useState(false);
+  const [pendingConfirmation, setPendingConfirmation] = useState(!!urlConfirm);
   const [resending, setResending] = useState(false);
   const [resendDone, setResendDone] = useState(false);
 

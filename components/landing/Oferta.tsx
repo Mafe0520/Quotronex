@@ -89,7 +89,7 @@ export interface OfertaProps {
 export function Oferta({
   kicker = 'LA OFERTA',
   tituloMarked,
-  trialDias = 14,
+  trialDias = 7,
   id = 'oferta',
 }: OfertaProps) {
   const { contenedor, item } = useReveal();

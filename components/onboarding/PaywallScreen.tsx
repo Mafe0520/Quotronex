@@ -10,18 +10,14 @@ import { useLang } from '@/app/lang-context';
 
 const T = { duration: 0.22, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] };
 
-const PLAN_FEATURES: Record<'en' | 'es', Record<PlanId, string[]>> = {
+const PLAN_FEATURES: Record<'en' | 'es', Partial<Record<PlanId, string[]>>> = {
   en: {
-    solo:     ['1 user', 'Unlimited quotes & invoices', 'Price book', 'Public view for clients', 'Email from your account'],
-    crew:     ['Up to 3 users', 'Everything in Solo', 'Job & crew management', 'Time tracking', 'AI-powered expenses & receipts'],
-    business: ['Up to 7 users', 'Everything in Crew', 'Change orders', 'Before/during/after photos', 'Priority support'],
-    pro_team: ['Up to 15 users', 'Everything in Business', 'Early access to new features', 'Personalized onboarding', 'Dedicated support'],
+    solo:     ['1 user', 'Unlimited quotes & invoices', 'Price book', 'Client view link', 'Email from your account'],
+    business: ['Up to 5 users', 'Everything in Solo', 'Job & crew management', 'Before/during/after photos', 'Priority support'],
   },
   es: {
-    solo:     ['1 usuario', 'Cotizaciones y facturas ilimitadas', 'Catálogo de precios', 'Vista pública para clientes', 'Email desde tu cuenta'],
-    crew:     ['Hasta 3 usuarios', 'Todo lo del plan Solo', 'Gestión de trabajos y cuadrilla', 'Registro de horas', 'Gastos y recibos con IA'],
-    business: ['Hasta 7 usuarios', 'Todo lo del plan Crew', 'Órdenes de cambio', 'Fotos antes/durante/después', 'Soporte prioritario'],
-    pro_team: ['Hasta 15 usuarios', 'Todo lo del plan Business', 'Acceso anticipado a nuevas funciones', 'Onboarding personalizado', 'Soporte dedicado'],
+    solo:     ['1 usuario', 'Cotizaciones y facturas ilimitadas', 'Catálogo de precios', 'Link de vista para cliente', 'Email desde tu cuenta'],
+    business: ['Hasta 5 usuarios', 'Todo lo del plan Solo', 'Gestión de trabajos y cuadrilla', 'Fotos antes/durante/después', 'Soporte prioritario'],
   },
 };
 
@@ -39,7 +35,7 @@ export function PaywallScreen() {
   const [navigating, setNavigating] = useState(false);
 
   const trialEnd = useMemo(() => {
-    const d = new Date(); d.setDate(d.getDate() + 14);
+    const d = new Date(); d.setDate(d.getDate() + 7);
     return d.toLocaleDateString(lang === 'en' ? 'en-US' : 'es-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }, [lang]);
 
@@ -65,7 +61,7 @@ export function PaywallScreen() {
           <ChevronLeft size={20} color="var(--text-secondary)" />
         </a>
         <a href="/" className="flex items-center gap-2 text-sm font-bold [font-family:var(--font-display)] text-[var(--text-primary)]">
-          <span className="size-5 rounded bg-[var(--accent)]" aria-hidden />
+          <img src="/logo.png" alt="" width={20} height={20} className="size-5 rounded object-contain" aria-hidden />
           Quotronex
         </a>
         <div className="w-10" aria-hidden />
@@ -123,7 +119,7 @@ export function PaywallScreen() {
                     <span className={`font-extrabold text-sm ${isSelected ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
                       {p.name}
                     </span>
-                    {p.id === 'crew' && (
+                    {p.id === 'business' && (
                       <span className="bg-[var(--accent)] text-white text-[10px] font-black px-2 py-0.5 rounded-full">Popular</span>
                     )}
                   </div>
@@ -154,7 +150,7 @@ export function PaywallScreen() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden">
                       <div className="mt-3 flex flex-col gap-1.5 border-t border-[color-mix(in_oklab,var(--text-tertiary)_12%,transparent)] pt-3">
-                        {PLAN_FEATURES[lang][p.id].map((f, i) => (
+                        {(PLAN_FEATURES[lang][p.id] ?? []).map((f, i) => (
                           <div key={i} className="flex items-center gap-2 text-xs text-[var(--text-primary)]">
                             <Check size={12} className="text-[var(--accent)] shrink-0" strokeWidth={3} />
                             {f}

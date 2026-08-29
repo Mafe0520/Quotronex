@@ -125,6 +125,12 @@ export async function recordPayment(
     status: newStatus,
   }).eq('id', invoiceId)
 
+  const { notifyUsers } = await import('@/lib/push')
+  const { data: members } = await supabase.from('business_members').select('user_id').eq('business_id', invoice.business_id).in('role', ['owner', 'admin'])
+  const userIds = ((members ?? []) as { user_id: string }[]).map((r) => r.user_id)
+  const amountFmt = `$${(amountCents / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+  notifyUsers({ title: 'Pago registrado', body: `Se registró un pago de ${amountFmt}`, url: `/app/invoices/${invoiceId}`, user_ids: userIds })
+
   revalidatePath(`/app/invoices/${invoiceId}`)
   revalidatePath('/app')
   return {}

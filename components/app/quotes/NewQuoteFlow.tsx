@@ -142,6 +142,7 @@ function StepAI({
   const [analyzing, startAnalyze] = useTransition()
   const [result, setResult] = useState<{ understood: string; items: SuggestedItem[]; clarifications: string[] } | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [outputLang, setOutputLang] = useState<'es' | 'en'>('es')
   const [accepted, setAccepted] = useState<Set<number>>(new Set())
   const recognitionRef = useRef<{ stop: () => void } | null>(null)
 
@@ -154,7 +155,7 @@ function StepAI({
     const SR = ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition) as (new () => { lang: string; continuous: boolean; interimResults: boolean; onresult: (e: any) => void; onend: () => void; start: () => void; stop: () => void }) | undefined
     if (!SR) { alert('Tu navegador no soporta reconocimiento de voz. Usa texto.'); return }
     const rec = new SR()
-    rec.lang = 'es-US'
+    rec.lang = outputLang === 'en' ? 'en-US' : 'es-US'
     rec.continuous = true
     rec.interimResults = true
     rec.onresult = (e: any) => {
@@ -173,7 +174,7 @@ function StepAI({
     setResult(null)
     setAccepted(new Set())
     startAnalyze(async () => {
-      const res = await generateEstimate(text, businessId)
+      const res = await generateEstimate(text, businessId, outputLang)
       if (res.error) { setError(res.error); return }
       setResult(res)
       // Auto-accept high-confidence matched items
@@ -227,6 +228,23 @@ function StepAI({
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 pb-5 flex flex-col gap-4 min-h-0">
+
+        {/* Estimate language toggle */}
+        <div className="flex items-center justify-between rounded-xl bg-[var(--surface)] px-4 py-2.5">
+          <span className="text-xs font-semibold text-[var(--text-secondary)]">Idioma del estimado</span>
+          <div className="flex rounded-lg bg-[var(--surface-2)] p-0.5">
+            {(['es', 'en'] as const).map(lang => (
+              <button key={lang} onClick={() => setOutputLang(lang)}
+                className={`px-3 py-1 rounded-md text-xs font-bold transition-colors [touch-action:manipulation] ${
+                  outputLang === lang
+                    ? 'bg-[var(--accent)] text-white shadow-sm'
+                    : 'text-[var(--text-secondary)]'
+                }`}>
+                {lang === 'es' ? '🇲🇽 Español' : '🇺🇸 English'}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Text input + mic */}
         <div className="relative">

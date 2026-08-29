@@ -9,7 +9,7 @@ export default function RefundsPage() {
       <section className="space-y-8">
         <div>
           <h2 className="text-base font-semibold text-white mb-2">Free trial</h2>
-          <p>All plans include a 14-day free trial. No credit card is required to start. You will not be charged until the trial ends.</p>
+          <p>All plans include a 7-day free trial. No credit card is required to start. You will not be charged until the trial ends.</p>
         </div>
 
         <div>

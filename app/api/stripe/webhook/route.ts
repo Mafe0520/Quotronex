@@ -9,26 +9,26 @@ function getStripe() {
 }
 
 const PLAN_MAP: Record<string, { planId: string; billing: string; isFounder: boolean }> = {
-  // Solo
-  'price_1U82HQPzvUxvdSWnbezUBKkp': { planId: 'solo',     billing: 'monthly', isFounder: false },
-  'price_1U82HQPzvUxvdSWnnM1sdNht': { planId: 'solo',     billing: 'annual',  isFounder: false },
-  'price_1U82HQPzvUxvdSWnDdrNcDdu': { planId: 'solo',     billing: 'monthly', isFounder: true  },
-  'price_1U82HRPzvUxvdSWnNx56P4HO': { planId: 'solo',     billing: 'annual',  isFounder: true  },
-  // Crew
-  'price_1U82HRPzvUxvdSWn36gGWAGj': { planId: 'crew',     billing: 'monthly', isFounder: false },
-  'price_1U82HRPzvUxvdSWntyCn9OFT': { planId: 'crew',     billing: 'annual',  isFounder: false },
-  'price_1U82HRPzvUxvdSWnalCGEZ2b': { planId: 'crew',     billing: 'monthly', isFounder: true  },
-  'price_1U82HSPzvUxvdSWnmR7EFPH4': { planId: 'crew',     billing: 'annual',  isFounder: true  },
-  // Business
-  'price_1U82HSPzvUxvdSWnjJpvdvBr': { planId: 'business', billing: 'monthly', isFounder: false },
-  'price_1U82HSPzvUxvdSWnLAjArhTy': { planId: 'business', billing: 'annual',  isFounder: false },
-  'price_1U82HSPzvUxvdSWnZobtYbLT': { planId: 'business', billing: 'monthly', isFounder: true  },
-  'price_1U82HTPzvUxvdSWnJ9bR1dpH': { planId: 'business', billing: 'annual',  isFounder: true  },
-  // Pro Team
-  'price_1U82HTPzvUxvdSWnfdynBn7L': { planId: 'pro_team', billing: 'monthly', isFounder: false },
-  'price_1U82HTPzvUxvdSWnGdSBLqZI': { planId: 'pro_team', billing: 'annual',  isFounder: false },
-  'price_1U82HUPzvUxvdSWncgMSzECa': { planId: 'pro_team', billing: 'monthly', isFounder: true  },
-  'price_1U82HUPzvUxvdSWnoLtK6Mli': { planId: 'pro_team', billing: 'annual',  isFounder: true  },
+  // Solo (live)
+  'price_1U83hILBW0msgxNitZ3lQinO': { planId: 'solo',     billing: 'monthly', isFounder: false },
+  'price_1U83hILBW0msgxNifMZ6nRj8': { planId: 'solo',     billing: 'annual',  isFounder: false },
+  'price_1U83hHLBW0msgxNimxg9He47': { planId: 'solo',     billing: 'monthly', isFounder: true  },
+  'price_1U83hGLBW0msgxNitaJEYlXg': { planId: 'solo',     billing: 'annual',  isFounder: true  },
+  // Crew (live)
+  'price_1U83hHLBW0msgxNiy5argHGB': { planId: 'crew',     billing: 'monthly', isFounder: false },
+  'price_1U83hHLBW0msgxNiWnNReV7q': { planId: 'crew',     billing: 'annual',  isFounder: false },
+  'price_1U83hHLBW0msgxNiMRa2J0Op': { planId: 'crew',     billing: 'monthly', isFounder: true  },
+  'price_1U83hGLBW0msgxNiJIbh1rmx': { planId: 'crew',     billing: 'annual',  isFounder: true  },
+  // Business / Equipo (live)
+  'price_1U83hKLBW0msgxNiewqt1h9P': { planId: 'business', billing: 'monthly', isFounder: false },
+  'price_1U83hKLBW0msgxNiSTCjb3jy': { planId: 'business', billing: 'annual',  isFounder: false },
+  'price_1U83hJLBW0msgxNi8fCBE9Z2': { planId: 'business', billing: 'monthly', isFounder: true  },
+  'price_1U83hJLBW0msgxNi5ogAo8Sg': { planId: 'business', billing: 'annual',  isFounder: true  },
+  // Pro Team (live)
+  'price_1U83hILBW0msgxNiDqldpsed': { planId: 'pro_team', billing: 'monthly', isFounder: false },
+  'price_1U83hILBW0msgxNirHUzd5rT': { planId: 'pro_team', billing: 'annual',  isFounder: false },
+  'price_1U83hHLBW0msgxNiTgAcKH3x': { planId: 'pro_team', billing: 'monthly', isFounder: true  },
+  'price_1U83hGLBW0msgxNikOfueUw6': { planId: 'pro_team', billing: 'annual',  isFounder: true  },
 }
 
 function db() {

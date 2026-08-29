@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'motion/react';
 import {
-  Paintbrush, Wrench, Zap, Flame, Hammer,
-  ChevronRight, ChevronLeft, Mic, FileText, CheckCircle2, Lock,
+  Paintbrush, Wrench, Zap, Flame, Hammer, HardHat,
+  ChevronRight, ChevronLeft, Mic, FileText, CheckCircle2,
   Building2, Phone, MapPin, Globe,
 } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
@@ -22,6 +22,7 @@ const TRADES: Trade[] = [
   { id: 'electric', label: 'Electricidad',         icon: Zap,        placeholder: 'ej. Panel eléctrico 200A',       suggestions: ['Panel eléctrico 200A', 'Instalación de tomacorrientes', 'Cableado nuevo']  },
   { id: 'hvac',     label: 'Climatización / HVAC', icon: Flame,      placeholder: 'ej. Instalación de A/C',        suggestions: ['Instalación de A/C', 'Mantenimiento de HVAC', 'Cambio de filtros y ductos'] },
   { id: 'remodel',  label: 'Remodelación',         icon: Hammer,     placeholder: 'ej. Remodelación de cocina',     suggestions: ['Remodelación de cocina', 'Remodelación de baño', 'Cambio de pisos']          },
+  { id: 'other',    label: 'Otro oficio',           icon: HardHat,    placeholder: 'ej. Landscaping, roofing, cleaning…', suggestions: ['Mi primer servicio', 'Inspección / diagnóstico']                  },
 ];
 
 const STEPS: Step[]     = ['business', 'trade', 'pricebook', 'describe', 'loading', 'preview'];
@@ -151,6 +152,8 @@ function StepBusiness({ onNext }: { onNext: (data: { name: string; phone: string
 // ── STEP 1: Trade ─────────────────────────────────────────────────────────
 function StepTrade({ onNext }: { onNext: (t: Trade) => void }) {
   const [selected, setSelected] = useState<string | null>(null);
+  const [customLabel, setCustomLabel] = useState('');
+  const [showCustomInput, setShowCustomInput] = useState(false);
 
   const listVariants = {
     hidden: {},
@@ -160,6 +163,28 @@ function StepTrade({ onNext }: { onNext: (t: Trade) => void }) {
     hidden:  { opacity: 0, y: 12 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.22, ease: [0.32, 0.72, 0, 1] as [number,number,number,number] } },
   };
+
+  function handleSelect(t: Trade) {
+    setSelected(t.id);
+    if (t.id === 'other') {
+      setShowCustomInput(true);
+    } else {
+      setTimeout(() => onNext(t), 160);
+    }
+  }
+
+  function handleCustomConfirm() {
+    const label = customLabel.trim();
+    if (!label) return;
+    const customTrade: Trade = {
+      id: 'other',
+      label,
+      icon: HardHat,
+      placeholder: `ej. ${label} — describe el trabajo`,
+      suggestions: [`${label} — servicio`, `${label} — diagnóstico / inspección`],
+    };
+    onNext(customTrade);
+  }
 
   return (
     <motion.div key="trade" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -24 }} transition={T}>
@@ -178,10 +203,7 @@ function StepTrade({ onNext }: { onNext: (t: Trade) => void }) {
             <motion.li key={t.id} variants={itemVariants}>
               <motion.button
                 whileTap={{ scale: 0.985 }}
-                onClick={() => {
-                  setSelected(t.id);
-                  setTimeout(() => onNext(t), 160);
-                }}
+                onClick={() => handleSelect(t)}
                 className={[
                   'w-full rounded-[var(--radius-card)] border text-left flex items-center justify-between p-4 [touch-action:manipulation]',
                   isSelected
@@ -198,7 +220,9 @@ function StepTrade({ onNext }: { onNext: (t: Trade) => void }) {
                   </div>
                   <div>
                     <div className="font-bold text-sm text-[var(--text-primary)]">{t.label}</div>
-                    <div className="text-xs text-[var(--text-secondary)]">{t.suggestions[0]}, {t.suggestions[1]}</div>
+                    <div className="text-xs text-[var(--text-secondary)]">
+                      {t.id === 'other' ? 'Landscaping, Roofing, Flooring, Cleaning…' : `${t.suggestions[0]}, ${t.suggestions[1]}`}
+                    </div>
                   </div>
                 </div>
                 <ChevronRight className={[
@@ -206,12 +230,42 @@ function StepTrade({ onNext }: { onNext: (t: Trade) => void }) {
                   isSelected ? 'text-[var(--accent)] translate-x-1' : 'text-[var(--text-tertiary)]',
                 ].join(' ')} />
               </motion.button>
+
+              {/* Custom trade input — expands inline under "Otro oficio" */}
+              {t.id === 'other' && showCustomInput && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-2 flex gap-2">
+                    <input
+                      autoFocus
+                      type="text"
+                      value={customLabel}
+                      onChange={e => setCustomLabel(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && handleCustomConfirm()}
+                      placeholder="Escribe tu oficio, ej. Landscaping"
+                      className="h-11 flex-1 rounded-xl border border-[var(--accent)] bg-[var(--surface)] px-4 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--accent)_20%,transparent)]"
+                    />
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleCustomConfirm}
+                      disabled={!customLabel.trim()}
+                      className="flex h-11 items-center gap-1.5 rounded-xl bg-[var(--accent)] px-4 text-sm font-bold text-white disabled:opacity-40 [touch-action:manipulation]"
+                    >
+                      OK <ChevronRight size={14} />
+                    </motion.button>
+                  </div>
+                </motion.div>
+              )}
             </motion.li>
           );
         })}
       </motion.ul>
 
-      {/* Teaser — llena el espacio y refuerza el valor */}
+      {/* Teaser */}
       <div className="mt-6 flex items-center gap-3 rounded-xl bg-[color-mix(in_oklab,var(--accent)_6%,var(--surface))] border border-[color-mix(in_oklab,var(--accent)_15%,transparent)] px-4 py-3">
         <FileText className="size-5 shrink-0 text-[var(--accent)]" strokeWidth={1.5} />
         <p className="text-xs text-[var(--text-secondary)] leading-snug">
@@ -509,19 +563,6 @@ function StepPreview({
           </div>
         </div>
 
-        {/* Botones borrosos — bloqueo de paywall */}
-        <div className="relative border-t border-[var(--border-subtle)] px-5 py-4">
-          <div className="flex gap-2 select-none pointer-events-none" style={{ filter: 'blur(3px)' }}>
-            <div className="flex-1 h-11 rounded-[var(--radius-button)] bg-[var(--accent)] flex items-center justify-center text-sm font-bold text-white">Enviar al cliente</div>
-            <div className="flex-1 h-11 rounded-[var(--radius-button)] border border-[var(--border-subtle)] flex items-center justify-center text-sm font-semibold text-[var(--text-secondary)]">Guardar PDF</div>
-          </div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="flex items-center gap-1.5 rounded-full bg-[var(--text-primary)] px-3 py-1 text-xs font-bold text-[var(--bg)]">
-              <Lock size={11} />
-              Activa tu cuenta para enviar
-            </span>
-          </div>
-        </div>
       </div>
       </div>
 
@@ -537,9 +578,8 @@ function StepPreview({
             <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity=".25" />
             <path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
           </svg>
-        ) : 'Activar y enviar →'}
+        ) : 'Ver cotización completa →'}
       </motion.button>
-      <p className="text-center text-xs text-[var(--text-tertiary)]">Prueba gratis 14 días · No se cobra hasta el día 15 · Cancela cuando quieras</p>
       <button
         onClick={onBack}
         className="flex w-full items-center justify-center gap-1 text-xs text-[var(--text-tertiary)] [touch-action:manipulation]"
@@ -580,7 +620,7 @@ export function OnboardingFlow() {
           </button>
         ) : (
           <a href="/" className="flex items-center gap-2 text-sm font-bold [font-family:var(--font-display)] text-[var(--text-primary)]">
-            <span className="size-5 rounded bg-[var(--accent)]" aria-hidden />
+            <img src="/logo.png" alt="" width={20} height={20} className="size-5 rounded object-contain" aria-hidden />
             Quotronex
           </a>
         )}

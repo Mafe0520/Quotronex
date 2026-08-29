@@ -73,6 +73,11 @@ export async function inviteTeamMember(data: {
     // Non-fatal — invite record exists, email failed
   }
 
+  const { notifyUsers } = await import('@/lib/push')
+  const { data: owners } = await supabase.from('business_members').select('user_id').eq('business_id', businessId).eq('role', 'owner')
+  const ownerIds = ((owners ?? []) as { user_id: string }[]).map((r) => r.user_id)
+  notifyUsers({ title: 'Nuevo miembro invitado', body: `${data.name || data.email} fue invitado al equipo`, url: '/app', user_ids: ownerIds })
+
   revalidatePath('/app/settings')
   return { ok: true }
 }

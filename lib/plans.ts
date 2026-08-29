@@ -26,7 +26,7 @@ export interface Plan {
 export const PLANS: Record<PlanId, Plan> = {
   solo: {
     id:                       'solo',
-    name:                     'Starter',
+    name:                     'Solo',
     monthlyPriceCents:        2900,
     annualPriceCents:         29000,
     founderMonthlyPriceCents: 2400,
@@ -58,12 +58,12 @@ export const PLANS: Record<PlanId, Plan> = {
   },
   business: {
     id:                       'business',
-    name:                     'Business',
+    name:                     'Equipo',
     monthlyPriceCents:        5900,
     annualPriceCents:         59000,
     founderMonthlyPriceCents: 5400,
     founderAnnualPriceCents:  54000,
-    includedSeats:            7,
+    includedSeats:            5,
     allowsExtraSeats:         true,
     extraSeatMonthlyCents:    500,
     extraSeatAnnualCents:     5000,
@@ -90,7 +90,8 @@ export const PLANS: Record<PlanId, Plan> = {
   },
 }
 
-export const PLAN_LIST = Object.values(PLANS)
+// Solo mostrar los 2 planes activos en el MVP
+export const PLAN_LIST = [PLANS.solo, PLANS.business]
 
 // Seats adicionales — aplica a Crew, Business y Pro Team (Solo no permite extra seats)
 export const EXTRA_SEAT = {

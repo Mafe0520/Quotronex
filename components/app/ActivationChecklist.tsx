@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2, Circle, ChevronRight, X, Rocket } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useT } from '@/lib/i18n';
 
 type Step = {
   id: string;
@@ -33,6 +34,8 @@ export function ActivationChecklist({
   jobCount: number;
 }) {
   const router = useRouter();
+  const tr = useT();
+  const c = tr.app.checklist;
   const [dismissed, setDismissed] = useState(true); // start hidden, set in effect
   const [expanded, setExpanded] = useState(true);
 
@@ -44,38 +47,38 @@ export function ActivationChecklist({
   const steps: Step[] = [
     {
       id: 'profile',
-      label: 'Completa tu perfil',
+      label: c.profile,
       sub: hasBizPhone && hasBizEmail && hasLogo
-        ? 'Perfil completo ✓'
-        : [!hasLogo && 'logo', !hasBizPhone && 'teléfono', !hasBizEmail && 'correo'].filter(Boolean).join(', ') + ' pendiente',
+        ? c.profileDone
+        : [!hasLogo && 'logo', !hasBizPhone && (tr.nav.settings === 'Settings' ? 'phone' : 'teléfono'), !hasBizEmail && (tr.nav.settings === 'Settings' ? 'email' : 'correo')].filter(Boolean).join(', ') + ' ' + c.profilePending,
       href: '/app/settings',
       done: !!hasBizPhone && !!hasBizEmail && !!hasLogo,
     },
     {
       id: 'pricebook',
-      label: 'Agrega 3 servicios al catálogo',
-      sub: `${priceBookCount}/3 servicios agregados`,
+      label: c.pricebook,
+      sub: c.pricebookSub(priceBookCount),
       href: '/app/price-book/new',
       done: priceBookCount >= 3,
     },
     {
       id: 'client',
-      label: 'Agrega tu primer cliente',
-      sub: clientCount > 0 ? `${clientCount} cliente${clientCount > 1 ? 's' : ''} en tu lista` : 'Aún no tienes clientes',
+      label: c.clientStep,
+      sub: c.clientSub(clientCount),
       href: '/app/customers/new',
       done: clientCount > 0,
     },
     {
       id: 'quote',
-      label: 'Envía una cotización',
-      sub: sentQuoteCount > 0 ? `${sentQuoteCount} enviada${sentQuoteCount > 1 ? 's' : ''}` : 'Crea y envía tu primera cotización',
+      label: c.quoteStep,
+      sub: c.quoteSub(sentQuoteCount),
       href: '/app/quotes/new',
       done: sentQuoteCount > 0,
     },
     {
       id: 'job',
-      label: 'Crea tu primer trabajo',
-      sub: jobCount > 0 ? `${jobCount} trabajo${jobCount > 1 ? 's' : ''} activo${jobCount > 1 ? 's' : ''}` : 'Convierte una cotización en trabajo',
+      label: c.jobStep,
+      sub: c.jobSub(jobCount),
       href: '/app/jobs',
       done: jobCount > 0,
     },
@@ -113,8 +116,8 @@ export function ActivationChecklist({
             <Rocket size={15} color="var(--accent)" />
           </div>
           <div className="flex-1 text-left">
-            <p className="text-sm font-bold text-[var(--text-primary)]">Primeros pasos</p>
-            <p className="text-xs text-[var(--text-tertiary)]">{doneCount} de {steps.length} completados</p>
+            <p className="text-sm font-bold text-[var(--text-primary)]">{c.title}</p>
+            <p className="text-xs text-[var(--text-tertiary)]">{c.completed(doneCount, steps.length)}</p>
           </div>
           {/* Progress bar */}
           <div className="w-16 shrink-0">

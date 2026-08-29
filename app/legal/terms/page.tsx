@@ -24,7 +24,7 @@ export default function TermsPage() {
 
         <div>
           <h2 className="text-base font-semibold text-white mb-2">4. Subscriptions and billing</h2>
-          <p>Quotronex offers monthly and annual subscription plans. All plans include a 14-day free trial — no credit card is required to start. After the trial, your chosen plan is billed automatically via Stripe. You can cancel at any time from your account settings; access continues until the end of the current billing period. We do not offer refunds for partial periods. Annual plans may be refunded within 7 days of purchase if the service has not been substantially used — contact us at <a href="mailto:hello@quotronex.com" className="text-green-400 underline">hello@quotronex.com</a>.</p>
+          <p>Quotronex offers monthly and annual subscription plans. All plans include a 7-day free trial — no credit card is required to start. After the trial, your chosen plan is billed automatically via Stripe. You can cancel at any time from your account settings; access continues until the end of the current billing period. We do not offer refunds for partial periods. Annual plans may be refunded within 7 days of purchase if the service has not been substantially used — contact us at <a href="mailto:hello@quotronex.com" className="text-green-400 underline">hello@quotronex.com</a>.</p>
         </div>
 
         <div>

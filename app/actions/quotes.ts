@@ -304,6 +304,10 @@ export async function requestQuoteChanges(quoteId: string, message: string): Pro
     meta: { message },
   })
   if (error) return { error: error.message }
+  const { data: members } = await db.from('business_members').select('user_id').eq('business_id', quote.business_id).in('role', ['owner', 'admin'])
+  const userIds = ((members ?? []) as { user_id: string }[]).map((r) => r.user_id)
+  const { notifyUsers } = await import('@/lib/push')
+  notifyUsers({ title: 'Cliente pidió cambios', body: 'Revisa los comentarios en la cotización', url: '/app', user_ids: userIds })
   return {}
 }
 

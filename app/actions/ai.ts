@@ -27,12 +27,16 @@ export type AIEstimateResult = {
 export async function generateEstimate(
   description: string,
   businessId: string,
+  outputLang: 'es' | 'en' = 'es',
+  trade?: string,
 ): Promise<AIEstimateResult> {
   if (!description.trim()) return { understood: '', items: [], clarifications: [] }
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const contractorTrade = trade ?? 'general contractor'
 
   // Fetch active price book items
   const { data: priceBook } = await supabase
@@ -51,36 +55,41 @@ export async function generateEstimate(
     `- ID: ${i.id} | "${i.name}" | $${(i.price_cents / 100).toFixed(2)}${i.unit ? ` / ${i.unit}` : ''}${i.trade ? ` [${i.trade}]` : ''}${i.description ? ` — ${i.description}` : ''}`
   ).join('\n')
 
-  const systemPrompt = `Eres el asistente de estimados de un contractor de construcción/remodelación.
-Tu trabajo es interpretar la descripción de un trabajo y crear una lista de items de cotización.
+  const langInstruction = outputLang === 'en'
+    ? 'Respond with all item names, descriptions, and the "understood" field in ENGLISH.'
+    : 'Respond with all item names, descriptions, and the "understood" field in SPANISH.'
 
-REGLAS CRÍTICAS:
-1. SOLO usa precios del Price Book del contractor — NUNCA inventes precios
-2. Si un servicio no está en el Price Book, créalo como item manual SIN precio (price_book_item_id: null, unit_price_cents: 0)
-3. Sé conservador con las cantidades — si no sabes, pon 1
-4. Si falta información importante, agrégala a clarifications
-5. Responde SIEMPRE en español
-6. El campo "understood" es un resumen de 1-2 oraciones de lo que entendiste
+  const systemPrompt = `You are an expert estimating assistant for a ${contractorTrade} contractor.
+Your job is to interpret a job description and create a detailed quote line-item list.
+You understand all types of contracting work: painting, plumbing, electrical, HVAC, roofing, flooring, landscaping, concrete, fencing, cleaning, moving, handyman, carpentry, drywall, waterproofing, and more.
 
-PRICE BOOK DISPONIBLE:
-${pb.length === 0 ? '(Sin items en el Price Book — todos los items serán manuales sin precio)' : pbList}
+CRITICAL RULES:
+1. ONLY use prices from the contractor's Price Book — NEVER invent prices
+2. If a service is NOT in the Price Book, create it as a manual item WITHOUT a price (price_book_item_id: null, unit_price_cents: 0)
+3. Be conservative with quantities — if unknown, use 1
+4. If important information is missing, add it to clarifications
+5. ${langInstruction}
+6. The "understood" field is a 1-2 sentence summary of what you understood about the job
 
-Responde SOLO con JSON válido, sin texto adicional:
+AVAILABLE PRICE BOOK:
+${pb.length === 0 ? '(No items in Price Book — all items will be manual without price)' : pbList}
+
+Respond ONLY with valid JSON, no additional text:
 {
-  "understood": "string corto de lo que entendiste del trabajo",
+  "understood": "short summary of what you understood",
   "items": [
     {
-      "price_book_item_id": "uuid o null si no hay match",
-      "name": "nombre del servicio",
-      "description": "descripción adicional si aplica o null",
-      "qty": número,
-      "unit_price_cents": número (0 si no hay precio),
-      "unit": "unidad o null",
+      "price_book_item_id": "uuid or null if no match",
+      "name": "service name",
+      "description": "additional description if applicable or null",
+      "qty": number,
+      "unit_price_cents": number (0 if no price),
+      "unit": "unit or null",
       "confidence": "high|medium|low",
-      "matched": true si viene del price book, false si es manual
+      "matched": true if from price book, false if manual
     }
   ],
-  "clarifications": ["pregunta 1 si falta info", "pregunta 2", ...]
+  "clarifications": ["question 1 if info is missing", "question 2", ...]
 }`
 
   try {
@@ -88,7 +97,7 @@ Responde SOLO con JSON válido, sin texto adicional:
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
       messages: [
-        { role: 'user', content: `Descripción del trabajo:\n${description.trim()}` }
+        { role: 'user', content: `Job description:\n${description.trim()}` }
       ],
       system: systemPrompt,
     })
@@ -104,7 +113,7 @@ Responde SOLO con JSON válido, sin texto adicional:
       understood: '',
       items: [],
       clarifications: [],
-      error: err instanceof Error ? err.message : 'Error al generar el estimado',
+      error: err instanceof Error ? err.message : 'Error generating estimate',
     }
   }
 }

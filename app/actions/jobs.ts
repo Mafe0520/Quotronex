@@ -92,7 +92,8 @@ export async function completeJob(jobId: string, data: {
   completion_summary?: string;
   warranty_notes?: string;
 }): Promise<{ error?: string }> {
-  const { supabase } = await getBusinessId();
+  const { supabase, businessId } = await getBusinessId();
+  const { data: job } = await supabase.from('jobs').select('title').eq('id', jobId).single();
   const { error } = await supabase.from('jobs').update({
     status: 'completed',
     completed_at: new Date().toISOString(),
@@ -101,6 +102,10 @@ export async function completeJob(jobId: string, data: {
     updated_at: new Date().toISOString(),
   }).eq('id', jobId);
   if (error) return { error: error.message };
+  const { notifyUsers } = await import('@/lib/push');
+  const { data: members } = await supabase.from('business_members').select('user_id').eq('business_id', businessId).in('role', ['owner', 'admin']);
+  const userIds = ((members ?? []) as { user_id: string }[]).map((r) => r.user_id);
+  notifyUsers({ title: 'Trabajo completado ✅', body: job?.title ?? 'Un trabajo fue marcado como completado', url: `/app/jobs/${jobId}`, user_ids: userIds });
   revalidatePath('/app');
   revalidatePath(`/app/jobs/${jobId}`);
   return {};
