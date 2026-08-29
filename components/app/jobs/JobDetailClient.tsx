@@ -16,6 +16,7 @@ import { addExpense, deleteExpense } from '@/app/actions/expenses';
 import { createClient } from '@supabase/supabase-js';
 import { JobNotes } from '@/components/app/jobs/JobNotes';
 import { JobAssignments } from '@/components/app/jobs/JobAssignments';
+import { useCelebration } from '@/components/app/CelebrationToast';
 
 const supabasePub = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -102,6 +103,7 @@ export function JobDetailClient({
   assignments?: { id: string; user_id: string; member: { name: string | null; email: string | null; role: string } | null }[];
   allMembers?: { id: string; user_id: string; name: string | null; email: string | null; role: string }[];
 }) {
+  const celebrate = useCelebration();
   const [job, setJob] = useState(initialJob);
   const [photos, setPhotos] = useState(initialPhotos);
   const [changeOrders, setChangeOrders] = useState(initialChangeOrders);
@@ -272,6 +274,7 @@ export function JobDetailClient({
       await completeJob(job.id, { completion_summary: completeSummary, warranty_notes: warrantyNotes });
       setJob(j => ({ ...j, status: 'completed', completion_summary: completeSummary, warranty_notes: warrantyNotes }));
       setShowCompleteSheet(false);
+      celebrate('¡Trabajo completado! ✅', '¡Así se hace!');
     });
   }
 

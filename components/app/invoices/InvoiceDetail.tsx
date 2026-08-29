@@ -7,6 +7,7 @@ import {
   MoreHorizontal, Phone, Mail, FileText, Calendar, Banknote, AlertTriangle,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useCelebration } from '@/components/app/CelebrationToast'
 import { recordPayment, updateInvoiceStatus, sendInvoice } from '@/app/actions/invoices'
 
 const STATUS_META: Record<string, { label: string; color: string }> = {
@@ -55,6 +56,7 @@ const spring = { type: 'spring' as const, stiffness: 400, damping: 40 }
 
 export function InvoiceDetail({ invoice }: { invoice: Invoice }) {
   const router = useRouter()
+  const celebrate = useCelebration()
   const [showPaySheet, setShowPaySheet] = useState(false)
   const [showMore, setShowMore] = useState(false)
   const [method, setMethod] = useState<'cash' | 'check' | 'card' | 'transfer' | 'other'>('cash')
@@ -92,6 +94,7 @@ export function InvoiceDetail({ invoice }: { invoice: Invoice }) {
       const { error } = await recordPayment(invoice.id, cents, method, payNotes || undefined)
       if (error) { alert(error); return }
       setPaidToast(true)
+      celebrate('¡Pago registrado! 💰', '¡Excelente trabajo!')
       setShowPaySheet(false)
       setAmountInput('')
       setPayNotes('')

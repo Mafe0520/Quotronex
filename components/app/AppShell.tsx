@@ -15,7 +15,8 @@ import { addPriceBookItem } from '@/app/actions/price-book';
 import { ActivationChecklist } from '@/components/app/ActivationChecklist';
 import type { Quote, PriceBookItem, InvoiceRow, JobRow, Business } from '@/app/app/page';
 import { useT } from '@/lib/i18n'
-import { PushButton } from '@/components/app/PushButton';
+import { PushButton } from '@/components/app/PushButton'
+import { CelebrationProvider, useCelebration } from '@/components/app/CelebrationToast';
 
 interface AppUser { id: string; email: string; firstName: string }
 interface Props {
@@ -906,12 +907,36 @@ type Tab = Exclude<TabId, 'jobs'>;
 
 /* ─── Shell ──────────────────────────────────────────────────────────────── */
 
-export function AppShell({ user, business, quotes, priceBookItems, invoices, jobs, clientCount }: Props) {
+export function AppShell(props: Props) {
+  return (
+    <CelebrationProvider>
+      <AppShellInner {...props} />
+    </CelebrationProvider>
+  )
+}
+
+function AppShellInner({ user, business, quotes, priceBookItems, invoices, jobs, clientCount }: Props) {
   const [tab, setTab] = useState<Tab>('home');
   const router = useRouter();
   const tr = useT();
   const n = tr.nav;
   const a = tr.app;
+  const celebrate = useCelebration();
+
+  // Detect newly-accepted quotes since last visit
+  React.useEffect(() => {
+    const key = 'qx-accepted-seen'
+    const acceptedIds = quotes.filter(q => q.status === 'accepted' || q.status === 'converted').map(q => q.id)
+    try {
+      const seen: string[] = JSON.parse(localStorage.getItem(key) ?? '[]')
+      const newOnes = acceptedIds.filter(id => !seen.includes(id))
+      if (newOnes.length > 0) {
+        celebrate('¡Cotización aceptada! 🎉', newOnes.length === 1 ? '¡Sigue así, vas excelente!' : `${newOnes.length} cotizaciones aceptadas`)
+      }
+      localStorage.setItem(key, JSON.stringify(acceptedIds))
+    } catch { /* ignore storage errors */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const NAV: { id: TabId; label: string; Icon: React.ElementType; href: string | null }[] = [
     { id: 'home',      label: n.home,      Icon: Home,     href: null      },
@@ -1103,3 +1128,4 @@ export function AppShell({ user, business, quotes, priceBookItems, invoices, job
     </div>
   );
 }
+

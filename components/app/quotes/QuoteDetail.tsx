@@ -5,6 +5,7 @@ import { motion } from 'motion/react'
 import { ChevronLeft, Send, Copy, CheckCircle2, Eye, ExternalLink, Mail, FileCheck, Pencil, CopyPlus, Archive, Calendar, FileText, MoreHorizontal, Briefcase, AlertTriangle, Clock, BadgeDollarSign, MessageSquare, ClipboardList, Link2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useLang } from '@/app/lang-context'
+import { useCelebration } from '@/components/app/CelebrationToast'
 import { updateQuoteStatus, duplicateQuote, archiveQuote, unarchiveQuote, sendQuote, sendQuoteToSelf, logShareInitiated } from '@/app/actions/quotes'
 import { convertQuoteToInvoice } from '@/app/actions/invoices'
 import { convertQuoteToJob } from '@/app/actions/jobs'
@@ -45,6 +46,7 @@ type Quote = {
 export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeRequest, revisions = [] }: { quote: Quote; items: QuoteItem[]; autoSend?: boolean; linkedInvoiceId?: string | null; changeRequest?: { message: string; created_at: string } | null; revisions?: { id: string; version_number: number; created_at: string; snapshot: unknown }[] }) {
   const router = useRouter()
   const { lang } = useLang()
+  const celebrate = useCelebration()
   const [updating, startUpdate] = useTransition()
   const [converting, startConvert] = useTransition()
   const [convertingJob, startConvertJob] = useTransition()
@@ -94,6 +96,7 @@ export function QuoteDetail({ quote, items, autoSend, linkedInvoiceId, changeReq
       await updateQuoteStatus(quote.id, 'sent')
       setShowSendSheet(false)
       setSentToast(true)
+      celebrate('¡Cotización enviada! 🚀', 'Tu cliente pronto la verá')
       setTimeout(() => setSentToast(false), 3000)
     })
   }
