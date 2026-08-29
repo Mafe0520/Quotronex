@@ -7,7 +7,7 @@ import {
   Home, FileText, BookOpen, Receipt, Settings, Search, Briefcase,
   Plus, ChevronRight, CheckCircle2, Clock, Send,
   MoreHorizontal, DollarSign, TrendingUp, AlertCircle,
-  Package, LogOut, User, Bell, ShieldCheck, Users,
+  Package, LogOut, User, Bell, ShieldCheck, Users, Smartphone,
 } from 'lucide-react';
 import Image from 'next/image';
 import { signOut } from '@/app/actions/auth';
@@ -17,6 +17,7 @@ import type { Quote, PriceBookItem, InvoiceRow, JobRow, Business } from '@/app/a
 import { useT } from '@/lib/i18n'
 import { PushButton } from '@/components/app/PushButton'
 import { CelebrationProvider, useCelebration } from '@/components/app/CelebrationToast'
+import { openInstallGuide } from '@/components/PWAInit'
 import { SatisfactionSurvey } from '@/components/app/SatisfactionSurvey';
 
 interface AppUser { id: string; email: string; firstName: string }
@@ -894,6 +895,24 @@ function SettingsTab({ user, business }: { user: AppUser; business: Business | n
         ))}
       </div>
       <PushButton isLoggedIn={!!user} />
+      <motion.button
+        whileTap={{ scale: 0.985 }}
+        onClick={openInstallGuide}
+        className="flex items-center gap-3 rounded-2xl bg-[var(--surface)] p-4 text-left w-full"
+      >
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_8%,transparent)]">
+          <Smartphone size={16} color="var(--accent)" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-[var(--text-primary)]">
+            {tr.nav.settings === 'Settings' ? 'Add to Home Screen' : 'Agregar a pantalla de inicio'}
+          </p>
+          <p className="text-xs text-[var(--text-tertiary)]">
+            {tr.nav.settings === 'Settings' ? 'Install like a real app' : 'Instálala como una app real'}
+          </p>
+        </div>
+        <ChevronRight size={16} className="shrink-0 text-[var(--text-tertiary)]" />
+      </motion.button>
       <motion.button whileTap={{ scale: 0.97 }} disabled={signingOut} onClick={handleSignOut}
         className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-red-200 text-sm font-semibold text-red-600 disabled:opacity-50">
         <LogOut size={16} />

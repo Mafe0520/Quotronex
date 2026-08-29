@@ -34,9 +34,17 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'Quotronex',
+    startupImage: [{ url: '/icons/icon-512.png' }],
+  },
+  icons: {
+    apple: [
+      { url: '/icons/icon-192.png', sizes: '192x192' },
+      { url: '/icons/icon-512.png', sizes: '512x512' },
+    ],
   },
   other: {
     'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-title': 'Quotronex',
   },
 };
 
